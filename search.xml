@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[Understanding on HTML]]></title>
+    <url>%2F2018%2F02%2F14%2FUnderstanding-on-HTML%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[First to NeXT]]></title>
+    <url>%2F2018%2F02%2F14%2FFirst-to-NeXT%2F</url>
+    <content type="text"><![CDATA[Maybe it is the first,But in my view, that may be the NeXT. 名字不重要，形式也不重要，重要的是内容。这里将会陆续发布一些技术工作的经验谈，然而仅仅是经验谈而已。 更多的都是需要读者自己去探索，这一方天地下，比我们的视野更远的地方。 12hexo new "First to NeXT"hexo d -g 这是本站第一篇正式发文，感谢阅读！]]></content>
+      <tags>
+        <tag>intro</tag>
+      </tags>
+  </entry>
+</search>
