@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>NeXT</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://lmy98129.github.io/"/>
+  <updated>2018-02-14T01:17:18.354Z</updated>
+  <id>http://lmy98129.github.io/</id>
+  
+  <author>
+    <name>Mengyin Liu</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Coconut</title>
+    <link href="http://lmy98129.github.io/2018/02/14/test/"/>
+    <id>http://lmy98129.github.io/2018/02/14/test/</id>
+    <published>2018-02-14T01:07:01.000Z</published>
+    <updated>2018-02-14T01:17:18.354Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="hey-little-darling-I-wanna-take-you-out-of-the-darkness"><a href="#hey-little-darling-I-wanna-take-you-out-of-the-darkness" class="headerlink" title="hey, little darling, I wanna take you out of the darkness"></a>hey, little darling, I wanna take you out of the darkness</h2><p>So welcome to my first <a href="https://lmy98129.github.io">hexo site</a>. Markdown is really cool!</p><h3 id="I-just-feel-like-to-say"><a href="#I-just-feel-like-to-say" class="headerlink" title="I just feel like to say:"></a>I just feel like to say:</h3><blockquote>  <h1> hello world! </h1></blockquote><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line">Enter your passwd:</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;hey-little-darling-I-wanna-take-you-out-of-the-darkness&quot;&gt;&lt;a href=&quot;#hey-little-darling-I-wanna-take-you-out-of-the-darkness&quot; class=&quot;h
+      
+    
+    </summary>
+    
+    
+      <category term="test" scheme="http://lmy98129.github.io/tags/test/"/>
+    
+  </entry>
+  
+</feed>
