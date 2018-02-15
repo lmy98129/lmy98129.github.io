@@ -46,14 +46,14 @@
     <link href="http://lmy98129.github.io/2018/02/14/First-to-NeXT/"/>
     <id>http://lmy98129.github.io/2018/02/14/First-to-NeXT/</id>
     <published>2018-02-14T07:46:58.000Z</published>
-    <updated>2018-02-14T09:35:19.208Z</updated>
+    <updated>2018-02-15T07:24:45.020Z</updated>
     
-    <content type="html"><![CDATA[<blockquote><p>Maybe it is the first,<br>But in my view, that may be the NeXT.</p></blockquote><p>名字不重要，形式也不重要，重要的是内容。<br>这里将会陆续发布一些技术工作的经验谈，然而仅仅是经验谈而已。</p><a id="more"></a><p>更多的都是需要读者自己去探索，<br>这一方天地下，比我们的视野更远的地方。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">"First to NeXT"</span></span><br><span class="line">hexo d -g</span><br></pre></td></tr></table></figure><blockquote><p>这是本站第一篇正式发文，感谢阅读！</p></blockquote>]]></content>
+    <content type="html"><![CDATA[<blockquote><p>Maybe it is the first.<br>But in my view, that may be the NeXT.</p></blockquote><p>名字不重要，形式也不重要，重要的是内容。<br>这里将会陆续发布一些技术工作的经验谈，然而仅仅是经验谈而已。</p><a id="more"></a><p>更多的都是需要读者自己去探索，<br>这一方天地下，比我们的视野更远的地方。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">"First to NeXT"</span></span><br><span class="line">hexo d -g</span><br></pre></td></tr></table></figure><blockquote><p>这是本站第一篇正式发文，感谢阅读！</p></blockquote>]]></content>
     
     <summary type="html">
     
       &lt;blockquote&gt;
-&lt;p&gt;Maybe it is the first,&lt;br&gt;But in my view, that may be the NeXT.&lt;/p&gt;
+&lt;p&gt;Maybe it is the first.&lt;br&gt;But in my view, that may be the NeXT.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;名字不重要，形式也不重要，重要的是内容。&lt;br&gt;这里将会陆续发布一些技术工作的经验谈，然而仅仅是经验谈而已。&lt;/p&gt;
     
