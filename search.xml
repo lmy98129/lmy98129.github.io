@@ -1,171 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-    
-    <entry>
-      <title><![CDATA[Understanding on HTML]]></title>
-      <url>/2018/02/14/Understanding-on-HTML/</url>
-      <content type="html"><![CDATA[<blockquote>
-<p>Take something for example,<br>which seems to be far more effctive at times. </p>
-</blockquote>
-<p>讲一些对于HTML的理解，顺带讲讲CSS和JavaScript<br>水平有限，如有偏颇，多多包涵。</p>
-<a id="more"></a>
-<h2 id="框架-·-模板-·-控制"><a href="#框架-·-模板-·-控制" class="headerlink" title="框架 · 模板 · 控制"></a>框架 · 模板 · 控制</h2><p>HTML，全称是“超文本标记语言”<a href="https://baike.baidu.com/item/HTML/97049" target="_blank" rel="noopener">百度百科</a><br>CSS，全称是“层叠样式表”<a href="https://baike.baidu.com/item/CSS/5457" target="_blank" rel="noopener">百度百科</a><br>JavaScript，额……没有全称，不要在意这些细节。<a href="https://baike.baidu.com/item/javascript/321142" target="_blank" rel="noopener">百度百科</a></p>
-<p>首先，概念不可避。此处不是科普，而是经验谈，有需要的同学可以上百度百科先阅读一下~</p>
-<p>虽然正统的MVC框架其实是<a href="https://baike.baidu.com/item/MVC%E6%A1%86%E6%9E%B6?fromtitle=mvc&amp;fromid=85990#2" target="_blank" rel="noopener">这样</a>的，但是我仍然想套用它的概念，毕竟是比较经典的讲法，能够在一定程度上提高本文的逼格。（以及，能够被以后前来访问的大牛和我自己笑话一下。）</p>
-<p>我这么菜，我也很无奈呀.jpg</p>
-<h3 id="框架——HTML"><a href="#框架——HTML" class="headerlink" title="框架——HTML"></a>框架——HTML</h3><p><img src="/2018/02/14/Understanding-on-HTML/F12.PNG" alt="Chrome Developer Tool"></p>
-<p><center>Chrome开发者工具中显示的HTML代码</center><br></p>
-<p>HTML代码是网页最根本的骨架，也是大部分网页呈现在浏览器上的最终形式之一。<br>举个栗子，请打开你正在使用的任意一款浏览器，访问任意一个页面，然后打开浏览器自带的开发者工具（如果不知道如何打开，百度一下）。该开发者工具中的某一个选项卡（通常是第一个）中展示的正是该网站的HTML代码。大致结构一般如下：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        ...</span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>这些用尖括号和斜杠组成的HTML标签，是网页的框架，正如你阅读的书籍，在初始状态下是从上到下，自然地顺序排版的。被标签包裹着的文本内容、各种由诸如<code>&lt;img&gt;</code>、<code>&lt;video&gt;</code>等标签衍生出的图片、视频等多媒体内容，都在HTML这个框架之下，分布于整个网页的各自位置当中。看着十分理想，场面非常和谐。</p>
-<p>但是，燃鹅，BUT……</p>
-<h3 id="模板——CSS"><a href="#模板——CSS" class="headerlink" title="模板——CSS"></a>模板——CSS</h3><blockquote>
-<p>“这个对话框我想浮在页面最顶层，然后点完就消失，对，要有特效的那种！”<br>“给我弄个像这个图纸这样的网页。什么？两个纵向栏，报纸都排版得出来，你写不出来？”<br>“怎么都是黑漆漆一片的，文字和按钮要有颜色，有质感，有特效，这么丑会辣眼睛的啦！”<br>“……哼！”</p>
-</blockquote>
-<p>是的，你眼前的网页之所以不是一场灾难，一坨从左往右写，从上往下读的纯文本，<br>正是因为除HTML代码之外，还有CSS代码，作为网页样式的模板，批量而精确地定义着每一个网页元素的各种属性。</p>
-<p>是的，各种属性：<br>长宽，距离，边框，形状，颜色，排版，显示，隐藏……</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.mod-class</span>&#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">20px</span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-id">#special-item</span>&#123;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">0</span> auto;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">8px</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#000</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: transparent;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样的css代码，作用于形如以下的html元素中</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"mod-class"</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">...</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"special-item"</span>&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>元素标签可以不仅仅是<code>&lt;div&gt;</code>，<br><strong>而只要<code>class</code>或<code>id</code>吻合，无论这个元素是什么</strong>，<br>就会受到相应CSS语句的约束，<br><strong>就像一个放之四海而皆准的模板一样</strong><br>这就是CSS作为页面样式模板的力量。</p>
-<p>而且，这不仅仅是静态的。现代的CSS版本，拥有着能够做出各种动态特效、多平台响应等一系列高级特性。</p>
-<blockquote>
-<p>“那么CSS代码在哪里呢？我在开发者工具中找了半天没找到诶。”</p>
-</blockquote>
-<p><img src="/2018/02/14/Understanding-on-HTML/CSS.PNG" alt="Chrome Developer Tool"></p>
-<p><center>Chrome开发者工具中显示的CSS代码</center><br></p>
-<p>一般在显示HTML代码的开发者工具界面的右侧。而这些CSS属性都是通过在HTML文件中引用.css格式的文件、或者直接插入<code>&lt;style&gt;</code>标签来实现的：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//引入文件</span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"./***.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">type</span>=<span class="string">"text/css"</span>/&gt;</span></span><br><span class="line">//引入文件</span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css">   @<span class="keyword">import</span>"<span class="keyword">mystyle</span>.<span class="keyword">css</span>"; </span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">//直接插入代码</span><br><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css">    <span class="selector-class">.custom-class</span>&#123;</span></span><br><span class="line"><span class="undefined">        ....</span></span><br><span class="line"><span class="undefined">    &#125;</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">//直接在元素中插入代码</span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"display: none"</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>但是，燃鹅，BUT……</p>
-<h3 id="控制——JavaScript，以及更多"><a href="#控制——JavaScript，以及更多" class="headerlink" title="控制——JavaScript，以及更多"></a>控制——JavaScript，以及更多</h3><blockquote>
-<p>“网页不错, 我想弄个账户登录什么的。这样可以让用户有个性化的体验”<br>“弄个banner挂幻灯片吧，自动播放的那种，现在网站主页不都这么做吗？”<br>“听说小游戏挺火的，‘跳一跳’啥的，什么写的，难不成是flash？”<br>“额……”</p>
-</blockquote>
-<p>如果网页是纯HTML和CSS编写出来的话，同样是一场灾难：</p>
-<ul>
-<li>无论何时，所有人都只能访问通过一模一样的网页</li>
-<li>要创建新的网页，只能手工重新编写新的网页文件</li>
-<li>无法提供用户输入的功能，更无法在浏览过程的前中后，对用户输出特定的反馈（内容的变化，事件的产生）</li>
-<li>……</li>
-</ul>
-<p>那么如果网页引入了我们熟悉的程序代码呢？</p>
-<ul>
-<li>不同的用户，访问具有不同内容的同一个网页，正如我们打开同一个APP，看不同的推荐一样</li>
-<li>创建新的网页，正如安装新的程序一样，是一个自动的过程</li>
-<li>每一次手指的触摸、鼠标的单击，程序的界面都会有相应的变化</li>
-<li>……</li>
-</ul>
-<p>那么就需要一种、多种编程语言参与到网页乃至网站的编写过程中来了。<br>JavaScript，这个带着Java名字，却和Java毫无关系的编程语言应运而生，担负了赋予网页灵魂的工作——控制网页的各类功能。</p>
-<p>在你看着网页加载的时候，在你浏览网页的时候，<br>在你按下网页上一个提交按钮的时候，在你点击屏幕跳一跳的时候<br>（没错，微信小游戏的游戏逻辑也是JS写的）</p>
-<p>JavaScript都在你看不见的地方，静静地运行着。<br>（它和HTML、CSS一样，被下载到浏览器，在浏览器提供的本地引擎中运行着，而不是服务器之类的远程平台）<br>是的，它是货真价实的编程语言，让网页拥有程序一样的功能。</p>
-<p><img src="/2018/02/14/Understanding-on-HTML/JS.PNG" alt="Chrome Developer Tool"></p>
-<p><center>Chrome开发者工具中显示的可调试jQuery（JS的一个分支）代码的控制台</center></p>
-<p><center>（一般在开发者工具显示HTML代码界面的下方，或者名为控制台的选项卡内）</center><br><br></p>
-<p>与css一样，它也有引入文件和使用<code>&lt;script&gt;</code>标签直接插入代码的方式。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span> <span class="attr">src</span>=<span class="string">"***.js"</span>&gt;</span><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">//或者</span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="undefined">    var a = 0;</span></span><br><span class="line"><span class="undefined">    ...</span></span><br><span class="line"><span class="undefined"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>但是，燃鹅，BUT……</p>
-<p>好了好了，这里就不另开一小节讲了。</p>
-<p>JS的优势正是所有浏览器都拥有的统一的JavaScript引擎，可以让JS一次编写，处处下载，均能兼容运行。<br>但是它的劣势也就在于本地运行，占用了本地的资源，增大了客户端设备的负担，不能在网页加载之前对网页结构进行灵活的改变，（举个简单的栗子，如果要根据不同省份、地区、国家的访客的ip地址，提供大量的不同内容，对于网页的处理总不可能永远都是边加载边修改）。况且，JS并没有解决：</p>
-<ul>
-<li>既然有了用户数据交互的渠道，那数据存在哪里？又从哪里取出？</li>
-<li>如何在部署了网站的服务器上设定好域名、访问权限等，并且能够自动地拒绝非法的请求</li>
-</ul>
-<p>所以，需要：</p>
-<ul>
-<li>一个能够在服务器端，根据客户端提交来的请求，在加载之前就能够将内容做一定处理的编程语言</li>
-<li>一个能够规范地管理并与网页进行实时数据交换的数据库</li>
-<li>一个能够有效管理服务器上传下载、ip域名映射、访问进程等事项的服务器管理程序</li>
-</ul>
-<p>是的，这些服务器端的需求，与我们之前提到的浏览器端，也即客户端的需求相对。<br>两者的对比就产生了网页开发中最重要的两大分类：</p>
-<p><strong>前端和后端</strong></p>
-<p>网页前端开发：HTML+CSS+JS<br>网页后端开发：服务器管理+数据库管理+预处理控制（后端框架）</p>
-<p>两者有着很多很有趣的矛盾统一性，例如：</p>
-<ul>
-<li>网页前端开发因为需要跨浏览器甚至跨平台的兼容，因此使用的技术一般是统一的HTML+CSS+JS。</li>
-<li>后端开发却相反，由于服务器本身平台的多样性（Linux或Windows）以及对其性能、规模等其他需求的多样性，导致后端采用的技术框架呈现百花齐放的姿态，例如WordPress采用的LAMP或LNMP，基于python的Django，基于Node.js的Express，基于Java的Spring等等，此处就不过多赘述了。</li>
-<li>……</li>
-</ul>
-<p>PS：不仅仅是网页开发分前端和后端，任意一个web项目，例如手机APP、桌面程序、微信小程序……都需要有前端后端的开发划分，以便于厘清项目结构和开发安排</p>
-<h2 id="总结：在跑题万里之后"><a href="#总结：在跑题万里之后" class="headerlink" title="总结：在跑题万里之后"></a>总结：在跑题万里之后</h2><blockquote>
-<p>（以及，能够被以后前来访问的大牛和我自己笑话一下。）<br> 我这么菜，我也很无奈呀.jpg</p>
-</blockquote>
-<p>我一直在思考自己为什么会跑题。最后发现答案就在上面这两句引用里面。<br>是啊，我很菜。</p>
-<p>我当前对于技术的理解，根本无法给予我把控这些庞杂概念的能力。<br>说是讲自己对HTML的理解，但更多的是谈到了围绕HTML+CSS+JS的网页前端基础。<br>虽然也没什么毛病，俗话说“不讲相关知识点的讲评，就是在耍流氓”。</p>
-<p>但是我依然要写，毕竟只有写出来点什么，才能知道自己脑袋里面装的东西是有多么地可笑，才能放下自己那些绷在脸面上放不下的所谓自大和狂妄。正如高中时期孜孜不倦地在一切空白处记下的笔记，就算我记下之后不再去看它，至少在我记录的时候，知识在我的大脑中不断流转、不断处理，最终呈现在我的笔下，我的眼前。这个过程，不正是自我纠错、自我提高的过程吗？</p>
-<p>为自己而写，调动自己的思维，不要让大脑日渐沦为一台生锈的机器。</p>
-<p>那么最后总结一下吧：HTML作为现代网页的基本骨架，只有在CSS、JavaScript乃至整个服务器后端的协同下，才能够正常地发挥现代网页的基本机能，以及为更多新鲜的需求、新颖的功能带来无限的开发潜能。</p>
-<p>学习网页开发，最重要的不是一句两句语法，而是在动手和借鉴的过程中，从微观的角度，理解整个项目的运作逻辑，和技术背后的高明之处。（虽然我还是在需求导向型的歧途上越走越远，但是读得懂源码的程序员，才能开发出真正的好产品，这是不变的真理，迟早有一天我仍然会兜一个大圈子，回到这里的）</p>
-<h2 id="建议-·-福利"><a href="#建议-·-福利" class="headerlink" title="建议 · 福利"></a>建议 · 福利</h2><p>其实上面已经写一些建议了。但是我还想另外开一个大节讲一讲。</p>
-<p>建议不多，就是先不要想着自己搭一个什么牛逼的网站，先做一个简单的HTML+CSS+JS的小页面，理解清楚他们之间的作用机理，顺带踩一部分的坑。</p>
-<p>之后或许你会停滞一段时间，因为说实话，其实在修改一些开源项目供你自己项目需求的时候，这些已经完全够用了，前辈写的足够优秀了，后端的东西你一旦配置好了就可以专心改界面了。</p>
-<p>但是，会有一个时刻，你会发现只搞这些根本满足不了需求，或许是你自己看到了别人写的项目，或许是你突然要调用数据库做一个新的功能，或许是你发现项目提供的API根本没法用，要自己写一个。</p>
-<p>不懂后端的前端，只可能是个巨坑。所以你从一个大坑（网页前端），纵身一跃，跳进了另一个大坑（网页后端）。之后再多跳几次，从网站到移动APP，从移动APP到桌面端，从软件到物联网硬件，然后，然后……</p>
-<p>然后，你就乖乖回前端啦！（并不）</p>
-<blockquote>
-<p>福利？福利是不可能有的，这辈子都不可能有的。<br>就是稍微推荐几个网站把读者带坑里去这样子</p>
-</blockquote>
-<p>学习站点：</p>
-<ul>
-<li><a href="https://freecodecamp.cn/" target="_blank" rel="noopener">FreeCodeCamp.cn</a>：闯（shua）关（ti）式的前端编程教学网站（也是我真正开始接触前端编程的地方）</li>
-<li><a href="http://www.w3school.com.cn" target="_blank" rel="noopener">w3school</a>：可以当工具书用，刷题，有些知识点较老，但是不影响使用（百度HTML相关知识点，不出意外前几个就是它了）</li>
-<li><a href="http://www.mengma.com/" target="_blank" rel="noopener">萌码</a>：又一个闯（shua）关（ti）式的编程练习平台（虽然没用过但是身边的同学在用）</li>
-</ul>
-<p>练手推荐：</p>
-<ul>
-<li><a href="https://github.com" target="_blank" rel="noopener">GitHub</a>：多看优秀项目的代码，并且多练习一些优秀项目的部署和使用，如果不知道找什么就去看排行榜上的项目。（CSDN同理）</li>
-<li><a href="https://education.github.com/pack" target="_blank" rel="noopener">Student Developer Pack</a>：使用学校提供的学生邮箱注册GitHub账号，可以领取Education Pack，内含免费一年DigitalOcean服务器和Namecheap域名。（踩坑提示：DO的服务器要使用VISA卡或者PayPal预交约合32元人民币才能开户，建议使用PayPal，一年后全价略坑，现已转bandwagon。服务器在境外，可以找教程kexueshangwang）</li>
-<li><a href="https://cn.wordpress.org/" target="_blank" rel="noopener">WordPress</a>：搜一个教程并对照着在服务器上搭建一个WordPress站点吧！本博客程序是Hexo，但我依然推荐WP，毕竟越著名的程序出问题时能够获得的帮助（教程）也就阅读。同时也有助于你理解LNMP/LAMP内部各个部分的联系和配置方法。如果肯花心思去美化、修改你的站点那就更好了。<br>（WordPress是一个优秀的PHP项目，类似的还有论坛程序Discuz、PHPwind、Wecenter、Tipask，在修改它们的过程中你也可以理解PHP在站点中起到的作用，如果你还想尝试其他架构的例如Java或Python的，也可以去搜索并尝试部署到你的服务器上）</li>
-<li><a href="https://mp.weixin.qq.com/cgi-bin/wx" target="_blank" rel="noopener">微信小程序</a>：使用你当前掌握的前端、后端知识去开发微信小程序吧~</li>
-</ul>
-<p>工具下载：</p>
-<ul>
-<li><a href="https://www.baidu.com" target="_blank" rel="noopener">Baidu</a>：是的，搜索引擎是知识的源泉，（貌似并不用下载），掌握好问题的描述方式，输入少量的、但足以描述整体的关键词，大部分的问题都能够找得到答案。</li>
-<li><a href="https://code.visualstudio.com/" target="_blank" rel="noopener">VS Code</a>：近乎万能的代码编辑器，你值得拥有。</li>
-<li><a href="https://filezilla-project.org/" target="_blank" rel="noopener">FileZila</a>：好用的FTP上传下载工具，与服务器进行文件传输的首选。</li>
-<li><a href="https://www.putty.org/" target="_blank" rel="noopener">Putty</a>：SSH客户端，使用命令行远程操作你的服务器，顺带学习一下Linux命令的使用</li>
-<li><a href="https://lnmp.org/" target="_blank" rel="noopener">LNMP</a>：在你的服务器上快速配置LNMP环境，免除各种依赖冲突的烦恼</li>
-<li><a href="https://www.apachefriends.org/" target="_blank" rel="noopener">XAMPP</a>：在你的服务器上快速配置LAMP环境，同样也支持在本地环境（Windows桌面端）配置，便于你站点的本地调试（本地调试后上传能避免很多必要的麻烦）</li>
-</ul>
-<blockquote>
-<p>最后，这是本站的第二篇正式发文，感谢阅读。<br>如有意见和建议，欢迎通过首页的联系方式联系作者，<br>本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。</p>
-</blockquote>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> experience </tag>
-            
-            <tag> understanding </tag>
-            
-        </tags>
-        
-    </entry>
-    
-    <entry>
-      <title><![CDATA[First to NeXT]]></title>
-      <url>/2018/02/14/First-to-NeXT/</url>
-      <content type="html"><![CDATA[<blockquote>
-<p>Maybe it is the first.<br>But in my view, that may be the NeXT.</p>
-</blockquote>
-<p>名字不重要，形式也不重要，重要的是内容。<br>这里将会陆续发布一些技术工作的经验谈，然而仅仅是经验谈而已。</p>
-<a id="more"></a>
-<p>更多的都是需要读者自己去探索，<br>这一方天地下，比我们的视野更远的地方。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="string">"First to NeXT"</span></span><br><span class="line">hexo d -g</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>这是本站第一篇正式发文，感谢阅读！</p>
-</blockquote>
-]]></content>
-      
-        
-        <tags>
-            
-            <tag> intro </tag>
-            
-        </tags>
-        
-    </entry>
-    
-  
-  
+<search>
+  <entry>
+    <title><![CDATA[Understanding on HTML]]></title>
+    <url>%2F2018%2F02%2F14%2FUnderstanding-on-HTML%2F</url>
+    <content type="text"><![CDATA[Take something for example,which seems to be far more effctive at times. 讲一些对于HTML的理解，顺带讲讲CSS和JavaScript水平有限，如有偏颇，多多包涵。 框架 · 模板 · 控制HTML，全称是“超文本标记语言”百度百科CSS，全称是“层叠样式表”百度百科JavaScript，额……没有全称，不要在意这些细节。百度百科 首先，概念不可避。此处不是科普，而是经验谈，有需要的同学可以上百度百科先阅读一下~ 虽然正统的MVC框架其实是这样的，但是我仍然想套用它的概念，毕竟是比较经典的讲法，能够在一定程度上提高本文的逼格。（以及，能够被以后前来访问的大牛和我自己笑话一下。） 我这么菜，我也很无奈呀.jpg 框架——HTML Chrome开发者工具中显示的HTML代码 HTML代码是网页最根本的骨架，也是大部分网页呈现在浏览器上的最终形式之一。举个栗子，请打开你正在使用的任意一款浏览器，访问任意一个页面，然后打开浏览器自带的开发者工具（如果不知道如何打开，百度一下）。该开发者工具中的某一个选项卡（通常是第一个）中展示的正是该网站的HTML代码。大致结构一般如下： 123456789&lt;html&gt; ... &lt;head&gt; ... &lt;/head&gt; &lt;body&gt; ... &lt;/body&gt;&lt;/html&gt; 这些用尖括号和斜杠组成的HTML标签，是网页的框架，正如你阅读的书籍，在初始状态下是从上到下，自然地顺序排版的。被标签包裹着的文本内容、各种由诸如&lt;img&gt;、&lt;video&gt;等标签衍生出的图片、视频等多媒体内容，都在HTML这个框架之下，分布于整个网页的各自位置当中。看着十分理想，场面非常和谐。 但是，燃鹅，BUT…… 模板——CSS “这个对话框我想浮在页面最顶层，然后点完就消失，对，要有特效的那种！”“给我弄个像这个图纸这样的网页。什么？两个纵向栏，报纸都排版得出来，你写不出来？”“怎么都是黑漆漆一片的，文字和按钮要有颜色，有质感，有特效，这么丑会辣眼睛的啦！”“……哼！” 是的，你眼前的网页之所以不是一场灾难，一坨从左往右写，从上往下读的纯文本，正是因为除HTML代码之外，还有CSS代码，作为网页样式的模板，批量而精确地定义着每一个网页元素的各种属性。 是的，各种属性：长宽，距离，边框，形状，颜色，排版，显示，隐藏…… 12345678910111213.mod-class&#123; width: 10px; height: 20px; ...&#125;#special-item&#123; margin: 0 auto; padding: 8px; color: #000; background-color: transparent; ...&#125; 这样的css代码，作用于形如以下的html元素中 1234567&lt;div class="mod-class"&gt; ...&lt;/div&gt;...&lt;div id="special-item"&gt; ...&lt;/div&gt; 元素标签可以不仅仅是&lt;div&gt;，而只要class或id吻合，无论这个元素是什么，就会受到相应CSS语句的约束，就像一个放之四海而皆准的模板一样这就是CSS作为页面样式模板的力量。 而且，这不仅仅是静态的。现代的CSS版本，拥有着能够做出各种动态特效、多平台响应等一系列高级特性。 “那么CSS代码在哪里呢？我在开发者工具中找了半天没找到诶。” Chrome开发者工具中显示的CSS代码 一般在显示HTML代码的开发者工具界面的右侧。而这些CSS属性都是通过在HTML文件中引用.css格式的文件、或者直接插入&lt;style&gt;标签来实现的： 1234567891011121314//引入文件&lt;link href="./***.css" rel="stylesheet" type="text/css"/&gt;//引入文件&lt;style&gt; @import"mystyle.css"; &lt;/style&gt;//直接插入代码&lt;style&gt; .custom-class&#123; .... &#125;&lt;/style&gt;//直接在元素中插入代码&lt;div style="display: none"&gt; 但是，燃鹅，BUT…… 控制——JavaScript，以及更多 “网页不错, 我想弄个账户登录什么的。这样可以让用户有个性化的体验”“弄个banner挂幻灯片吧，自动播放的那种，现在网站主页不都这么做吗？”“听说小游戏挺火的，‘跳一跳’啥的，什么写的，难不成是flash？”“额……” 如果网页是纯HTML和CSS编写出来的话，同样是一场灾难： 无论何时，所有人都只能访问通过一模一样的网页 要创建新的网页，只能手工重新编写新的网页文件 无法提供用户输入的功能，更无法在浏览过程的前中后，对用户输出特定的反馈（内容的变化，事件的产生） …… 那么如果网页引入了我们熟悉的程序代码呢？ 不同的用户，访问具有不同内容的同一个网页，正如我们打开同一个APP，看不同的推荐一样 创建新的网页，正如安装新的程序一样，是一个自动的过程 每一次手指的触摸、鼠标的单击，程序的界面都会有相应的变化 …… 那么就需要一种、多种编程语言参与到网页乃至网站的编写过程中来了。JavaScript，这个带着Java名字，却和Java毫无关系的编程语言应运而生，担负了赋予网页灵魂的工作——控制网页的各类功能。 在你看着网页加载的时候，在你浏览网页的时候，在你按下网页上一个提交按钮的时候，在你点击屏幕跳一跳的时候（没错，微信小游戏的游戏逻辑也是JS写的） JavaScript都在你看不见的地方，静静地运行着。（它和HTML、CSS一样，被下载到浏览器，在浏览器提供的本地引擎中运行着，而不是服务器之类的远程平台）是的，它是货真价实的编程语言，让网页拥有程序一样的功能。 Chrome开发者工具中显示的可调试jQuery（JS的一个分支）代码的控制台 （一般在开发者工具显示HTML代码界面的下方，或者名为控制台的选项卡内） 与css一样，它也有引入文件和使用&lt;script&gt;标签直接插入代码的方式。 123456&lt;script type="text/javascript" src="***.js"&gt;&lt;/script&gt;//或者&lt;script&gt; var a = 0; ...&lt;/script&gt; 但是，燃鹅，BUT…… 好了好了，这里就不另开一小节讲了。 JS的优势正是所有浏览器都拥有的统一的JavaScript引擎，可以让JS一次编写，处处下载，均能兼容运行。但是它的劣势也就在于本地运行，占用了本地的资源，增大了客户端设备的负担，不能在网页加载之前对网页结构进行灵活的改变，（举个简单的栗子，如果要根据不同省份、地区、国家的访客的ip地址，提供大量的不同内容，对于网页的处理总不可能永远都是边加载边修改）。况且，JS并没有解决： 既然有了用户数据交互的渠道，那数据存在哪里？又从哪里取出？ 如何在部署了网站的服务器上设定好域名、访问权限等，并且能够自动地拒绝非法的请求 所以，需要： 一个能够在服务器端，根据客户端提交来的请求，在加载之前就能够将内容做一定处理的编程语言 一个能够规范地管理并与网页进行实时数据交换的数据库 一个能够有效管理服务器上传下载、ip域名映射、访问进程等事项的服务器管理程序 是的，这些服务器端的需求，与我们之前提到的浏览器端，也即客户端的需求相对。两者的对比就产生了网页开发中最重要的两大分类： 前端和后端 网页前端开发：HTML+CSS+JS网页后端开发：服务器管理+数据库管理+预处理控制（后端框架） 两者有着很多很有趣的矛盾统一性，例如： 网页前端开发因为需要跨浏览器甚至跨平台的兼容，因此使用的技术一般是统一的HTML+CSS+JS。 后端开发却相反，由于服务器本身平台的多样性（Linux或Windows）以及对其性能、规模等其他需求的多样性，导致后端采用的技术框架呈现百花齐放的姿态，例如WordPress采用的LAMP或LNMP，基于python的Django，基于Node.js的Express，基于Java的Spring等等，此处就不过多赘述了。 …… PS：不仅仅是网页开发分前端和后端，任意一个web项目，例如手机APP、桌面程序、微信小程序……都需要有前端后端的开发划分，以便于厘清项目结构和开发安排 总结：在跑题万里之后 （以及，能够被以后前来访问的大牛和我自己笑话一下。） 我这么菜，我也很无奈呀.jpg 我一直在思考自己为什么会跑题。最后发现答案就在上面这两句引用里面。是啊，我很菜。 我当前对于技术的理解，根本无法给予我把控这些庞杂概念的能力。说是讲自己对HTML的理解，但更多的是谈到了围绕HTML+CSS+JS的网页前端基础。虽然也没什么毛病，俗话说“不讲相关知识点的讲评，就是在耍流氓”。 但是我依然要写，毕竟只有写出来点什么，才能知道自己脑袋里面装的东西是有多么地可笑，才能放下自己那些绷在脸面上放不下的所谓自大和狂妄。正如高中时期孜孜不倦地在一切空白处记下的笔记，就算我记下之后不再去看它，至少在我记录的时候，知识在我的大脑中不断流转、不断处理，最终呈现在我的笔下，我的眼前。这个过程，不正是自我纠错、自我提高的过程吗？ 为自己而写，调动自己的思维，不要让大脑日渐沦为一台生锈的机器。 那么最后总结一下吧：HTML作为现代网页的基本骨架，只有在CSS、JavaScript乃至整个服务器后端的协同下，才能够正常地发挥现代网页的基本机能，以及为更多新鲜的需求、新颖的功能带来无限的开发潜能。 学习网页开发，最重要的不是一句两句语法，而是在动手和借鉴的过程中，从微观的角度，理解整个项目的运作逻辑，和技术背后的高明之处。（虽然我还是在需求导向型的歧途上越走越远，但是读得懂源码的程序员，才能开发出真正的好产品，这是不变的真理，迟早有一天我仍然会兜一个大圈子，回到这里的） 建议 · 福利其实上面已经写一些建议了。但是我还想另外开一个大节讲一讲。 建议不多，就是先不要想着自己搭一个什么牛逼的网站，先做一个简单的HTML+CSS+JS的小页面，理解清楚他们之间的作用机理，顺带踩一部分的坑。 之后或许你会停滞一段时间，因为说实话，其实在修改一些开源项目供你自己项目需求的时候，这些已经完全够用了，前辈写的足够优秀了，后端的东西你一旦配置好了就可以专心改界面了。 但是，会有一个时刻，你会发现只搞这些根本满足不了需求，或许是你自己看到了别人写的项目，或许是你突然要调用数据库做一个新的功能，或许是你发现项目提供的API根本没法用，要自己写一个。 不懂后端的前端，只可能是个巨坑。所以你从一个大坑（网页前端），纵身一跃，跳进了另一个大坑（网页后端）。之后再多跳几次，从网站到移动APP，从移动APP到桌面端，从软件到物联网硬件，然后，然后…… 然后，你就乖乖回前端啦！（并不） 福利？福利是不可能有的，这辈子都不可能有的。就是稍微推荐几个网站把读者带坑里去这样子 学习站点： FreeCodeCamp.cn：闯（shua）关（ti）式的前端编程教学网站（也是我真正开始接触前端编程的地方） w3school：可以当工具书用，有些知识点较老，但是不影响使用（百度HTML相关知识点，不出意外前几个就是它了） 萌码：又一个闯（shua）关（ti）式的编程练习平台（虽然没用过但是身边的同学在用） 练手推荐： GitHub：多看优秀项目的代码，并且多练习一些优秀项目的部署和使用，如果不知道找什么就去看排行榜上的项目。（CSDN同理） Student Developer Pack：使用学校提供的学生邮箱注册GitHub账号，可以领取Education Pack，内含免费一年DigitalOcean服务器和Namecheap域名。（踩坑提示：DO的服务器要使用VISA卡或者PayPal预交约合32元人民币才能开户，建议使用PayPal，一年后全价略坑，现已转bandwagon。服务器在境外，可以找教程kexueshangwang） WordPress：搜一个教程并对照着在服务器上搭建一个WordPress站点吧！本博客程序是Hexo，但我依然推荐WP，毕竟越著名的程序出问题时能够获得的帮助（教程）也就阅读。同时也有助于你理解LNMP/LAMP内部各个部分的联系和配置方法。如果肯花心思去美化、修改你的站点那就更好了。（WordPress是一个优秀的PHP项目，类似的还有论坛程序Discuz、PHPwind、Wecenter、Tipask，在修改它们的过程中你也可以理解PHP在站点中起到的作用，如果你还想尝试其他架构的例如Java或Python的，也可以去搜索并尝试部署到你的服务器上） 微信小程序：使用你当前掌握的前端、后端知识去开发微信小程序吧~ 工具下载： Baidu：是的，搜索引擎是知识的源泉，（貌似并不用下载），掌握好问题的描述方式，输入少量的、但足以描述整体的关键词，大部分的问题都能够找得到答案。 VS Code：近乎万能的代码编辑器，你值得拥有。 FileZila：好用的FTP上传下载工具，与服务器进行文件传输的首选。 Putty：SSH客户端，使用命令行远程操作你的服务器，顺带学习一下Linux命令的使用 LNMP：在你的服务器上快速配置LNMP环境，免除各种依赖冲突的烦恼 XAMPP：在你的服务器上快速配置LAMP环境，同样也支持在本地环境（Windows桌面端）配置，便于你站点的本地调试（本地调试后上传能避免很多必要的麻烦） 最后，这是本站的第二篇正式发文，感谢阅读。如有意见和建议，欢迎通过首页的联系方式联系作者，本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。]]></content>
+      <tags>
+        <tag>experience</tag>
+        <tag>understanding</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[First to NeXT]]></title>
+    <url>%2F2018%2F02%2F14%2FFirst-to-NeXT%2F</url>
+    <content type="text"><![CDATA[Maybe it is the first.But in my view, that may be the NeXT. 名字不重要，形式也不重要，重要的是内容。这里将会陆续发布一些技术工作的经验谈，然而仅仅是经验谈而已。 更多的都是需要读者自己去探索，这一方天地下，比我们的视野更远的地方。 12hexo new "First to NeXT"hexo d -g 这是本站第一篇正式发文，感谢阅读！]]></content>
+      <tags>
+        <tag>intro</tag>
+      </tags>
+  </entry>
 </search>
