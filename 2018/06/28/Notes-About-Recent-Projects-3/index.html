@@ -129,7 +129,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2018/06/28/Notes-About-Recent-Projects-3/WEAPP14.jpeg">
 <meta property="og:image" content="http://lmy98129.github.io/2018/06/28/Notes-About-Recent-Projects-3/WEAPP15.jpeg">
 <meta property="og:image" content="http://lmy98129.github.io/2018/06/28/Notes-About-Recent-Projects-3/WEAPP16.jpeg">
-<meta property="og:updated_time" content="2018-07-28T18:28:59.000Z">
+<meta property="og:updated_time" content="2018-07-29T05:23:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Notes About Recent Projects 3">
 <meta name="twitter:description" content="The most stupid workmight be the most important one to cherish.  此处收录一些近期的项目笔记，这次真的是最近正在干的事情了。">
@@ -373,7 +373,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2018-07-29T02:28:59+08:00">2018-07-29</time>
+              <time title="更新于" itemprop="dateModified" datetime="2018-07-29T13:23:05+08:00">2018-07-29</time>
             
           </span>
 
@@ -424,6 +424,7 @@
 <p>项目创建的具体时间应与本博客的创建时间相差不多，开发时间长达3个月，上线时间已达1个月，经历两次大改。目前最新版本为v0.4.1。<br><strong>小程序前端基于腾讯微信小程序开发工具的原生组件，后端基于Node.js框架Express，数据库使用MySQL，数据库访问使用Node.js的MySQL库。其中，前端的通信模块以及后端的数据库访问模块均采用Promise异步编程封装。</strong></p>
 <blockquote>
 <p>注：我们计划在将本程序进行适当重构后，将本程序的前后端代码适时发布至GitHub。<br>当前程序内的敏感信息较多，公布后风险较大故暂不考虑。</p>
+<p>后续：前端代码已发布至<a href="https://github.com/lmy98129/weapp-ustb" target="_blank" rel="noopener">Github</a></p>
 </blockquote>
 <h3 id="项目技术细节"><a href="#项目技术细节" class="headerlink" title="项目技术细节"></a>项目技术细节</h3><p>本项目的最初需求来源是：在2017秋季学期计通学院学生讲师团旧有线上预约平台网站开发维护人员即将毕业离校，讲师团负责人员联系辅导员提出了寻找学生进行下一代线上辅导预约平台的开发和维护工作的需求，最终确定采用小程序的形式进行开发，并招募了开发人员。原定计划为寒假一个多月时间内完成开发任务，但由于人员技术水平有限，以及在开发过程中遇到的种种挫折，我们前后花费了将近3个月的时间，经历两次大改才将目前接近成品的版本v0.4.1付诸上线使用。</p>
 <h4 id="项目第一版"><a href="#项目第一版" class="headerlink" title="项目第一版"></a>项目第一版</h4><p><img src="/2018/06/28/Notes-About-Recent-Projects-3/WEAPP2.PNG" alt="WEAPP2"></p>
@@ -510,6 +511,7 @@
 <p>但是，问题在于该MySQL库本身的最佳实践中提到了其参数化查询、单语句查询的等防注入攻击的机制。其中参数化查询并非开发难点，此处可以略过，但是其默认单语句查询的功能实在是增加了开发难度。也就是必须在单条SQL语句当中完成所有查询，不允许进行多次查询后通过中间变量进行合并得到最终结果。这一设定的出发点是好的，万一API接口被传入一些带“;”的参数，且允许多语句查询，我们并不知道这些参数是否会导致SQL注入攻击的发生。</p>
 <p>诚然，大多数查询通过本人的努力都实现了单语句查询的效果，虽然SQL语句看起来又臭又长，外人难以读懂（这也是我反思之后决定日后学习ORM的主要原因之一）。但是若出现某些根据上一次查询结果进行分支操作的情况，单语句查询就显得十分吃力了。例如，我们遇到了这一种情况：</p>
 <p><img src="https://www.plantuml.com/plantuml/svg/SoWkIImgAStDuL800gMdUngUBkz-Dd_fY_MBb7HrxPGWp6Vp9xnOj-7ftgdFPgn_Ec7PqxKpdivPeGJMafcceFHY_LA8D4JYwOJfx_VCLr8eoKZD0wi10Q1X2j6LgSMnG4isj3tjcm_HyNnMozEE1IzdBddUjUrPG-EBvOk1xASxjptPl-xPb9rFMxSzRMjzkcwd4eevIY_sJtawUzxptPEVpPi3aKhDAKv5jIil7sZLisaRdYwQzsH7mxEv2o4M4ZOfBoKpZSi1I0531G00"></p>
+<p><center>如果因SSL证书问题无法查看上方的流程图，可以使用其他非Chrome内核的浏览器或使用桌面端浏览器阅读本文</center><br></p>
 <p>所以在项目的第一版中，我们采用了Node.js的<code>async</code>库中的<code>waterfall</code>进行同步顺序编程，<br><strong>之后的版本我发现了Promise是个好东西（虽然理解起来有难度）</strong><br><strong>然后就把通信模块统统重写了个遍</strong><br>在MySQL通信模块中解决这一问题的一个库函数实例如下：<br>也可以看出采用了参数化查询的防注入机制，以及MySQL的线程池。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> mysqlReserveClassStu(tunnelId, messageId, openId, classId, nickName) &#123;</span><br><span class="line">  <span class="keyword">var</span> tasks = [<span class="function"><span class="keyword">function</span>(<span class="params">callback</span>) </span>&#123;</span><br><span class="line">    pool.getConnection(<span class="function"><span class="keyword">function</span>(<span class="params">error,connection</span>) </span>&#123;</span><br><span class="line">      connection.query(<span class="string">"SELECT * FROM user_reserve WHERE class_id=? AND user_id=?"</span>, [classId, openId], <span class="function"><span class="keyword">function</span> (<span class="params">error, results_1, fields</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (error) <span class="keyword">throw</span> error;</span><br><span class="line">        <span class="keyword">if</span> (results_1) &#123;</span><br><span class="line">          connection.release();</span><br><span class="line">          callback(error, results_1);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;, <span class="function"><span class="keyword">function</span>(<span class="params">results_1, callback</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(results_1[<span class="number">0</span>] == <span class="literal">null</span>)&#123;</span><br><span class="line">      pool.getConnection(<span class="function"><span class="keyword">function</span>(<span class="params">error,connection</span>) </span>&#123;</span><br><span class="line">        connection.query(<span class="string">"INSERT INTO user_reserve (user_id,user_nickname,class_id,submission_date) VALUES(?,?,?,NOW())"</span>,</span><br><span class="line">        [openId,nickName,classId], <span class="function"><span class="keyword">function</span>(<span class="params">error, results_2, fields</span>) </span>&#123;</span><br><span class="line">          <span class="keyword">if</span>(error) <span class="keyword">throw</span> error;</span><br><span class="line">          <span class="keyword">if</span>(results_2) &#123;</span><br><span class="line">            connection.release();</span><br><span class="line">            TunnelService.emit(tunnelId, messageId, results_2);</span><br><span class="line">            callback(error);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      pool.getConnection(<span class="function"><span class="keyword">function</span>(<span class="params">error,connection</span>) </span>&#123;</span><br><span class="line">        connection.query(<span class="string">"UPDATE user_reserve SET status=1 WHERE class_id=? AND user_id=?"</span>,</span><br><span class="line">        [classId,openId], <span class="function"><span class="keyword">function</span>(<span class="params">error,results_3, fields</span>)</span>&#123;</span><br><span class="line">          <span class="keyword">if</span>(error) <span class="keyword">throw</span> error;</span><br><span class="line">          <span class="keyword">if</span>(results_3) &#123;</span><br><span class="line">            connection.release();</span><br><span class="line">            TunnelService.emit(tunnelId, messageId, results_3);</span><br><span class="line">            callback(error);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span>.waterfall(tasks, <span class="function"><span class="keyword">function</span>(<span class="params">error, results</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(error) <span class="keyword">throw</span> error;</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <blockquote>
 <p>这个代码块确定没把数据库表的字段抖出来了吗。。。<br>emmmm，还好吧。各位高抬贵手，高抬贵手。。。</p>
@@ -686,7 +688,7 @@
 <h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><blockquote>
 <p>先。。。先容我吐槽一下吧。<br>讲了挺多的，确实，一看发现上千行了😂（至少在markdown里面是这样，1.3k），我打算以后有机会的话拆成两篇文章发布。<br>写的时间跨度一个月吧，因为各种事情，写写停停，甚至在某几次提笔重新开始继续写下去的时候，都发现自己都不知道之前到底写了什么，现在该写什么，写的初心是什么。都快被各种事情给搞忘了。<br>所以说，要想系统性的总结一个东西，很难。<br>况且我这个小程序至少前端代码是必须要放到GitHub上去的，要想再系统性地整理并分享一个东西，更难。</p>
 </blockquote>
-<p>首要的，我还是非常感谢明导和郑导、感谢搭档王云程同学（@fafnir）、感谢提供过帮助过的高亦非同学（Jason Gao）以及感谢计通学院学生讲师团，给予了我这次项目实战的宝贵机会。如果没有这次实战机会的话，估计我也很难得出如此系统的经验，并写出内容如此（冗长而）丰富的文章了吧。这是一次从零开始、至少是从需求开始的一次系统性的开发，虽然过程不免因为个人水平仍处于成长期、个人其他事务的干扰等各种原因有着种种波折起伏，但是所有的过程都是在从宏观到微观、从代码开发到客户沟通再到界面设计，几乎是全方位地锻炼我的各种能力。</p>
+<p>首要的，我还是非常感谢明导和郑导、感谢搭档王云程同学（@fafnir）、感谢提供过帮助的高亦非同学（Jason Gao）以及感谢计通学院学生讲师团，给予了我这次项目实战的宝贵机会。如果没有这次实战机会的话，估计我也很难得出如此系统的经验，并写出内容如此（冗长而）丰富的文章了吧。这是一次从零开始、至少是从需求开始的一次系统性的开发，虽然过程不免因为个人水平仍处于成长期、个人其他事务的干扰等各种原因有着种种波折起伏，但是所有的过程都是在从宏观到微观、从代码开发到客户沟通再到界面设计，几乎是全方位地锻炼我的各种能力。</p>
 <p>所以，再次感谢在开发过程中给予了我各种帮助和指导的所有人，谢谢大家！</p>
 <blockquote>
 <p>最后，这是本站的第七篇正式发文，感谢阅读。<br>如有意见和建议，欢迎通过首页的联系方式联系作者。<br>本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。</p>
@@ -948,7 +950,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共27.0k字</span>
+  <span class="post-count">博客全站共27.1k字</span>
 </div>
 
         
