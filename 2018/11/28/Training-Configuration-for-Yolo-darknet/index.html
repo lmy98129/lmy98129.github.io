@@ -112,7 +112,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/training4.png">
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/testing7.png">
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/testing1.png">
-<meta property="og:updated_time" content="2018-11-28T15:10:02.000Z">
+<meta property="og:updated_time" content="2018-11-28T15:38:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Training Configuration for Yolo-darknet">
 <meta name="twitter:description" content="Everything’s coming up roses.  续上次的笔记分享yolo-darknet神经网络训练全过程的配置经验">
@@ -402,20 +402,13 @@
 <p>下载好的python脚本一般不能立即用，根据运行python脚本出现的报错，应当对其进行相应的修改，例如：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">classes = [<span class="string">"cat"</span>] <span class="comment">#把这个标签改成你自己的数据集中标记的标签</span></span><br><span class="line"><span class="comment">#那个sets看起来很奇怪，但是不用改也能用。python研究的少，暂时不知道具体原因</span></span><br></pre></td></tr></table></figure>
 <h2 id="对darknet的配置和更改"><a href="#对darknet的配置和更改" class="headerlink" title="对darknet的配置和更改"></a>对darknet的配置和更改</h2><p>darknet本身并非完全开箱即用的图像识别训练框架，因此需要对它进行有针对性的配置和必要的更改。此处同样是根据<a href="https://blog.csdn.net/qq_34484472/article/details/73135354" target="_blank" rel="noopener">《YOLO训练自己的数据集》</a>以及其他几篇文章的指导和建议进行配置的，主要有以下几点：</p>
-<ol>
-<li>对darknet的cfg/voc.data进行配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">classes= 标签类别总数</span><br><span class="line">train = 填之前脚本生成的训练集文件列表trainImageId.txt</span><br><span class="line">valid = 填之前脚本生成的验证集文件列表validateImagePath.txt</span><br><span class="line">names = data/xxx.names</span><br><span class="line">backup = 存放训练结果模型的路径</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
+<p>首先，对darknet的cfg/voc.data进行配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">classes= 标签类别总数</span><br><span class="line">train = 填之前脚本生成的训练集文件列表trainImageId.txt</span><br><span class="line">valid = 填之前脚本生成的验证集文件列表validateImagePath.txt</span><br><span class="line">names = data/xxx.names</span><br><span class="line">backup = 存放训练结果模型的路径</span><br></pre></td></tr></table></figure>
 <p>在data文件夹下的names文件中，每行写一条标签名称</p>
-<ol>
-<li><p>对要使用的神经网络版本yolo2-voc对应的配置文件yolo2-voc.cfg，应当更改以下几处：</p>
-<ul>
-<li>将最后的[region]层神经网络的配置中的classes改为1（即标记类别的总数）</li>
-<li>将最后一个[convolutional]卷积层中的filter改为30（filter的公式filters=(classes+ coords+ 1)<em> (NUM) ，我的是(1+4+1)</em> 5=30）</li>
-</ul>
-</li>
-</ol>
-<p>注：这里coords可以认为是坐标，设置的标记是一个方框则取4。NUM是神经网络的层数。filter公式的来源请参见国外开发者们的讨论：<a href="https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg" target="_blank" rel="noopener">https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg</a></p>
+<p>其次，对要使用的神经网络版本yolo2-voc对应的配置文件yolo2-voc.cfg，应当更改以下几处：</p>
+<pre><code>* 将最后的[region]层神经网络的配置中的classes改为1（即标记类别的总数）
+* 将最后一个[convolutional]卷积层中的filter改为30（filter的公式filters=(classes+ coords+ 1)* (NUM) ，我的是(1+4+1)* 5=30）
+</code></pre><p>注：这里coords可以认为是坐标，设置的标记是一个方框则取4。NUM是神经网络的层数。filter公式的来源请参见国外开发者们的讨论：<a href="https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg" target="_blank" rel="noopener">https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg</a></p>
 <h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>在yolo的官网下载预训练模型，地址：<a href="http://pjreddie.com/media/files/darknet53.conv.74" target="_blank" rel="noopener">http://pjreddie.com/media/files/darknet53.conv.74</a></p>
 <p>并执行训练命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./darknet detector train cfg/voc.data cfg/yolov2-voc.cfg darknet53.conv.74</span><br></pre></td></tr></table></figure>
@@ -726,7 +719,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共30.2k字</span>
+  <span class="post-count">博客全站共30.1k字</span>
 </div>
 
         
