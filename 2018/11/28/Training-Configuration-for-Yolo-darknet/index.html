@@ -112,7 +112,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/training4.png">
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/testing7.png">
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/testing1.png">
-<meta property="og:updated_time" content="2018-11-28T14:57:06.000Z">
+<meta property="og:updated_time" content="2018-11-28T15:05:29.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Training Configuration for Yolo-darknet">
 <meta name="twitter:description" content="Everything’s coming up roses  续上次的笔记分享yolo-darknet神经网络训练全过程的配置经验">
@@ -418,7 +418,7 @@
 </li>
 </ol>
 <p>注：这里coords可以认为是坐标，设置的标记是一个方框则取4。NUM是神经网络的层数。filter公式的来源请参见国外开发者们的讨论：<a href="https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg" target="_blank" rel="noopener">https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg</a></p>
-<h3 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h3><p>在yolo的官网下载预训练模型，地址：<a href="http://pjreddie.com/media/files/darknet53.conv.74" target="_blank" rel="noopener">http://pjreddie.com/media/files/darknet53.conv.74</a></p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>在yolo的官网下载预训练模型，地址：<a href="http://pjreddie.com/media/files/darknet53.conv.74" target="_blank" rel="noopener">http://pjreddie.com/media/files/darknet53.conv.74</a></p>
 <p>并执行训练命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./darknet detector train cfg/voc.data cfg/yolov2-voc.cfg darknet53.conv.74</span><br></pre></td></tr></table></figure>
 <p>之后便开始了对神经网络的训练，在1000次训练之内，每100次就在backup文件夹中生成一次权重模型，在1000次训练以上，每10000次生成一次权重模型。本项目的最终训练次数达到了50000次。</p>
@@ -426,7 +426,7 @@
 <p>上图为训练到500次左右时的结果截图</p>
 <p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/training4.png" alt="训练过程截图"></p>
 <p>训练生成的模型文件</p>
-<h3 id="批量测试、评估以及需要对darknet进行的相应修改"><a href="#批量测试、评估以及需要对darknet进行的相应修改" class="headerlink" title="批量测试、评估以及需要对darknet进行的相应修改"></a>批量测试、评估以及需要对darknet进行的相应修改</h3><p>本人<a href="https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet">之前的笔记</a>中曾经提到了使用单张图片测试，以及连接计算机摄像头、网络视频推流进行实时识别的命令，命令内容大致如下：</p>
+<h2 id="批量测试、评估以及需要对darknet进行的相应修改"><a href="#批量测试、评估以及需要对darknet进行的相应修改" class="headerlink" title="批量测试、评估以及需要对darknet进行的相应修改"></a>批量测试、评估以及需要对darknet进行的相应修改</h2><p>本人<a href="https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet">之前的笔记</a>中曾经提到了使用单张图片测试，以及连接计算机摄像头、网络视频推流进行实时识别的命令，命令内容大致如下：</p>
 <p>单张图片：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./darknet detect cfg/yolo.cfg yolo.weight data/horses.jpg</span><br></pre></td></tr></table></figure></p>
 <p>电脑摄像头：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./darknet detector demo cfg/voc.data cfg/tiny-yolo-voc.cfg weights/tiny-yolo-voc.weights</span><br></pre></td></tr></table></figure></p>
 <p>手机摄像头（通过网络视频实时推流，使用工具为IP摄像头APP）：</p>
@@ -682,7 +682,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据集的标注、修改"><span class="nav-number">2.</span> <span class="nav-text">数据集的标注、修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练数据集和验证数据集的拆分"><span class="nav-number">3.</span> <span class="nav-text">训练数据集和验证数据集的拆分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对darknet的配置和更改"><span class="nav-number">4.</span> <span class="nav-text">对darknet的配置和更改</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#训练"><span class="nav-number">4.1.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#批量测试、评估以及需要对darknet进行的相应修改"><span class="nav-number">4.2.</span> <span class="nav-text">批量测试、评估以及需要对darknet进行的相应修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据集的标注、修改"><span class="nav-number">2.</span> <span class="nav-text">数据集的标注、修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练数据集和验证数据集的拆分"><span class="nav-number">3.</span> <span class="nav-text">训练数据集和验证数据集的拆分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对darknet的配置和更改"><span class="nav-number">4.</span> <span class="nav-text">对darknet的配置和更改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练"><span class="nav-number">5.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量测试、评估以及需要对darknet进行的相应修改"><span class="nav-number">6.</span> <span class="nav-text">批量测试、评估以及需要对darknet进行的相应修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
@@ -732,7 +732,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共30.4k字</span>
+  <span class="post-count">博客全站共30.2k字</span>
 </div>
 
         
