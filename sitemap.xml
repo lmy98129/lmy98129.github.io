@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/</loc>
+    
+    <lastmod>2019-06-29T17:01:44.432Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://lmy98129.github.io/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/</loc>
     
     <lastmod>2019-06-29T16:56:06.266Z</lastmod>
@@ -33,13 +40,6 @@
     <loc>http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/</loc>
     
     <lastmod>2019-06-29T16:22:33.009Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/</loc>
-    
-    <lastmod>2019-06-29T12:58:54.688Z</lastmod>
     
   </url>
   
