@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="experience," />
+
+
+<meta name="description" content="本文是2019年4月《人工智能》专业课的大作业报告摘录 主要内容是在同一数据集（CIFAR10）上使用不同的卷积神经网络模型进行多分类问题训练以及识别效果的横向评估">
+<meta name="keywords" content="experience">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Different Deep Learning Methods for Image Classification on CIFAR 10">
+<meta property="og:url" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/index.html">
+<meta property="og:site_name" content="NeXT">
+<meta property="og:description" content="本文是2019年4月《人工智能》专业课的大作业报告摘录 主要内容是在同一数据集（CIFAR10）上使用不同的卷积神经网络模型进行多分类问题训练以及识别效果的横向评估">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/aistudio.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/cifar.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/vgg.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/resnet.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/googlenet.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/inception-v4.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step2-1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step2-2.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step3.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step4.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/train-func.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/predict-func.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-vgg.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-resnet.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-googlenet.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-inception-v4-1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-inception-v4-2.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-vgg-1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-vgg-2.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-resnet-1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-resnet-2.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-resnet.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-googlenet-1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-googlenet-2.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-googlenet.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-2.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-inception-v4-1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-3.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-4.png">
+<meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-inception-v4-2.png">
+<meta property="og:updated_time" content="2019-06-29T12:58:54.688Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Different Deep Learning Methods for Image Classification on CIFAR 10">
+<meta name="twitter:description" content="本文是2019年4月《人工智能》专业课的大作业报告摘录 主要内容是在同一数据集（CIFAR10）上使用不同的卷积神经网络模型进行多分类问题训练以及识别效果的横向评估">
+<meta name="twitter:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/aistudio.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="NeXT" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Different Deep Learning Methods for Image Classification on CIFAR 10 | NeXT</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NeXT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mengyin Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NeXT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Different Deep Learning Methods for Image Classification on CIFAR 10</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-06-29T20:30:10+08:00">2019-06-29</time>
+            
+
+            
+            
+              
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文是2019年4月《人工智能》专业课的大作业报告摘录</p>
+<p>主要内容是在同一数据集（CIFAR10）上使用不同的卷积神经网络模型<br>进行多分类问题训练以及识别效果的横向评估</p>
+<a id="more"></a>
+<blockquote>
+<p>中文标题：基于不同神经网络的CIFAR10图像分类</p>
+</blockquote>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/aistudio.png" alt="AI Studio"></p>
+<center>图1.1 本次实验的AI Studio项目入口页面</center>
+
+<h3 id="项目地址"><a href="#项目地址" class="headerlink" title="项目地址"></a>项目地址</h3><ol>
+<li><a href="https://aistudio.baidu.com/aistudio/#/projectdetail/56694" target="_blank" rel="noopener">百度 AI Studio</a>（需要登录AI Studio账号后访问，使用百度账号即可）</li>
+<li>在AI Studio的“开发者共享项目”中搜索“CIFAR10图像”分类即可</li>
+<li>GitHub（待发布）</li>
+</ol>
+<h3 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h3><ol>
+<li><p>基于百度AI Studio平台提供的paddlepaddle深度学习框架、Jupyter Notebook线上python运行环境等基础设施，编程实现包括VGG、ResNet、GoogleNet（Inception-V1）、Inception-V4等多种图像分类神经网络。在编程实现的过程中，学习深度神经网络的基本理论和实践要点，了解上述不同神经网络的具体结构设计以及体现出的优秀设计理念和不足之处。</p>
+</li>
+<li><p>使用平台提供的CIFAR10图像识别数据集，在相同的训练环境条件下，训练上述不同神经网络并得出数据模型。收集训练模型过程中输出的训练参数数据，绘制统计图表，比较分析不同神经网络模型的在训练过程中的性能开销、数据指标变化等特点。</p>
+</li>
+<li><p>通过统一的测试图像对训练得出的模型分类图像内容的准确性进行测试，从而比较分析不同神经网络模型在实际应用中的效果。</p>
+</li>
+</ol>
+<blockquote>
+<p>笔者注：根据最后的评估结果以及对相关论文、资料的研读，我们发现这种类似单一变量法的横向对比实验事实上是存在问题的：</p>
+<p>不同年代的卷积神经网络模型，对于训练时最佳效果的硬件要求应该是不同的，虽然不排除存在出现轻量级框架的可能，但是主流意义上的框架对于硬件资源的需求的确是逐年上升的。不应当对每一种模型在训练过程中给出相同的硬件环境，而是给出文献或其开源代码所要求的最佳硬件环境。</p>
+<p>因此，本次实验出现的较新版本的模型最终的识别效果较差的情况，事实上仅仅是实验平台的硬件条件不足以在短时间内训练得出最佳效果的模型。</p>
+</blockquote>
+<h3 id="实验仪器"><a href="#实验仪器" class="headerlink" title="实验仪器"></a>实验仪器</h3><ul>
+<li>本地设备：华硕K550-JX笔记本电脑、macOS Mojave 10.14.4</li>
+<li>远程设备：百度AI Studio提供的通过Jupyter Notebook连接的CPU: 2 Cores 、Memory: 8GB的远程服务器（无GPU）</li>
+</ul>
+<h3 id="实验原理"><a href="#实验原理" class="headerlink" title="实验原理"></a>实验原理</h3><h4 id="实验项目概况"><a href="#实验项目概况" class="headerlink" title="实验项目概况"></a>实验项目概况</h4><p>本次实验的基本框架来自于paddlepaddle官网教程中的《深度学习基础教程》的《图像分类》章节（网页链接：<a href="http://paddlepaddle.org/documentation/docs/zh/1.4/beginners_guide/basics/image_classification/index.html）。" target="_blank" rel="noopener">http://paddlepaddle.org/documentation/docs/zh/1.4/beginners_guide/basics/image_classification/index.html）。</a></p>
+<p>该章节介绍了图像识别分类领域中包括VGG、ResNet和GoogleNet等常用模型的基本原理，并给出了paddlepaddle使用其框架自带的CIFAR10数据集以及VGG、ResNet训练模型并进行图像分类的基本步骤和代码实现。</p>
+<p>我们在研读了该教程中的相关理论知识、各行代码实现的前提下，将该教程所述的数据预处理、训练模型、图像识别等完整的流程代码，移植到了同样搭载了最新版本的paddlepaddle的AI Studio在线项目环境中。该项目为新建的项目，而非直接fork在AI Studio上现有的项目，因此能够使用最新版本的paddlepaddle，避免了fork使用早期paddlepaddle版本项目所带来的一系列问题。</p>
+<p>除此之外，我们也对代码进行了逐行的注释解读工作，来帮助使用者理解代码的基本含义和相关的理论知识。我们添加了训练过程中的数据统计图表绘制功能代码，能够在训练结束后将收集到的训练数据绘制成形象的图表并输出，有助于使用者对不同模型的性能进行综合的判断。</p>
+<p>在此基础之上，我们更进一步，参考网络上的相关资料，将该教程中仅给出理论知识而无代码实践的GoogleNet（Inception-V1）、以及其同一系列的最新版本Inception-V4的模型代码移植实现到了百度AI Studio在线项目环境上（由于部分代码存在版本过低等问题，我们进行了相应的修改以确保代码能够正常运行），同样给出了详尽的代码注释解读。</p>
+<p>现在，本项目已经公开在了百度AI Studio的“开发者共享项目”栏目中，欢迎大家fork本项目，也欢迎大家联系我们（邮箱：lmy98129@163.com）提出建议。</p>
+<h4 id="CIFAR数据集介绍"><a href="#CIFAR数据集介绍" class="headerlink" title="CIFAR数据集介绍"></a>CIFAR数据集介绍</h4><blockquote>
+<p>注：以下实验原理介绍部分摘录自paddlepaddle官方教程以及其他网络资料，同时也添加了我们在理论学习和实践过程中对于数据集使用、神经网络模型设计的优缺点等方面的思考和理解，能力有限，如有偏差，敬请谅解。</p>
+</blockquote>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/cifar.png" alt="cifar"></p>
+<center>图1.2 CIFAR数据集局部<br>（图片摘自paddlepaddle官方教程）</center>
+
+<p>CIFAR10数据集是主要用于通用图像分类而公开的标准数据集CIFAR的一个子集，包含60,000张32x32的彩色图片，10个类别（分别为：飞机airplane、轿车automobile、鸟类bird、猫cat、鹿deer、狗dog、蛙frog、马horse、船ship、卡车truck），每个类包含6,000张。其中50,000张图片作为训练集，10000张作为测试集。</p>
+<p>之所以选用CIFAR而不是大量学术研究成果所基于的ImageNet，我们主要考虑到其体积的问题，在AI Studio的在线项目环境中使用的是CPU训练，而CPU的训练速度由于其核心数量、并行计算能力等原因一般要远远慢于GPU，因此选择一个较小的数据集能够较好地节省训练的时间，但也因此对模型的在小数据集条件下的训练效果提出了考验。</p>
+<p>关于下载速度，由于AI Studio提供了可动态加载的数据集仓库，能够通过创建项目时进行设置、或者创建后修改项目设置等方式动态加载到项目中，因此不存在联网下载的问题。</p>
+<h4 id="VGG基本介绍"><a href="#VGG基本介绍" class="headerlink" title="VGG基本介绍"></a>VGG基本介绍</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/vgg.png" alt="vgg"></p>
+<center>图1.3 VGG模型结构<br>（图片摘自paddlepaddle官方教程）</center>
+
+<p>相比以往的神经网络模型（例如CNN等），由牛津大学于2014年提出的VGG模型在神经网络的层数（深度）和卷积层的卷积核数目（宽度）上进行了增加。其核心结构是：五组不同卷积核数目的卷积层，以及每两组卷积层之间的max-pooling最大池化的降维操作，最后是全连接层和分类预测层。</p>
+<p>关于VGG网络的设计，我们认为，加深神经网络能够进行更多次的特征提取，提高神经网络的表达能力，但是也增加了训练神经网络的时间和成本，过深的神经网络往往会因为带来梯度的损失而无法找到最优解，从而导致过拟合、准确度下降等一系列问题；加宽的神经网络能够输入更多的细节特征，但也导致了需要输入的参数过多，而同等深度下的神经网络，参数的个数对训练的结果没有明显的影响。</p>
+<h4 id="ResNet基本介绍"><a href="#ResNet基本介绍" class="headerlink" title="ResNet基本介绍"></a>ResNet基本介绍</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/resnet.png" alt="resnet"></p>
+<center>图1.4 残差模块示意图<br>（图片摘自paddlepaddle官方教程）</center>
+
+<p>为了解决随着网络层数加深而导致准确度下降的问题，ResNet提出了残差学习方法来减轻训练深层网络的困难，在添加batchnorm、小卷积核、全卷积网络等特性基础上，引入了残差模块。</p>
+<p>残差模块的其中一条路径是输入特征的直连通道（可以认为是输入特征中的普遍特征），另一条经过多次卷积的到特征的残差（可以认为是输入特征中的显著特征），最后将以上两条结果相加得到输出。通过这种输出的叠加，残差模块很好地提升了深层次网络训练结果的准确度和收敛速度。</p>
+<p>我们对于以上提到的一些现有特性概念的理解是：batchnorm能够将每次输入的数据分布进行规范化，让其均匀分布在当前层上，从而加速神经网络的训练速度、防止过拟合。小卷积核的意思是指单个卷积核的长宽尺寸减小，能够减少训练参数，从而降低训练模型的性能开销。全卷积网络是指整个模型的主体部分完全使用卷积网络，全连接层使用增加步长的特定卷积层替换，这种替换在功能上是等价的。</p>
+<h4 id="GoogleNet（Inception-V1）基本介绍"><a href="#GoogleNet（Inception-V1）基本介绍" class="headerlink" title="GoogleNet（Inception-V1）基本介绍"></a>GoogleNet（Inception-V1）基本介绍</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/googlenet.png" alt="googlenet"></p>
+<center>图1.5 Inception模块示意图<br>右图为添加1*1卷积层进行降维之后的模块<br>（图片摘自paddlepaddle官方教程）</center>
+
+<p>GoogleNet由多组Inception模块组成，Inception模块的主要特点是在同一层级上并行设置了多个不同尺寸的卷积层和一个最大池化层，根据资料以及我们的理解总结，这一特性解决了多个问题：</p>
+<ol>
+<li>卷积层的不同尺寸消除了信息分布的均匀程度对卷积核大小的选取影响 </li>
+<li>并行的卷积层减缓了网络层数过深导致的梯度损失以及过拟合</li>
+<li>并行的最大池化层对输入尺寸进行压缩并提取主要特征，也缓解了简单堆叠多层网络导致的计算资源的消耗 </li>
+</ol>
+<p>但是这个特点同样带来了缺陷：并行的池化层并不会改变整个Inception模块的通道数量，并行卷积层构成的Inception在将各个并行层结果拼接后，特征的通道数较大，经过几层这样的模块堆积后，通道数会越来越大，导致参数和计算量也随之增大。因此，Inception还在每一个并行分支上引入了1*1卷积层进行降维操作，减少通道数，解决了这一问题。</p>
+<p>除此之外，GoogleNet的另一个显著特征就是采用了三个子网络，可以得到3个网络的损失率进行加权求和得出整个网络的损失，从而有利于使用优化器（optimizer）的训练程序计算更准确的梯度，加快收敛速度。</p>
+<h4 id="Inception-V4基本介绍"><a href="#Inception-V4基本介绍" class="headerlink" title="Inception-V4基本介绍"></a>Inception-V4基本介绍</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/inception-v4.png" alt="inception-v4"></p>
+<center>图1.6 inception-sterm模块示意图<br>（图片摘自论文《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》）<br></center>
+
+<p>Inception-V4是Inception系列中的最新版本，经过V2版本添加batchnorm，V3版本对卷积层的调整，在Inception-V4中加入了同样基于卷积+池化并行理念的inception-sterm模块，并分化出了inception-A、B、C三种不同的模块类型。其设计的理念是要与添加了残差模块的Inception-ResNet具有相同的性能，因此使用了大量的经验性的结构设计，其对应的论文中没有对这些结构设计的由来做出进一步的解释说明。</p>
+<p>此外，该模型还添加了reduction模块，起到了之前版本中的一层单层池化层的作用，同样采用了卷积+池化并行的结构设计。</p>
+<h3 id="实验内容与步骤"><a href="#实验内容与步骤" class="headerlink" title="实验内容与步骤"></a>实验内容与步骤</h3><h4 id="项目初始化"><a href="#项目初始化" class="headerlink" title="项目初始化"></a>项目初始化</h4><h5 id="登录AI-Studio平台"><a href="#登录AI-Studio平台" class="headerlink" title="登录AI Studio平台"></a>登录AI Studio平台</h5><p>登录百度AI Studio首页并登录AI Studio账号，选择顶部导航栏中的“项目”，进入项目页面</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step1.png" alt="登录 AI Studio"></p>
+<center>图2.1 登录百度AI Studio进入AI Studio的项目页面</center>
+
+<h5 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h5><p>点击“创建项目”，输入项目名称、描述并添加数据集。在数据集添加界面中搜索并选中“cifar10数据集”。这里之所以选择这一项“cifar10数据集”是因为该数据集与在调用paddlepaddle自带的cifar10数据集时需要自动联网下载的cifar10数据集格式相同，可以在项目建立后通过在Jupyter Notebook中执行shell命令的方式，将数据集自行放入paddlepaddle的缓存目录中，节省其下载时间。</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step2-1.png" alt="创建项目"></p>
+<center>图2.2 创建项目界面</center>
+
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step2-2.png" alt="选择数据集"></p>
+<center>图2.3 选择“cifar10数据集”</center>
+
+<h5 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h5><p>创建项目之后，进入项目界面，点击“运行项目”，进入Jupyter Notebook界面</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step3.png" alt="Jupyter Notebook"></p>
+<center>图2.4 Jupyter Notebook界面</center>
+
+<h5 id="加载数据集"><a href="#加载数据集" class="headerlink" title="加载数据集"></a>加载数据集</h5><p>在第一个cell中输入将当前自动载入到项目当中的数据集cifar-10-python.tar.gz拷贝到paddlepaddle缓存目录的shell命令，如下所示</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">!cp data/data5752/cifar-10-python.tar.gz /home/aistudio/.cache/paddle/dataset/cifar/cifar-10-python.tar.gz</span><br><span class="line">!ls -l /home/aistudio/.cache/paddle/dataset/cifar/</span><br></pre></td></tr></table></figure>
+<p>执行该cell，若得到如下输出，则拷贝成功。</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/init-step4.png" alt="拷贝数据集"></p>
+<center>图2.5 拷贝数据集成功的输出</center>
+
+<p>至此，项目初始化完成。</p>
+<h4 id="编写项目主体代码"><a href="#编写项目主体代码" class="headerlink" title="编写项目主体代码"></a>编写项目主体代码</h4><h5 id="导入系统模块代码"><a href="#导入系统模块代码" class="headerlink" title="导入系统模块代码"></a>导入系统模块代码</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#导入paddle模块以及一些系统模块</span></span><br><span class="line"><span class="keyword">import</span> paddle</span><br><span class="line"><span class="keyword">import</span> paddle.fluid <span class="keyword">as</span> fluid</span><br><span class="line"><span class="keyword">import</span> numpy</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">from</span> paddle.fluid.param_attr <span class="keyword">import</span> ParamAttr</span><br></pre></td></tr></table></figure>
+<p>如上所示，这些代码的主要导入了包括paddlepaddle、numpy、sys、math等运行环境内置的python库。</p>
+<h5 id="训练模型所需的模块函数"><a href="#训练模型所需的模块函数" class="headerlink" title="训练模型所需的模块函数"></a>训练模型所需的模块函数</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 预测程序</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">inference_network</span><span class="params">(model)</span>:</span></span><br><span class="line">    <span class="comment"># 图像是32 * 32的rgb格式，rgb格式每个像素应该是3位</span></span><br><span class="line">    data_shape = [<span class="number">3</span>, <span class="number">32</span>, <span class="number">32</span>]</span><br><span class="line">    <span class="comment"># 设置图片格式</span></span><br><span class="line">    images = fluid.layers.data(name=<span class="string">'pixel'</span>, shape=data_shape, dtype=<span class="string">'float32'</span>)</span><br><span class="line">    <span class="keyword">if</span> model == <span class="string">'vgg'</span>:</span><br><span class="line">    <span class="comment"># 使用vgg模型进行预测</span></span><br><span class="line">        predict = vgg_bn_drop(images)</span><br><span class="line">    <span class="keyword">elif</span> model == <span class="string">'resnet'</span>:</span><br><span class="line">    <span class="comment"># 使用resnet模型进行预测</span></span><br><span class="line">        predict = resnet_cifar10(images, <span class="number">32</span>)</span><br><span class="line">    <span class="keyword">elif</span> model == <span class="string">'googlenet'</span>:</span><br><span class="line">    <span class="comment"># 使用googlenet模型进行预测</span></span><br><span class="line">        predict = googlenet(images, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">elif</span> model == <span class="string">'inception_v4'</span>:</span><br><span class="line">    <span class="comment"># 使用inception_v4模型进行预测</span></span><br><span class="line">        inception_v4 = InceptionV4()</span><br><span class="line">        predict = inception_v4.net(images, <span class="number">10</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> predict</span><br></pre></td></tr></table></figure>
+<p>预测程序是在训练或预测过程中实际调用各神经网络模型的最底层函数，这里可以看到不同的模型要求输入的参数类型、调用方式都各有不同。这些模型的具体实现代码在下文会详细给出。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 训练程序</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train_network</span><span class="params">(predict, model=None)</span>:</span></span><br><span class="line">    <span class="comment"># 首先从预测程序中获取预测结果</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 设置图片类别标签格式</span></span><br><span class="line">    label = fluid.layers.data(name=<span class="string">'label'</span>, shape=[<span class="number">1</span>], dtype=<span class="string">'int64'</span>)</span><br><span class="line">    <span class="keyword">if</span> model == <span class="string">'googlenet'</span>:</span><br><span class="line">        <span class="comment"># 若为googlenet</span></span><br><span class="line">        out, out1, out2 = predict</span><br><span class="line">        <span class="comment"># 分别采用多类交叉熵作为损失函数</span></span><br><span class="line">        cost0 = fluid.layers.cross_entropy(input=out, label=label)</span><br><span class="line">        cost1 = fluid.layers.cross_entropy(input=out1, label=label)</span><br><span class="line">        cost2 = fluid.layers.cross_entropy(input=out2, label=label)</span><br><span class="line">        <span class="comment"># 得到的平均损失用于在上一层中的训练主函数中计算梯度</span></span><br><span class="line">        avg_cost0 = fluid.layers.mean(x=cost0)</span><br><span class="line">        avg_cost1 = fluid.layers.mean(x=cost1)</span><br><span class="line">        avg_cost2 = fluid.layers.mean(x=cost2)</span><br><span class="line">        <span class="comment"># 最后加权求和</span></span><br><span class="line">        avg_cost = avg_cost0 + <span class="number">0.3</span> * avg_cost1 + <span class="number">0.3</span> * avg_cost2</span><br><span class="line">        <span class="comment"># 预测精度看第一个输出即可</span></span><br><span class="line">        accuracy = fluid.layers.accuracy(input=out, label=label)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="comment"># 对于其他模型</span></span><br><span class="line">        <span class="comment"># 在训练中采用多类交叉熵作为损失函数</span></span><br><span class="line">        cost = fluid.layers.cross_entropy(input=predict, label=label)</span><br><span class="line">        <span class="comment"># 得到的平均损失用于在上一层中的训练主函数中计算梯度</span></span><br><span class="line">        avg_cost = fluid.layers.mean(cost)</span><br><span class="line">        <span class="comment"># 计算当前预测精度</span></span><br><span class="line">        accuracy = fluid.layers.accuracy(input=predict, label=label)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 返回平均损失和预测精度</span></span><br><span class="line">    <span class="keyword">return</span> [avg_cost, accuracy]</span><br></pre></td></tr></table></figure>
+<p>训练程序是在训练过程中通过模型返回的predict结果来计算损失率和预测精度的函数。这里特别处理了GoogleNet的三个损失率分量的加权求和计算。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 优化器程序</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">optimizer_program</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># 输入学习率，也就是训练的速度，这里与网络的训练收敛速度有关</span></span><br><span class="line">    <span class="keyword">return</span> fluid.optimizer.Adam(learning_rate=<span class="number">0.001</span>)</span><br></pre></td></tr></table></figure>
+<p>优化器程序是在训练过程中通过设置学习率、也就是训练的速度后返回一个特定的Adam优化器实例的函数，这是python类的用法。Adam优化器是优化器的一种，对梯度的一阶矩估计和二阶矩估计进行综合考虑，计算出当前神经网络中各个神经元的参数更新的步长，以加快梯度下降速度。Adam优化器在当前深度学习优化器中被默认是相当优异的</p>
+<h5 id="训练主函数"><a href="#训练主函数" class="headerlink" title="训练主函数"></a>训练主函数</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 训练主函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(use_cuda, model, params_dirname=None)</span>:</span></span><br><span class="line">    <span class="comment"># 事实上本次训练使用的是CPU，所以use_cuda应当固定为False</span></span><br><span class="line">    place = fluid.CUDAPlace(<span class="number">0</span>) <span class="keyword">if</span> use_cuda <span class="keyword">else</span> fluid.CPUPlace()</span><br><span class="line">    <span class="comment"># 每次训练所选取的样本数量，适当的batch_size可以使得数据并行化处理且梯度下降的方向更加明确</span></span><br><span class="line">    <span class="keyword">if</span> model == <span class="string">'inception_v4'</span>:</span><br><span class="line">        <span class="comment"># 针对inception_v4调整batch_size</span></span><br><span class="line">        BATCH_SIZE = <span class="number">256</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        BATCH_SIZE = <span class="number">128</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 训练集数据输入，这里使用了shuffle，是用来将读入的数据进行打乱操作的</span></span><br><span class="line">    <span class="comment"># 所以需要定义一个打乱缓冲区的大小buf_size</span></span><br><span class="line">    train_reader = paddle.batch(</span><br><span class="line">        paddle.reader.shuffle(</span><br><span class="line">            paddle.dataset.cifar.train10(), buf_size=<span class="number">128</span>*<span class="number">100</span>), </span><br><span class="line">        batch_size=BATCH_SIZE);</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 测试集数据输入</span></span><br><span class="line">    test_reader = paddle.batch(</span><br><span class="line">        paddle.dataset.cifar.test10(), batch_size=BATCH_SIZE)</span><br><span class="line">    </span><br><span class="line">    print(<span class="string">"\nstart training"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 输入数据的先后顺序格式</span></span><br><span class="line">    feed_order = [<span class="string">'pixel'</span>, <span class="string">'label'</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 生成默认的训练主程序和启动程序</span></span><br><span class="line">    main_program = fluid.default_main_program()</span><br><span class="line">    star_program = fluid.default_startup_program()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 输出预测结果，这里没有传入数据是因为数据传入操作是之后的训练过程中设置的</span></span><br><span class="line">    predict = inference_network(model)</span><br><span class="line">    <span class="comment"># 获取训练结果</span></span><br><span class="line">    avg_cost, acc = train_network(predict, model)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 此处开始是测试程序</span></span><br><span class="line">    test_program = main_program.clone(for_test=<span class="keyword">True</span>)</span><br><span class="line">    <span class="comment"># 优化器</span></span><br><span class="line">    optimizer = optimizer_program()</span><br><span class="line">    <span class="comment"># 告诉优化器在当前平均损失的基础上计算梯度以减少损失</span></span><br><span class="line">    optimizer.minimize(avg_cost)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 执行器，将以上操作放入CPU执行</span></span><br><span class="line">    exe = fluid.Executor(place)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># epoch意思为所有数据项目完成一次前向运算和反向传播的次数</span></span><br><span class="line">    <span class="comment"># 这里因为我们训练时间有限，还是1~3次就够了</span></span><br><span class="line">    EPOCH_NUM = <span class="number">3</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 统计图横纵坐标的列表</span></span><br><span class="line">    train_steps=[]</span><br><span class="line">    train_costs=[]</span><br><span class="line">    test_steps=[]</span><br><span class="line">    test_costs=[]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 对训练结果进行损失率检测的函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train_test</span><span class="params">(program, reader)</span>:</span></span><br><span class="line">        <span class="comment"># 检测次数count</span></span><br><span class="line">        count = <span class="number">0</span></span><br><span class="line">        <span class="comment"># 输入数据的变量名列表，这里应该就是feed_order中的‘pixel’和‘label’</span></span><br><span class="line">        <span class="comment"># global_block经查应该是fluid的全局作用域</span></span><br><span class="line">        feed_var_list = [</span><br><span class="line">            program.global_block().var(var_name) <span class="keyword">for</span> var_name <span class="keyword">in</span> feed_order</span><br><span class="line">        ]</span><br><span class="line">        <span class="comment"># 数据喂入器DataFeeder负责将数据读取器的输入转换成一种特殊的数据结构中去</span></span><br><span class="line">        <span class="comment"># 从而能够将该数据结构的数据输入到执行器中</span></span><br><span class="line">        feeder_test = fluid.DataFeeder(feed_list=feed_var_list, place=place)</span><br><span class="line">        test_exe = fluid.Executor(place);</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 这个变量是记录包括数据变量名在内的所有数据个数以及对应的损失率的</span></span><br><span class="line">        accumulated = len([avg_cost, acc]) * [<span class="number">0</span>];</span><br><span class="line">        <span class="comment"># 将数据读取器reader中获取到的输入数据通过enumerate转换为索引序列</span></span><br><span class="line">        <span class="keyword">for</span> tid, test_data <span class="keyword">in</span> enumerate(reader()):</span><br><span class="line">            <span class="comment"># 执行训练结果损失率检测的执行器test_exe，喂入测试集数据test_data，得到当前的平均损失率avg_cost_np</span></span><br><span class="line">            avg_cost_np = test_exe.run(</span><br><span class="line">                program=program,</span><br><span class="line">                feed=feeder_test.feed(test_data),</span><br><span class="line">                fetch_list=[avg_cost, acc])</span><br><span class="line">            <span class="comment"># 记录当前的数据个数，这里使用的zip函数将accumulate和avg_cost_np打包成了一个元组进行记录</span></span><br><span class="line">            <span class="comment"># 其中x[1][0]应该是avg_cost_np中的第一项，也就是损失率loss</span></span><br><span class="line">            accumulated = [x[<span class="number">0</span>] + x[<span class="number">1</span>][<span class="number">0</span>] <span class="keyword">for</span> x <span class="keyword">in</span> zip(accumulated, avg_cost_np)]</span><br><span class="line">            count += <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 返回的是accumulated中每一条记录中的x与count相除的结果，为平均每次检测得到的损失率</span></span><br><span class="line">        <span class="keyword">return</span> [x/count <span class="keyword">for</span> x <span class="keyword">in</span> accumulated]</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># 训练循环函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train_loop</span><span class="params">()</span>:</span></span><br><span class="line">        <span class="comment"># 同样是输入数据的变量名列表，应该就是feed_order中的‘pixel’和‘label’</span></span><br><span class="line">        feed_var_list_loop = [</span><br><span class="line">            main_program.global_block().var(var_name) <span class="keyword">for</span> var_name <span class="keyword">in</span> feed_order</span><br><span class="line">        ]</span><br><span class="line">        feeder = fluid.DataFeeder(feed_list=feed_var_list_loop, place=place)</span><br><span class="line">        <span class="comment"># 开始运行启动程序</span></span><br><span class="line">        exe.run(star_program)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 记录训练次数</span></span><br><span class="line">        step = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 训练次数id为pass_id，range生成了一个以epoch次数的</span></span><br><span class="line">        <span class="keyword">for</span> pass_id <span class="keyword">in</span> range(EPOCH_NUM):</span><br><span class="line">            <span class="comment"># 每次训练中的分组训练次数step_id，</span></span><br><span class="line">            <span class="keyword">for</span> step_id, train_data <span class="keyword">in</span> enumerate(train_reader()):</span><br><span class="line">                <span class="comment"># 执行训练执行器，喂入训练集数据train_data，得到当前的平均损失率avg_lost_value</span></span><br><span class="line">                avg_loss_value = exe.run(</span><br><span class="line">                    main_program,</span><br><span class="line">                    feed=feeder.feed(train_data),</span><br><span class="line">                    fetch_list=[avg_cost, acc])</span><br><span class="line">                <span class="comment"># 每50次输出一次训练结果，分别是训练次数，分组训练次数，损失率，预测精度</span></span><br><span class="line">                <span class="keyword">if</span> step_id % <span class="number">50</span> == <span class="number">0</span>:</span><br><span class="line">                    print(<span class="string">"\nPass %d, Batch %d, Cost %f, Acc %f"</span> % (</span><br><span class="line">                        step_id, pass_id, avg_loss_value[<span class="number">0</span>], avg_loss_value[<span class="number">1</span>]))</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 否则单纯输出点表示正在训练</span></span><br><span class="line">                    sys.stdout.write(<span class="string">'.'</span>)</span><br><span class="line">                    sys.stdout.flush()</span><br><span class="line">                    <span class="comment"># 并更新一次训练损失率统计图</span></span><br><span class="line">                    train_steps.append(step)</span><br><span class="line">                    train_costs.append(avg_loss_value[<span class="number">0</span>])</span><br><span class="line">                step += <span class="number">1</span></span><br><span class="line">                </span><br><span class="line">            <span class="comment"># 每次训练的全部分组训练结束后，进行一次损失率检测，</span></span><br><span class="line">            avg_cost_test, accuracy_test = train_test(test_program, reader=test_reader)</span><br><span class="line">            <span class="comment"># 输出损失率检测结果</span></span><br><span class="line">            print(<span class="string">'\nTest with Pass &#123;0&#125;, Loss &#123;1:2.2&#125;, Acc &#123;2:2.2&#125;'</span>.format(</span><br><span class="line">                pass_id, avg_cost_test, accuracy_test))</span><br><span class="line">            <span class="comment"># 并更新一次检测损失率统计图</span></span><br><span class="line">            test_steps.append(step)</span><br><span class="line">            test_costs.append(avg_cost_test)</span><br><span class="line">            </span><br><span class="line">            <span class="comment"># 若模型保存地址为有效，则自动保存本次训练的模型结果</span></span><br><span class="line">            <span class="comment"># 其中从第二个开始的变量意思为：</span></span><br><span class="line">            <span class="comment"># 喂入数据的基本格式（pixel）</span></span><br><span class="line">            <span class="comment"># 保存预测结果所使用的变量组（predict）</span></span><br><span class="line">            <span class="comment"># 执行预测程序（exe=fluid.Executor(place)）</span></span><br><span class="line">            <span class="keyword">if</span> params_dirname <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                <span class="keyword">if</span> model == <span class="string">'googlenet'</span>:</span><br><span class="line">                    model_out, _, _ = predict</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    model_out = predict</span><br><span class="line">                fluid.io.save_inference_model(params_dirname, [<span class="string">"pixel"</span>], [model_out], exe)</span><br><span class="line">                </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 在以上函数和变量定义全部结束后，即可开始训练</span></span><br><span class="line">    train_loop();</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 训练结束后绘制损失率统计图</span></span><br><span class="line">    %matplotlib inline</span><br><span class="line">    <span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">    </span><br><span class="line">    train_title = <span class="string">"Train cost"</span></span><br><span class="line">    test_title = <span class="string">"Test cost"</span></span><br><span class="line">    title = <span class="string">"Train cost/Test cost"</span></span><br><span class="line">    <span class="comment"># 标题，横纵坐标</span></span><br><span class="line">    plt.title(title, fontsize=<span class="number">24</span>) </span><br><span class="line">    plt.xlabel(<span class="string">"step"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">    plt.ylabel(<span class="string">"cost"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">    <span class="comment"># 设置图例</span></span><br><span class="line">    plt.plot(train_steps, train_costs, color=<span class="string">'blue'</span>, label=train_title)</span><br><span class="line">    plt.plot(test_steps, test_costs, color=<span class="string">'red'</span>, label=test_title)</span><br><span class="line">    plt.legend()</span><br><span class="line">    <span class="comment"># 显示统计图</span></span><br><span class="line">    plt.show()</span><br></pre></td></tr></table></figure>
+<p>训练主函数train相对较长，而且还内部声明了对训练结果进行损失率检测的train_test、训练循环函数train_loop几个函数，这里绘制了程序流程图以方便理解，如下图所示：</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/train-func.png" alt="训练主函数"></p>
+<p>从代码和流程图中，我们可以看出训练主函数的主要工作是：</p>
+<ul>
+<li>对训练进行一系列的函数调用关系的绑定、变量的声明和初始化以及训练所需的主要元器件实例（执行器、启动函数、主函数、优化器、数据集）的生成</li>
+<li>进行实际训练过程中的执行、模型生成、数据生成</li>
+<li>训练结束后图表的绘制</li>
+</ul>
+<p>在这里需要说明的有以下几点：</p>
+<ul>
+<li><p>在paddlepaddle中损失率为均方差函数得出的，故没有固定单位，但是一般在训练过程中是呈现总体下降的趋势，损失率越低，模型的效果越好。</p>
+</li>
+<li><p>准确度较容易理解，就是当前模型能够准确识别的样本个数占当前训练样本或测试样本的百分比。</p>
+</li>
+<li><p>batch_size是指每次训练时输入的样本个数，合理的batch_size设置能够减缓在训练过程中的损失率上下震荡的趋势，使得模型的损失率下降速度更快，精确率提升更加明显。根据经验，过大的batch_size可能会导致损失率下降或精确度提升到某一点后停滞，并且导致每次训练的时间和性能开销增大，过小的batch_size则会导致损失率上下震荡，下降速度减慢。</p>
+</li>
+<li><p>epoch是指所有样本完成一次前向运算和反向传播的次数，也就是所有样本都参与过训练的次数。epoch决定了整个训练的总时长，如果使用的是GPU，则可以因为并行处理性能高、训练速度较快而将epoch定在30~50甚至更多，而使用CPU则建议1~5，否则将导致训练时间过长，无法及时生成模型文件。</p>
+</li>
+</ul>
+<h5 id="预测主函数"><a href="#预测主函数" class="headerlink" title="预测主函数"></a>预测主函数</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 预测主程序</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">infer</span><span class="params">(use_cuda, params_dirname=None)</span>:</span></span><br><span class="line">    <span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line">    <span class="comment"># 事实上本次训练使用的是CPU，所以use_cuda应当固定为False</span></span><br><span class="line">    place = fluid.CUDAPlace(<span class="number">0</span>) <span class="keyword">if</span> use_cuda <span class="keyword">else</span> fluid.CPUPlace()</span><br><span class="line">    <span class="comment"># 创建执行器</span></span><br><span class="line">    exe = fluid.Executor(place)</span><br><span class="line">    <span class="comment"># 创建用于预测的局部作用域</span></span><br><span class="line">    inference_scope = fluid.core.Scope()</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 用于装载需要预测的图片的子函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">load_image</span><span class="params">(infer_file)</span>:</span></span><br><span class="line">        <span class="comment"># 打开图片</span></span><br><span class="line">        im = Image.open(infer_file)</span><br><span class="line">        </span><br><span class="line">        %matplotlib inline</span><br><span class="line">        <span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line">        <span class="comment"># 清空plt输出</span></span><br><span class="line">        plt.close()</span><br><span class="line">        <span class="comment"># 输出当前图片</span></span><br><span class="line">        plt.imshow(im)</span><br><span class="line">        plt.show()</span><br><span class="line">        <span class="comment"># 将图片拉伸为32 * 32，与训练图片相同的大小</span></span><br><span class="line">        im = im.resize((<span class="number">32</span>, <span class="number">32</span>), Image.ANTIALIAS)</span><br><span class="line">        <span class="comment"># 将图片转换为像素数组</span></span><br><span class="line">        im = numpy.array(im).astype(numpy.float32)</span><br><span class="line">        <span class="comment"># 注意，一般存储图片的像素数组格式为W（宽度）、H（高度）、C（像素通道）</span></span><br><span class="line">        <span class="comment"># 但是paddlepaddle需要将格式转换为CHW格式，所以使用了transpose函数</span></span><br><span class="line">        im = im.transpose((<span class="number">2</span>, <span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">        <span class="comment"># 过滤值为255以上的颜色，也就是进行灰度变换</span></span><br><span class="line">        im = im/<span class="number">255.0</span></span><br><span class="line">        <span class="comment"># 向图片添加一个维度用来模拟为列表结构，事实上该维度只有这张图片一个元素</span></span><br><span class="line">        im = numpy.expand_dims(im, axis=<span class="number">0</span>)</span><br><span class="line">        <span class="comment"># 返回处理好的图片</span></span><br><span class="line">        <span class="keyword">return</span> im</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 获取程序所在的当前位置</span></span><br><span class="line">    cur_dir = os.path.dirname(os.path.realpath(<span class="string">'__file__'</span>))</span><br><span class="line">    <span class="comment"># 设置预测图片</span></span><br><span class="line">    img = load_image(cur_dir + <span class="string">'/image/dog.png'</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 进入当前的局部作用域</span></span><br><span class="line">    <span class="keyword">with</span> fluid.scope_guard(inference_scope):</span><br><span class="line">        <span class="comment"># 使用fluid.io.load_inference_model去获取以下的信息</span></span><br><span class="line">        <span class="comment"># inference_program：当前的预测程序</span></span><br><span class="line">        <span class="comment"># feed_target_names：喂入数据需要的变量名称</span></span><br><span class="line">        <span class="comment"># fetch_targets：获取数据的目标，通过使用这个目标从而在exe.run中输入fetch_list</span></span><br><span class="line">        [inference_program, feed_target_names, fetch_targets] = fluid.io.load_inference_model(params_dirname, exe)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 输入到神经网络的维度数目一般为4D或5D，使用trainpiler这种编译方式可以将输入的数据结构进行转译</span></span><br><span class="line">        <span class="comment"># 转译的目的主要是能够将fluid生成的对应自有fluid解释器、</span></span><br><span class="line">        <span class="comment"># 而非Python解释器（这样速度更快）的protobuf message表示的程序翻译成 C++ 或其他语言的程序</span></span><br><span class="line">        inference_transpiler_program = inference_program.clone()</span><br><span class="line">        t = fluid.transpiler.InferenceTranspiler()</span><br><span class="line">        t.transpile(inference_transpiler_program, place)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 将喂入得数据构造成如下结构&#123;feed_target_name: feed_target_data&#125;</span></span><br><span class="line">        <span class="comment"># 预测的结构带有与fetch_targets对应的一系列数据</span></span><br><span class="line">        <span class="comment"># 这里分别使用带有trainpiler转译和不带有转译的程序进行预测</span></span><br><span class="line">        results = exe.run(inference_program,</span><br><span class="line">            feed=&#123;feed_target_names[<span class="number">0</span>]: img&#125;,</span><br><span class="line">            fetch_list=fetch_targets)</span><br><span class="line">            </span><br><span class="line">        transpiler_results = exe.run(inference_transpiler_program,</span><br><span class="line">            feed=&#123;feed_target_names[<span class="number">0</span>]: img&#125;,</span><br><span class="line">            fetch_list=fetch_targets)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 断言，确定以上两次预测的结果(就1个，所以是[0])的长度是否相同</span></span><br><span class="line">        <span class="comment"># 若相同则继续比对结果中的各个项目是否相同</span></span><br><span class="line">        <span class="comment"># 总之，就是在比对转译前后结果是否能够相同</span></span><br><span class="line">        <span class="keyword">assert</span> len(results[<span class="number">0</span>]) == len(transpiler_results[<span class="number">0</span>])</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(len(results[<span class="number">0</span>])):</span><br><span class="line">            numpy.testing.assert_almost_equal(</span><br><span class="line">                results[<span class="number">0</span>][i], transpiler_results[<span class="number">0</span>][i], decimal=<span class="number">5</span>)</span><br><span class="line">        </span><br><span class="line">         <span class="comment"># 预测标签，这个顺序一般是和训练的模型数据的顺序相同的</span></span><br><span class="line">        label_list = [</span><br><span class="line">            <span class="string">"airplane"</span>, <span class="string">"automobile"</span>, <span class="string">"bird"</span>, <span class="string">"cat"</span>, <span class="string">"deer"</span>, <span class="string">"dog"</span>, <span class="string">"frog"</span>,</span><br><span class="line">            <span class="string">"horse"</span>, <span class="string">"ship"</span>, <span class="string">"truck"</span></span><br><span class="line">        ]</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 输出预测结果</span></span><br><span class="line">        print(<span class="string">"infer results: %s"</span> % label_list[numpy.argmax(results[<span class="number">0</span>])])</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/predict-func.png" alt="预测主函数"></p>
+<center>图2.7 预测主函数predict的程序流程图</center>
+
+<h5 id="程序主函数"><a href="#程序主函数" class="headerlink" title="程序主函数"></a>程序主函数</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(use_cuda)</span>:</span></span><br><span class="line">    <span class="comment"># 如果需要使用GPU的CUDA函数库，则需要判断fluid是否根据cuda进行了编译</span></span><br><span class="line">    <span class="keyword">if</span> use_cuda <span class="keyword">and</span> <span class="keyword">not</span> fluid.core.is_compiled_with_cuda():</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 注意：更改训练模型请更改此处的model变量</span></span><br><span class="line">    model=<span class="string">'googlenet'</span></span><br><span class="line">    <span class="comment"># 模型文件保存路径</span></span><br><span class="line">    save_path = <span class="string">'image_classification_'</span>+model+<span class="string">'.inference.model'</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 训练</span></span><br><span class="line">    train(use_cuda=use_cuda, model=model, params_dirname=save_path)</span><br><span class="line">    <span class="comment"># 注意：如果报出optimzer相关的错误，可以尝试在kernel操作中“重启”，之后再从头开始重新运行</span></span><br><span class="line">    <span class="comment"># 这一错误可能是在对部分函数中途修改并重新运行后optimizer不再识别其输入导致的问题</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 预测，如果训练已经得出了save_path指定的模型文件</span></span><br><span class="line">    <span class="comment"># 预测程序则可以独立运行，否则不可以运行</span></span><br><span class="line">    infer(use_cuda=use_cuda, params_dirname=save_path)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    <span class="comment"># 根据当前测试环境，使用CPU</span></span><br><span class="line">    main(use_cuda=<span class="keyword">False</span>)</span><br></pre></td></tr></table></figure>
+<p>程序主函数main的主要功能是先确定环境变量：使用CPU/GPU、当前使用的模型名称、模型文件保存路径等，再执行训练主函数和预测主函数，是整个程序的最顶层模块。</p>
+<h4 id="编写神经网络模型代码"><a href="#编写神经网络模型代码" class="headerlink" title="编写神经网络模型代码"></a>编写神经网络模型代码</h4><p>注：由于在“实验原理”章节中，对于各神经网络模型的关键技术原理和关键模块结构已经进行了说明，此处代码部分对于这些内容不再重复解释。</p>
+<p>在整体上，神经网络模型的实现主要是基于paddlepaddle提供的卷积层、池化层、全连接层等函数API以及层与层之间的连接来实现的，各神经网络的共性的地方在于以下2点：</p>
+<ul>
+<li>经过若干个卷积、池化层结构之后，在最后输出结果之前的一层全连接层中都要经历一次softmax归一化，通过softmax归一化得到每个类别的概率，softmax能够将输入映射为0-1之间的实数，作为取到某个分类的概率，作为最终的输出结果。</li>
+<li>在每一组神经网络之间，常用dropout层对结果按照一定概率随机丢弃一些特征，以防止过拟合；同时也常用batchnorm，将每次输入的数据分布进行规范化，让其均匀分布在当前层上，从而加速神经网络的训练速度、同样防止过拟合。</li>
+</ul>
+<h5 id="VGG模型"><a href="#VGG模型" class="headerlink" title="VGG模型"></a>VGG模型</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vgg模型定义</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码来自：http://paddlepaddle.org/documentation/docs/zh/1.4/beginners_guide/basics/image_classification/index.html</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">vgg_bn_drop</span><span class="params">(input)</span>:</span></span><br><span class="line">    <span class="comment"># 创建神经网络的公用函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">conv_block</span><span class="params">(ipt, num_filter, groups, dropouts)</span>:</span></span><br><span class="line">        <span class="comment"># 返回根据传入参数创建的神经网络</span></span><br><span class="line">        <span class="keyword">return</span> fluid.nets.img_conv_group(</span><br><span class="line">            <span class="comment"># 图像输入</span></span><br><span class="line">            input=ipt,</span><br><span class="line">            <span class="comment"># 池化窗口大小为2*2</span></span><br><span class="line">            pool_size=<span class="number">2</span>,</span><br><span class="line">            <span class="comment"># 池化窗口移动的步长</span></span><br><span class="line">            pool_stride=<span class="number">2</span>,</span><br><span class="line">            <span class="comment"># 该神经网络层组的过滤器数量，可以认为是神经元个数</span></span><br><span class="line">            conv_num_filter=[num_filter] * groups,</span><br><span class="line">            <span class="comment"># 过滤器大小，默认值为3</span></span><br><span class="line">            conv_filter_size=<span class="number">3</span>,</span><br><span class="line">            <span class="comment"># 激活函数的类型，这里选用RELU</span></span><br><span class="line">            conv_act=<span class="string">'relu'</span>,</span><br><span class="line">            <span class="comment"># 在每一层后使用batchnorm以加速神经网络训练速度</span></span><br><span class="line">            <span class="comment"># batchnorm能够将每次输入的数据分布进行规范化</span></span><br><span class="line">            conv_with_batchnorm=<span class="keyword">True</span>,</span><br><span class="line">            <span class="comment"># 对于每一层进行batchnorm后的dropout概率</span></span><br><span class="line">            <span class="comment"># dropout是避免过拟合的手段，按照一定概率随机丢弃一些特征</span></span><br><span class="line">            conv_batchnorm_drop_rate=dropouts,</span><br><span class="line">            <span class="comment"># 池化类型为最大池化，提取每个池化窗口中的最显著特征</span></span><br><span class="line">            pool_type=<span class="string">'max'</span>)</span><br><span class="line">            </span><br><span class="line">    <span class="comment"># 以下各函数中最后一个列表为每一层结束后dropout的概率</span></span><br><span class="line">    <span class="comment"># 一般在两组卷积层之间不使用dropout</span></span><br><span class="line">    <span class="comment"># 第1组卷积层，2次连续卷积，卷积核数目64</span></span><br><span class="line">    conv1 = conv_block(input, <span class="number">64</span>, <span class="number">2</span>, [<span class="number">0.3</span>, <span class="number">0</span>])</span><br><span class="line">    <span class="comment"># 第2组卷积层，2次连续卷积，卷积核数目128</span></span><br><span class="line">    conv2 = conv_block(conv1, <span class="number">128</span>, <span class="number">2</span>, [<span class="number">0.4</span>, <span class="number">0</span>])</span><br><span class="line">    <span class="comment"># 第3组卷积层，3次连续卷积，卷积核数目为256</span></span><br><span class="line">    conv3 = conv_block(conv2, <span class="number">256</span>, <span class="number">3</span>, [<span class="number">0.4</span>, <span class="number">0.4</span>, <span class="number">0</span>])</span><br><span class="line">    <span class="comment"># 第4组卷积层，3次连续卷积，卷积核数目为512</span></span><br><span class="line">    conv4 = conv_block(conv3, <span class="number">512</span>, <span class="number">3</span>, [<span class="number">0.4</span>, <span class="number">0.4</span>, <span class="number">0</span>])</span><br><span class="line">    <span class="comment"># 第5组卷积层，3次连续卷积，卷积核数目为512</span></span><br><span class="line">    conv5 = conv_block(conv4, <span class="number">512</span>, <span class="number">3</span>, [<span class="number">0.4</span>, <span class="number">0.4</span>, <span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 最后一层结束后添加一层概率为0.5的dropout层</span></span><br><span class="line">    drop = fluid.layers.dropout(x=conv5, dropout_prob=<span class="number">0.5</span>)</span><br><span class="line">    <span class="comment"># 添加全连接层，维度数为512</span></span><br><span class="line">    fc1 = fluid.layers.fc(input=drop, size=<span class="number">512</span>, act=<span class="keyword">None</span>)</span><br><span class="line">    <span class="comment"># 在全连接层结束后添加batchnorm防止过拟合</span></span><br><span class="line">    bn = fluid.layers.batch_norm(input=fc1, act=<span class="string">'relu'</span>)</span><br><span class="line">    <span class="comment"># 添加概率为0.5的dropout层</span></span><br><span class="line">    drop2 = fluid.layers.dropout(x=bn, dropout_prob=<span class="number">0.5</span>)</span><br><span class="line">    <span class="comment"># 添加全连接层，维度数为512</span></span><br><span class="line">    fc2 = fluid.layers.fc(input=drop2, size=<span class="number">512</span>, act=<span class="keyword">None</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 最后，添加预测用的全连接层，映射到类别维度大小的向量，本次数据类别一共10种</span></span><br><span class="line">    <span class="comment"># 通过softmax归一化得到每个类别的概率，softmax是将输入映射为0-1之间的实数，作为取到某个分类的概率</span></span><br><span class="line">    <span class="comment"># 可以认为是一个分类器</span></span><br><span class="line">    predict = fluid.layers.fc(input=fc2, size=<span class="number">10</span>, act=<span class="string">'softmax'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 输出最终的结果</span></span><br><span class="line">    <span class="keyword">return</span> predict</span><br></pre></td></tr></table></figure>
+<h5 id="ResNet模型"><a href="#ResNet模型" class="headerlink" title="ResNet模型"></a>ResNet模型</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># resnet模型定义</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码来自：http://paddlepaddle.org/documentation/docs/zh/1.4/beginners_guide/basics/image_classification/index.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 以下为resnet_cifar10需要用到的工具函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># conv_bn_layer为自带batchnorm的神经网络层</span></span><br><span class="line"><span class="comment"># input为输入，ch_out为滤波器个数，该个数与输出图像通道相同，故赋值为channel_out=ch_out</span></span><br><span class="line"><span class="comment"># filter_size为过滤器大小，stride为窗口移动的步长</span></span><br><span class="line"><span class="comment"># padding为填充格式，VALID对于多出来的数据直接丢弃，SAME将多出来的数据继续填充到下一层的额外行和列</span></span><br><span class="line"><span class="comment"># act为激活函数，这里使用RELU函数</span></span><br><span class="line"><span class="comment"># bias_attr为False，说明不需要得到单个卷积核卷积图片的结果</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">conv_bn_layer</span><span class="params">(input,</span></span></span><br><span class="line"><span class="function"><span class="params">                  ch_out,</span></span></span><br><span class="line"><span class="function"><span class="params">                  filter_size,</span></span></span><br><span class="line"><span class="function"><span class="params">                  stride,</span></span></span><br><span class="line"><span class="function"><span class="params">                  padding,</span></span></span><br><span class="line"><span class="function"><span class="params">                  act=<span class="string">'relu'</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                  bias_attr=False)</span>:</span></span><br><span class="line">    tmp = fluid.layers.conv2d(</span><br><span class="line">        input=input,</span><br><span class="line">        filter_size=filter_size,</span><br><span class="line">        num_filters=ch_out,</span><br><span class="line">        stride=stride,</span><br><span class="line">        padding=padding,</span><br><span class="line">        act=<span class="keyword">None</span>,</span><br><span class="line">        bias_attr=bias_attr)</span><br><span class="line">    <span class="keyword">return</span> fluid.layers.batch_norm(input=tmp, act=act)</span><br><span class="line"></span><br><span class="line"><span class="comment"># shortcut为残差模块的“直连路径”</span></span><br><span class="line"><span class="comment"># 在resnet中引入残差模块后，解决了网络层数加深导致准确度下降的问题</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">shortcut</span><span class="params">(input, ch_in, ch_out, stride)</span>:</span></span><br><span class="line">    <span class="comment"># 残差模块输入和输出特征通道数不等时，采用1x1卷积的升维操作</span></span><br><span class="line">    <span class="keyword">if</span> ch_in != ch_out:</span><br><span class="line">        <span class="keyword">return</span> conv_bn_layer(input, ch_out, <span class="number">1</span>, stride, <span class="number">0</span>, <span class="keyword">None</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">    <span class="comment"># 残差模块输入和输出通道相等时，采用直连操作</span></span><br><span class="line">        <span class="keyword">return</span> input</span><br><span class="line"></span><br><span class="line"><span class="comment"># basicblock为基础残差模块，由两组3x3卷积组成的路径和一条"直连"路径组成</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">basicblock</span><span class="params">(input, ch_in, ch_out, stride)</span>:</span></span><br><span class="line">    <span class="comment"># 由两组3x3卷积组成的路径</span></span><br><span class="line">    tmp = conv_bn_layer(input, ch_out, <span class="number">3</span>, stride, <span class="number">1</span>)</span><br><span class="line">    tmp = conv_bn_layer(tmp, ch_out, <span class="number">3</span>, <span class="number">1</span>, <span class="number">1</span>, act=<span class="keyword">None</span>, bias_attr=<span class="keyword">True</span>)</span><br><span class="line">    <span class="comment"># 一条“直连”路径</span></span><br><span class="line">    short = shortcut(input, ch_in, ch_out, stride)</span><br><span class="line">    <span class="comment"># 使用fluid自动在每一层后添加这一残差模块的输入</span></span><br><span class="line">    <span class="keyword">return</span> fluid.layers.elementwise_add(x=tmp, y=short, act=<span class="string">'relu'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># layer_warp为一组残差模块，由若干个残差模块堆积而成</span></span><br><span class="line"><span class="comment"># 这里的block_func事实上指的就是basicblock</span></span><br><span class="line"><span class="comment"># ch_in和ch_out分别为输入输出通道</span></span><br><span class="line"><span class="comment"># count为残差模块的个数，stride为窗口移动步长</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">layer_warp</span><span class="params">(block_func, input, ch_in, ch_out, count, stride)</span>:</span></span><br><span class="line">    tmp = block_func(input, ch_in, ch_out, stride)</span><br><span class="line">    <span class="comment"># 每组中第一个残差模块滑动窗口大小与其他可以不同，以用来减少特征图在垂直和水平方向的大小</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, count):</span><br><span class="line">        tmp = block_func(tmp, ch_out, ch_out, <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> tmp</span><br><span class="line"></span><br><span class="line"><span class="comment"># resnet_cifar10模型主函数</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">resnet_cifar10</span><span class="params">(ipt, depth=<span class="number">32</span>)</span>:</span></span><br><span class="line">    <span class="comment"># 除第一层卷积层和最后一层全连接层之外</span></span><br><span class="line">    <span class="comment"># 要求三组 layer_warp 总的含参层数能够被6整除</span></span><br><span class="line">    <span class="comment"># 即 resnet_cifar10 的 depth 要满足 (depth−2) </span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 因此深度的可能取值： 20, 32, 44, 56, 110, 1202</span></span><br><span class="line">    <span class="keyword">assert</span> (depth - <span class="number">2</span>) % <span class="number">6</span> == <span class="number">0</span></span><br><span class="line">    n = (depth - <span class="number">2</span>) // <span class="number">6</span></span><br><span class="line">    nStages = &#123;<span class="number">16</span>, <span class="number">64</span>, <span class="number">128</span>&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 底层输入连接一层带batchnorm的卷积层</span></span><br><span class="line">    conv1 = conv_bn_layer(ipt, ch_out=<span class="number">16</span>, filter_size=<span class="number">3</span>, stride=<span class="number">1</span>, padding=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 连接3组残差模块</span></span><br><span class="line">    res1 = layer_warp(basicblock, conv1, <span class="number">16</span>, <span class="number">16</span>, n, <span class="number">1</span>)</span><br><span class="line">    res2 = layer_warp(basicblock, res1, <span class="number">16</span>, <span class="number">32</span>, n, <span class="number">2</span>)</span><br><span class="line">    res3 = layer_warp(basicblock, res2, <span class="number">32</span>, <span class="number">64</span>, n, <span class="number">2</span>)</span><br><span class="line">    <span class="comment"># 对网络做均值池化，可以看到pool_type=‘avg’表示均值池化</span></span><br><span class="line">    pool = fluid.layers.pool2d(</span><br><span class="line">        input=res3, pool_size=<span class="number">8</span>, pool_type=<span class="string">'avg'</span>, pool_stride=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 添加全连接层作为预测层，通过softmax归一化得到每个类别的概率</span></span><br><span class="line">    predict = fluid.layers.fc(input=pool, size=<span class="number">10</span>, act=<span class="string">'softmax'</span>)</span><br><span class="line">    <span class="keyword">return</span> predict</span><br></pre></td></tr></table></figure>
+<h5 id="GoogleNet模型"><a href="#GoogleNet模型" class="headerlink" title="GoogleNet模型"></a>GoogleNet模型</h5><p>我们获得的初始GoogleNet模型代码使用的是早期的paddlepaddle版本，因此我们花费了一些时间查阅了paddlepaddle官网的API文档，研究了不同版本之间的API对应关系和调用方式上的差异。最终，我们成功地将该模型代码移植到了AI Studio在线项目平台上的paddlepaddle V1.4版本上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># googlenet模型定义</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码来自：https://www.cnblogs.com/charlotte77/p/8066867.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 以下为googlenet需要用到的工具函数</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># inception为一个inceoption网络，目前已经发展到了inceptionV4和inception-resnet</span></span><br><span class="line"><span class="comment"># inception主要的特点是在同一层级上运行多个不同尺寸的卷积层，这一特性解决了多个问题</span></span><br><span class="line"><span class="comment"># 1. 消除了信息分布的均匀程度对卷积核大小的选取影响</span></span><br><span class="line"><span class="comment"># 2. 减缓了网络层数过深导致的梯度损失以及过拟合</span></span><br><span class="line"><span class="comment"># 3. 缓解了简单堆叠多层网络导致的计算资源的消耗</span></span><br><span class="line"><span class="comment"># 但是这个特点同样带来了缺陷：</span></span><br><span class="line"><span class="comment"># 池化层不会改变特征通道数，拼接后会导致特征的通道数较大，经过几层这样的模块堆积后，通道数会越来越大，导致参数和计算量也随之增大</span></span><br><span class="line"><span class="comment"># 因此，inception还通过引入3个1*1卷积层进行降维，减少通道数</span></span><br><span class="line"><span class="comment"># 下面的版本是inceptionv1版本，v2引入batchnorm，v3对卷积层进一步分解，v4引入了res-net</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这些参数的意思为：</span></span><br><span class="line"><span class="comment"># name：整个inception的名称</span></span><br><span class="line"><span class="comment"># channels：通道个数</span></span><br><span class="line"><span class="comment"># filter1、filter3R、filter3、filter5R、filter5、proj：各个卷积层的过滤器数量</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">inception</span><span class="params">(name, input, channels, filter1, filter3R, filter3, filter5R,</span></span></span><br><span class="line"><span class="function"><span class="params">              filter5, proj)</span>:</span></span><br><span class="line">    <span class="comment"># 1*1卷积层_1</span></span><br><span class="line">    cov1 = fluid.layers.conv2d(</span><br><span class="line">        input=input,</span><br><span class="line">        filter_size=<span class="number">1</span>,</span><br><span class="line">        num_filters=filter1,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">0</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 1*1卷积层_3r</span></span><br><span class="line">    cov3r = fluid.layers.conv2d(</span><br><span class="line">        input=input,</span><br><span class="line">        filter_size=<span class="number">1</span>,</span><br><span class="line">        num_filters=filter3R,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 1*1卷积层_3r的下一层3*3卷积层</span></span><br><span class="line">    cov3 = fluid.layers.conv2d(</span><br><span class="line">        input=cov3r,</span><br><span class="line">        filter_size=<span class="number">3</span>,</span><br><span class="line">        num_filters=filter3,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 1*1卷积层_5r</span></span><br><span class="line">    cov5r = fluid.layers.conv2d(</span><br><span class="line">        input=input,</span><br><span class="line">        filter_size=<span class="number">1</span>,</span><br><span class="line">        num_filters=filter5R,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 1*1卷积层_5r的下一层5*5卷积层</span></span><br><span class="line">    cov5 = fluid.layers.conv2d(</span><br><span class="line">        input=cov5r,</span><br><span class="line">        filter_size=<span class="number">5</span>,</span><br><span class="line">        num_filters=filter5,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">2</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 3*3最大池化层</span></span><br><span class="line">    pool1 = fluid.layers.pool2d(</span><br><span class="line">        input=input,</span><br><span class="line">        pool_size=<span class="number">3</span>,</span><br><span class="line">        pool_type=<span class="string">"max"</span>,</span><br><span class="line">        pool_stride=<span class="number">1</span>,</span><br><span class="line">        pool_padding=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 3*3最大池化层的下一层1*1卷积层</span></span><br><span class="line">    covprj = fluid.layers.conv2d(</span><br><span class="line">        input=pool1,</span><br><span class="line">        filter_size=<span class="number">1</span>,</span><br><span class="line">        num_filters=proj,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 全连接层将以上的结果汇总处理</span></span><br><span class="line">    cat = fluid.layers.concat(input=[cov1, cov3, cov5, covprj], axis=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">return</span> cat</span><br><span class="line"></span><br><span class="line"><span class="comment"># googlenet模型主函数</span></span><br><span class="line"><span class="comment"># class_dim为当前类别的维度个数，这里一共有10个类，因此填10</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">googlenet</span><span class="params">(input, class_dim)</span>:</span></span><br><span class="line">    <span class="comment"># stage 1 </span></span><br><span class="line">    <span class="comment"># 7*7卷积层</span></span><br><span class="line">    conv1 = fluid.layers.conv2d(</span><br><span class="line">        input=input,</span><br><span class="line">        filter_size=<span class="number">7</span>,</span><br><span class="line">        num_filters=<span class="number">64</span>,</span><br><span class="line">        stride=<span class="number">2</span>,</span><br><span class="line">        padding=<span class="number">3</span>)</span><br><span class="line">    <span class="comment"># 3*3最大池化层</span></span><br><span class="line">    pool1 = fluid.layers.pool2d(</span><br><span class="line">        input=conv1, pool_size=<span class="number">3</span>, pool_type=<span class="string">"max"</span>, pool_stride=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># stage 2</span></span><br><span class="line">    <span class="comment"># 1*1卷积层</span></span><br><span class="line">    conv2_1 = fluid.layers.conv2d(</span><br><span class="line">        input=pool1,</span><br><span class="line">        filter_size=<span class="number">1</span>,</span><br><span class="line">        num_filters=<span class="number">64</span>,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 3*3卷积层</span></span><br><span class="line">    conv2_2 = fluid.layers.conv2d(</span><br><span class="line">        input=conv2_1,</span><br><span class="line">        filter_size=<span class="number">3</span>,</span><br><span class="line">        num_filters=<span class="number">192</span>,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 3*3最大池化层</span></span><br><span class="line">    pool2 = fluid.layers.pool2d(</span><br><span class="line">        input=conv2_2, pool_size=<span class="number">3</span>, pool_type=<span class="string">'max'</span>, pool_stride=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># stage 3</span></span><br><span class="line">    <span class="comment"># 2组inception+1个3*3最大池化层</span></span><br><span class="line">    ince3a = inception(<span class="string">"ince3a"</span>, pool2, <span class="number">192</span>, <span class="number">64</span>, <span class="number">96</span>, <span class="number">128</span>, <span class="number">16</span>, <span class="number">32</span>, <span class="number">32</span>)</span><br><span class="line">    ince3b = inception(<span class="string">"ince3b"</span>, ince3a, <span class="number">256</span>, <span class="number">128</span>, <span class="number">128</span>, <span class="number">192</span>, <span class="number">32</span>, <span class="number">96</span>, <span class="number">64</span>)</span><br><span class="line">    pool3 = fluid.layers.pool2d(</span><br><span class="line">        input=ince3b, pool_size=<span class="number">3</span>, pool_type=<span class="string">'max'</span>, pool_stride=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># stage 4</span></span><br><span class="line">    <span class="comment"># 5组inception+1个3*3最大池化层</span></span><br><span class="line">    ince4a = inception(<span class="string">"ince4a"</span>, pool3, <span class="number">480</span>, <span class="number">192</span>, <span class="number">96</span>, <span class="number">208</span>, <span class="number">16</span>, <span class="number">48</span>, <span class="number">64</span>)</span><br><span class="line">    ince4b = inception(<span class="string">"ince4b"</span>, ince4a, <span class="number">512</span>, <span class="number">160</span>, <span class="number">112</span>, <span class="number">224</span>, <span class="number">24</span>, <span class="number">64</span>, <span class="number">64</span>)</span><br><span class="line">    ince4c = inception(<span class="string">"ince4c"</span>, ince4b, <span class="number">512</span>, <span class="number">128</span>, <span class="number">128</span>, <span class="number">256</span>, <span class="number">24</span>, <span class="number">64</span>, <span class="number">64</span>)</span><br><span class="line">    ince4d = inception(<span class="string">"ince4d"</span>, ince4c, <span class="number">512</span>, <span class="number">112</span>, <span class="number">144</span>, <span class="number">288</span>, <span class="number">32</span>, <span class="number">64</span>, <span class="number">64</span>)</span><br><span class="line">    ince4e = inception(<span class="string">"ince4e"</span>, ince4d, <span class="number">528</span>, <span class="number">256</span>, <span class="number">160</span>, <span class="number">320</span>, <span class="number">32</span>, <span class="number">128</span>, <span class="number">128</span>)</span><br><span class="line">    pool4 = fluid.layers.pool2d(</span><br><span class="line">        input=ince4e, pool_size=<span class="number">3</span>, pool_type=<span class="string">'max'</span>, pool_stride=<span class="number">2</span>, pool_padding=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># stage 5</span></span><br><span class="line">    <span class="comment"># 2组inception+1个7*7最大池化层</span></span><br><span class="line">    ince5a = inception(<span class="string">"ince5a"</span>, pool4, <span class="number">832</span>, <span class="number">256</span>, <span class="number">160</span>, <span class="number">320</span>, <span class="number">32</span>, <span class="number">128</span>, <span class="number">128</span>)</span><br><span class="line">    ince5b = inception(<span class="string">"ince5b"</span>, ince5a, <span class="number">832</span>, <span class="number">384</span>, <span class="number">192</span>, <span class="number">384</span>, <span class="number">48</span>, <span class="number">128</span>, <span class="number">128</span>)</span><br><span class="line">    pool5 = fluid.layers.pool2d(</span><br><span class="line">        input=ince5b,</span><br><span class="line">        pool_size=<span class="number">7</span>,</span><br><span class="line">        pool_stride=<span class="number">7</span>,</span><br><span class="line">        pool_type=<span class="string">"avg"</span>)</span><br><span class="line">    <span class="comment"># 添加丢弃概率为0.4的dropout层避免过拟合</span></span><br><span class="line">    drop1 = fluid.layers.dropout(x=pool5, dropout_prob=<span class="number">0.5</span>)</span><br><span class="line">    <span class="comment"># 最后一层全连接层进行主损失率out的输出，softmax归一化每个类别的概率</span></span><br><span class="line">    out = fluid.layers.fc(</span><br><span class="line">        input=drop1, size=class_dim, act=<span class="string">'softmax'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 用于计算损失率分量out1的第一个辅助的分类器</span></span><br><span class="line">    <span class="comment"># 5*5均值池化，注意这里的输入为ince4a的输出，也就是在生成out中途的输出</span></span><br><span class="line">    pool_o1 = fluid.layers.pool2d(</span><br><span class="line">        input=ince4a,</span><br><span class="line">        pool_size=<span class="number">5</span>,</span><br><span class="line">        pool_stride=<span class="number">3</span>,</span><br><span class="line">        pool_type=<span class="string">"avg"</span>,</span><br><span class="line">        pool_padding=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 1*1卷积</span></span><br><span class="line">    conv_o1 = fluid.layers.conv2d(</span><br><span class="line">        input=pool_o1,</span><br><span class="line">        filter_size=<span class="number">1</span>,</span><br><span class="line">        num_filters=<span class="number">128</span>,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 带有激活函数RELU的全连接</span></span><br><span class="line">    fc_o1 = fluid.layers.fc(</span><br><span class="line">        input=conv_o1,</span><br><span class="line">        size=<span class="number">1024</span>,</span><br><span class="line">        act=<span class="string">"relu"</span>)</span><br><span class="line">    <span class="comment"># 添加丢弃概率为0.4的dropout层避免过拟合</span></span><br><span class="line">    drop2 = fluid.layers.dropout(x=fc_o1, dropout_prob=<span class="number">0.7</span>)</span><br><span class="line">    <span class="comment"># 最后一层全连接层softmax归一化后输出的out1</span></span><br><span class="line">    out1 = fluid.layers.fc(</span><br><span class="line">        input=drop2, size=class_dim, act=<span class="string">'softmax'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 用于计算损失率分量out2的第二个辅助的分类器</span></span><br><span class="line">    <span class="comment"># 5*5均值池化，这里的输入为ince4d的输出，同样是在生成out中途的输出</span></span><br><span class="line">    pool_o2 = fluid.layers.pool2d(</span><br><span class="line">        input=ince4d,</span><br><span class="line">        pool_size=<span class="number">5</span>,</span><br><span class="line">        pool_stride=<span class="number">3</span>,</span><br><span class="line">        pool_type=<span class="string">"avg"</span>,</span><br><span class="line">        pool_padding=<span class="number">1</span>)</span><br><span class="line">    <span class="comment"># 1*1卷积</span></span><br><span class="line">    conv_o2 = fluid.layers.conv2d(</span><br><span class="line">        input=pool_o2,</span><br><span class="line">        filter_size=<span class="number">1</span>,</span><br><span class="line">        num_filters=<span class="number">128</span>,</span><br><span class="line">        stride=<span class="number">1</span>,</span><br><span class="line">        padding=<span class="number">0</span>)</span><br><span class="line">    <span class="comment"># 带有激活函数RELU的全连接</span></span><br><span class="line">    fc_o2 = fluid.layers.fc(</span><br><span class="line">        input=conv_o2,</span><br><span class="line">        size=<span class="number">1024</span>,</span><br><span class="line">        act=<span class="string">"relu"</span>)</span><br><span class="line">    <span class="comment"># 添加丢弃概率为0.4的dropout层避免过拟合</span></span><br><span class="line">    drop3 = fluid.layers.dropout(x=fc_o2, dropout_prob=<span class="number">0.7</span>)</span><br><span class="line">    <span class="comment"># 最后一层全连接层softmax归一化后输出的out1</span></span><br><span class="line">    out2 = fluid.layers.fc(</span><br><span class="line">        input=drop3, size=class_dim, act=<span class="string">'softmax'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 输出损失率的三个分量</span></span><br><span class="line">    <span class="keyword">return</span> out, out1, out2</span><br></pre></td></tr></table></figure>
+<h5 id="Inception-V4模型"><a href="#Inception-V4模型" class="headerlink" title="Inception-V4模型"></a>Inception-V4模型</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># inception_v4模型定义</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 代码来自：https://github.com/PaddlePaddle/models/blob/43cdafbb97e52e6d93cc5bbdc6e7486f27665fc8/PaddleCV/image_classification/models/inception_v4.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里使用了面向对象的封装</span></span><br><span class="line"><span class="comment"># 因为不同的inception版本中的同名函数例如conv_bn_layer（带batchnorm的卷积层）的具体实现是不同的</span></span><br><span class="line"><span class="comment"># 所以为了防止同名函数定义的互相覆盖，使用类的封装思想比较合理</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InceptionV4</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        print(<span class="string">"using inception v4."</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 模型主函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">net</span><span class="params">(self, input, class_dim=<span class="number">1000</span>)</span>:</span></span><br><span class="line">        <span class="comment"># STEP 1 inception_sterm模块</span></span><br><span class="line">        <span class="comment"># stem模块其实就是多次卷积＋２次池化，采用了Inception论文里提到的卷积＋池化并行的结构</span></span><br><span class="line">        <span class="comment"># 在同时也使用了多个1*1卷积，之前的googlenet（inception_v1）中也提到过</span></span><br><span class="line">        <span class="comment"># 这是一种降维操作，能够通过减少通道数从而减少因为并行结构带来的巨大计算量</span></span><br><span class="line">        x = self.inception_stem(input)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># STEP 2 4层inception_A模块+1层reduction模块</span></span><br><span class="line">        <span class="comment"># inception_A、B、C模块之间内在结构各有不同，在该算法论文中没有详细的解答，应该是一种经验性的结构</span></span><br><span class="line">        <span class="comment"># reduction起到了作为之前版本中的一层单层池化层的作用，同样采用了卷积+池化并行的结构</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">4</span>):</span><br><span class="line">            x = self.inceptionA(x, name=str(i + <span class="number">1</span>))</span><br><span class="line">        x = self.reductionA(x)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># STEP 3 7层inception_B模块+1层reduction模块</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">7</span>):</span><br><span class="line">            x = self.inceptionB(x, name=str(i + <span class="number">1</span>))</span><br><span class="line">        x = self.reductionB(x)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># STEP 4 3层inception_C模块+1层reduction模块</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>):</span><br><span class="line">            x = self.inceptionC(x, name=str(i + <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 平均池化，不同于最大池化提取特征，这是在保留背景信息</span></span><br><span class="line">        pool = fluid.layers.pool2d(</span><br><span class="line">            input=x, pool_size=<span class="number">8</span>, pool_type=<span class="string">'avg'</span>, global_pooling=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># dropout操作用来减少过拟合</span></span><br><span class="line">        drop = fluid.layers.dropout(x=pool, dropout_prob=<span class="number">0.2</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 这里做了一次运算，stdv是标准差的意思</span></span><br><span class="line">        stdv = <span class="number">1.0</span> / math.sqrt(drop.shape[<span class="number">1</span>] * <span class="number">1.0</span>)</span><br><span class="line">        <span class="comment"># 这里传入的initializer.Uniform是随机均匀分布初始化器的意思</span></span><br><span class="line">        <span class="comment"># 这里的全连接层的各个神经元权重使用了随机均匀分布初始化的方式</span></span><br><span class="line">        <span class="comment"># 一般的初始化方式有正态分布和随机均匀分布两种，两者优劣没有定论，但经验上看，均匀分布的随机数能够让更多的权重接近于0</span></span><br><span class="line">        out = fluid.layers.fc(</span><br><span class="line">            input=drop,</span><br><span class="line">            size=class_dim,</span><br><span class="line">            param_attr=ParamAttr(</span><br><span class="line">                initializer=fluid.initializer.Uniform(-stdv, stdv),</span><br><span class="line">                name=<span class="string">"final_fc_weights"</span>),</span><br><span class="line">            bias_attr=ParamAttr(</span><br><span class="line">                initializer=fluid.initializer.Uniform(-stdv, stdv),</span><br><span class="line">                name=<span class="string">"final_fc_offset"</span>),</span><br><span class="line">            act=<span class="string">'softmax'</span>)</span><br><span class="line">        <span class="keyword">return</span> out</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 带batchnorm的卷积层函数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">conv_bn_layer</span><span class="params">(self,</span></span></span><br><span class="line"><span class="function"><span class="params">                      data,</span></span></span><br><span class="line"><span class="function"><span class="params">                      num_filters,</span></span></span><br><span class="line"><span class="function"><span class="params">                      filter_size,</span></span></span><br><span class="line"><span class="function"><span class="params">                      stride=<span class="number">1</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                      padding=<span class="number">0</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                      groups=<span class="number">1</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                      act=<span class="string">'relu'</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                      name=None)</span>:</span></span><br><span class="line">        <span class="comment"># 和之前resnet使用的卷积层定义基本一致，只是添加了一些name名称，此处不再赘述</span></span><br><span class="line">        conv = fluid.layers.conv2d(</span><br><span class="line">            input=data,</span><br><span class="line">            num_filters=num_filters,</span><br><span class="line">            filter_size=filter_size,</span><br><span class="line">            stride=stride,</span><br><span class="line">            padding=padding,</span><br><span class="line">            groups=groups,</span><br><span class="line">            act=<span class="keyword">None</span>,</span><br><span class="line">            param_attr=ParamAttr(name=name + <span class="string">"_weights"</span>),</span><br><span class="line">            bias_attr=<span class="keyword">False</span>,</span><br><span class="line">            name=name)</span><br><span class="line">        bn_name = name + <span class="string">"_bn"</span></span><br><span class="line">        <span class="comment"># batchnorm也是如此，基本一致</span></span><br><span class="line">        <span class="keyword">return</span> fluid.layers.batch_norm(</span><br><span class="line">            input=conv,</span><br><span class="line">            act=act,</span><br><span class="line">            name=bn_name,</span><br><span class="line">            param_attr=ParamAttr(name=bn_name + <span class="string">"_scale"</span>),</span><br><span class="line">            bias_attr=ParamAttr(name=bn_name + <span class="string">"_offset"</span>),</span><br><span class="line">            moving_mean_name=bn_name + <span class="string">'_mean'</span>,</span><br><span class="line">            moving_variance_name=bn_name + <span class="string">'_variance'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># inception_stem层，具体结构可以参考论文中的图像，</span></span><br><span class="line">    <span class="comment"># 基本原理还是和googlenet一样，并行处理的卷积+池化以及1*1卷积降维</span></span><br><span class="line">    <span class="comment"># 具体到结构为什么这么设计可以认为是经验性的，论文没有深入讨论</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inception_stem</span><span class="params">(self, data, name=None)</span>:</span></span><br><span class="line">        conv = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">32</span>, <span class="number">3</span>, stride=<span class="number">2</span>, act=<span class="string">'relu'</span>, name=<span class="string">"conv1_3x3_s2"</span>)</span><br><span class="line">        conv = self.conv_bn_layer(conv, <span class="number">32</span>, <span class="number">3</span>, act=<span class="string">'relu'</span>, name=<span class="string">"conv2_3x3_s1"</span>)</span><br><span class="line">        conv = self.conv_bn_layer(</span><br><span class="line">            conv, <span class="number">64</span>, <span class="number">3</span>, padding=<span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"conv3_3x3_s1"</span>)</span><br><span class="line"></span><br><span class="line">        pool1 = fluid.layers.pool2d(</span><br><span class="line">            input=conv, pool_size=<span class="number">3</span>, pool_stride=<span class="number">2</span>, pool_type=<span class="string">'max'</span>)</span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            conv, <span class="number">96</span>, <span class="number">3</span>, stride=<span class="number">2</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_stem1_3x3_s2"</span>)</span><br><span class="line">        concat = fluid.layers.concat([pool1, conv2], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        conv1 = self.conv_bn_layer(</span><br><span class="line">            concat, <span class="number">64</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_stem2_3x3_reduce"</span>)</span><br><span class="line">        conv1 = self.conv_bn_layer(</span><br><span class="line">            conv1, <span class="number">96</span>, <span class="number">3</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_stem2_3x3"</span>)</span><br><span class="line"></span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            concat, <span class="number">64</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_stem2_1x7_reduce"</span>)</span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            conv2,</span><br><span class="line">            <span class="number">64</span>, (<span class="number">7</span>, <span class="number">1</span>),</span><br><span class="line">            padding=(<span class="number">3</span>, <span class="number">0</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_stem2_1x7"</span>)</span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            conv2,</span><br><span class="line">            <span class="number">64</span>, (<span class="number">1</span>, <span class="number">7</span>),</span><br><span class="line">            padding=(<span class="number">0</span>, <span class="number">3</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_stem2_7x1"</span>)</span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            conv2, <span class="number">96</span>, <span class="number">3</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_stem2_3x3_2"</span>)</span><br><span class="line"></span><br><span class="line">        concat = fluid.layers.concat([conv1, conv2], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        conv1 = self.conv_bn_layer(</span><br><span class="line">            concat, <span class="number">192</span>, <span class="number">3</span>, stride=<span class="number">2</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_stem3_3x3_s2"</span>)</span><br><span class="line">        pool1 = fluid.layers.pool2d(</span><br><span class="line">            input=concat, pool_size=<span class="number">3</span>, pool_stride=<span class="number">2</span>, pool_type=<span class="string">'max'</span>)</span><br><span class="line"></span><br><span class="line">        concat = fluid.layers.concat([conv1, pool1], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> concat</span><br><span class="line"></span><br><span class="line">    <span class="comment"># inception_A模块，同样不再赘述</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inceptionA</span><span class="params">(self, data, name=None)</span>:</span></span><br><span class="line">        pool1 = fluid.layers.pool2d(</span><br><span class="line">            input=data, pool_size=<span class="number">3</span>, pool_padding=<span class="number">1</span>, pool_type=<span class="string">'avg'</span>)</span><br><span class="line">        conv1 = self.conv_bn_layer(</span><br><span class="line">            pool1, <span class="number">96</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_a"</span> + name + <span class="string">"_1x1"</span>)</span><br><span class="line"></span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">96</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_a"</span> + name + <span class="string">"_1x1_2"</span>)</span><br><span class="line"></span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">64</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_a"</span> + name + <span class="string">"_3x3_reduce"</span>)</span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            conv3,</span><br><span class="line">            <span class="number">96</span>,</span><br><span class="line">            <span class="number">3</span>,</span><br><span class="line">            padding=<span class="number">1</span>,</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_a"</span> + name + <span class="string">"_3x3"</span>)</span><br><span class="line"></span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            data,</span><br><span class="line">            <span class="number">64</span>,</span><br><span class="line">            <span class="number">1</span>,</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_a"</span> + name + <span class="string">"_3x3_2_reduce"</span>)</span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">96</span>,</span><br><span class="line">            <span class="number">3</span>,</span><br><span class="line">            padding=<span class="number">1</span>,</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_a"</span> + name + <span class="string">"_3x3_2"</span>)</span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">96</span>,</span><br><span class="line">            <span class="number">3</span>,</span><br><span class="line">            padding=<span class="number">1</span>,</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_a"</span> + name + <span class="string">"_3x3_3"</span>)</span><br><span class="line"></span><br><span class="line">        concat = fluid.layers.concat([conv1, conv2, conv3, conv4], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> concat</span><br><span class="line"></span><br><span class="line">    <span class="comment"># reduction_A模块</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reductionA</span><span class="params">(self, data, name=None)</span>:</span></span><br><span class="line">        pool1 = fluid.layers.pool2d(</span><br><span class="line">            input=data, pool_size=<span class="number">3</span>, pool_stride=<span class="number">2</span>, pool_type=<span class="string">'max'</span>, pool_padding=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">384</span>, <span class="number">3</span>, stride=<span class="number">2</span>, padding=<span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"reduction_a_3x3"</span>)</span><br><span class="line"></span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">192</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"reduction_a_3x3_2_reduce"</span>)</span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            conv3, <span class="number">224</span>, <span class="number">3</span>, padding=<span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"reduction_a_3x3_2"</span>)</span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            conv3, <span class="number">256</span>, <span class="number">3</span>, stride=<span class="number">2</span>, padding=<span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"reduction_a_3x3_3"</span>)</span><br><span class="line"></span><br><span class="line">        concat = fluid.layers.concat([pool1, conv2, conv3], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> concat</span><br><span class="line"></span><br><span class="line">    <span class="comment"># inception_B模块</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inceptionB</span><span class="params">(self, data, name=None)</span>:</span></span><br><span class="line">        pool1 = fluid.layers.pool2d(</span><br><span class="line">            input=data, pool_size=<span class="number">3</span>, pool_padding=<span class="number">1</span>, pool_type=<span class="string">'avg'</span>)</span><br><span class="line">        conv1 = self.conv_bn_layer(</span><br><span class="line">            pool1, <span class="number">128</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_b"</span> + name + <span class="string">"_1x1"</span>)</span><br><span class="line"></span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">384</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_b"</span> + name + <span class="string">"_1x1_2"</span>)</span><br><span class="line"></span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">192</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_b"</span> + name + <span class="string">"_1x7_reduce"</span>)</span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            conv3,</span><br><span class="line">            <span class="number">224</span>, (<span class="number">1</span>, <span class="number">7</span>),</span><br><span class="line">            padding=(<span class="number">0</span>, <span class="number">3</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_b"</span> + name + <span class="string">"_1x7"</span>)</span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            conv3,</span><br><span class="line">            <span class="number">256</span>, (<span class="number">7</span>, <span class="number">1</span>),</span><br><span class="line">            padding=(<span class="number">3</span>, <span class="number">0</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_b"</span> + name + <span class="string">"_7x1"</span>)</span><br><span class="line"></span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            data,</span><br><span class="line">            <span class="number">192</span>,</span><br><span class="line">            <span class="number">1</span>,</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_b"</span> + name + <span class="string">"_7x1_2_reduce"</span>)</span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">192</span>, (<span class="number">1</span>, <span class="number">7</span>),</span><br><span class="line">            padding=(<span class="number">0</span>, <span class="number">3</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_b"</span> + name + <span class="string">"_1x7_2"</span>)</span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">224</span>, (<span class="number">7</span>, <span class="number">1</span>),</span><br><span class="line">            padding=(<span class="number">3</span>, <span class="number">0</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_b"</span> + name + <span class="string">"_7x1_2"</span>)</span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">224</span>, (<span class="number">1</span>, <span class="number">7</span>),</span><br><span class="line">            padding=(<span class="number">0</span>, <span class="number">3</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_b"</span> + name + <span class="string">"_1x7_3"</span>)</span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">256</span>, (<span class="number">7</span>, <span class="number">1</span>),</span><br><span class="line">            padding=(<span class="number">3</span>, <span class="number">0</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_b"</span> + name + <span class="string">"_7x1_3"</span>)</span><br><span class="line"></span><br><span class="line">        concat = fluid.layers.concat([conv1, conv2, conv3, conv4], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> concat</span><br><span class="line"></span><br><span class="line">    <span class="comment"># reduction_B模块</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">reductionB</span><span class="params">(self, data, name=None)</span>:</span></span><br><span class="line">        pool1 = fluid.layers.pool2d(</span><br><span class="line">            input=data, pool_size=<span class="number">3</span>, pool_stride=<span class="number">2</span>, pool_type=<span class="string">'max'</span>, pool_padding=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">192</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"reduction_b_3x3_reduce"</span>)</span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            conv2, <span class="number">192</span>, <span class="number">3</span>, stride=<span class="number">2</span>, padding=<span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"reduction_b_3x3"</span>)</span><br><span class="line"></span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">256</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, padding=<span class="number">1</span>,name=<span class="string">"reduction_b_1x7_reduce"</span>)</span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            conv3,</span><br><span class="line">            <span class="number">256</span>, (<span class="number">1</span>, <span class="number">7</span>),</span><br><span class="line">            padding=(<span class="number">0</span>, <span class="number">3</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"reduction_b_1x7"</span>)</span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            conv3,</span><br><span class="line">            <span class="number">320</span>, (<span class="number">7</span>, <span class="number">1</span>),</span><br><span class="line">            padding=(<span class="number">3</span>, <span class="number">0</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"reduction_b_7x1"</span>)</span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            conv3, <span class="number">320</span>, <span class="number">3</span>, stride=<span class="number">2</span>, act=<span class="string">'relu'</span>, name=<span class="string">"reduction_b_3x3_2"</span>)</span><br><span class="line"></span><br><span class="line">        concat = fluid.layers.concat([pool1, conv2, conv3], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> concat</span><br><span class="line"></span><br><span class="line">    <span class="comment"># inception_C模块</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">inceptionC</span><span class="params">(self, data, name=None)</span>:</span></span><br><span class="line">        pool1 = fluid.layers.pool2d(</span><br><span class="line">            input=data, pool_size=<span class="number">3</span>, pool_padding=<span class="number">1</span>, pool_type=<span class="string">'avg'</span>)</span><br><span class="line">        conv1 = self.conv_bn_layer(</span><br><span class="line">            pool1, <span class="number">256</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_c"</span> + name + <span class="string">"_1x1"</span>)</span><br><span class="line"></span><br><span class="line">        conv2 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">256</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_c"</span> + name + <span class="string">"_1x1_2"</span>)</span><br><span class="line"></span><br><span class="line">        conv3 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">384</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_c"</span> + name + <span class="string">"_1x1_3"</span>)</span><br><span class="line">        conv3_1 = self.conv_bn_layer(</span><br><span class="line">            conv3,</span><br><span class="line">            <span class="number">256</span>, (<span class="number">1</span>, <span class="number">3</span>),</span><br><span class="line">            padding=(<span class="number">0</span>, <span class="number">1</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_c"</span> + name + <span class="string">"_1x3"</span>)</span><br><span class="line">        conv3_2 = self.conv_bn_layer(</span><br><span class="line">            conv3,</span><br><span class="line">            <span class="number">256</span>, (<span class="number">3</span>, <span class="number">1</span>),</span><br><span class="line">            padding=(<span class="number">1</span>, <span class="number">0</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_c"</span> + name + <span class="string">"_3x1"</span>)</span><br><span class="line"></span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            data, <span class="number">384</span>, <span class="number">1</span>, act=<span class="string">'relu'</span>, name=<span class="string">"inception_c"</span> + name + <span class="string">"_1x1_4"</span>)</span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">448</span>, (<span class="number">1</span>, <span class="number">3</span>),</span><br><span class="line">            padding=(<span class="number">0</span>, <span class="number">1</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_c"</span> + name + <span class="string">"_1x3_2"</span>)</span><br><span class="line">        conv4 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">512</span>, (<span class="number">3</span>, <span class="number">1</span>),</span><br><span class="line">            padding=(<span class="number">1</span>, <span class="number">0</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_c"</span> + name + <span class="string">"_3x1_2"</span>)</span><br><span class="line">        conv4_1 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">256</span>, (<span class="number">1</span>, <span class="number">3</span>),</span><br><span class="line">            padding=(<span class="number">0</span>, <span class="number">1</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_c"</span> + name + <span class="string">"_1x3_3"</span>)</span><br><span class="line">        conv4_2 = self.conv_bn_layer(</span><br><span class="line">            conv4,</span><br><span class="line">            <span class="number">256</span>, (<span class="number">3</span>, <span class="number">1</span>),</span><br><span class="line">            padding=(<span class="number">1</span>, <span class="number">0</span>),</span><br><span class="line">            act=<span class="string">'relu'</span>,</span><br><span class="line">            name=<span class="string">"inception_c"</span> + name + <span class="string">"_3x1_3"</span>)</span><br><span class="line"></span><br><span class="line">        concat = fluid.layers.concat(</span><br><span class="line">            [conv1, conv2, conv3_1, conv3_2, conv4_1, conv4_2], axis=<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> concat</span><br></pre></td></tr></table></figure>
+<h4 id="训练和预测"><a href="#训练和预测" class="headerlink" title="训练和预测"></a>训练和预测</h4><p>为了能够更好地评价不同神经网络模型的训练性能、实际预测效果等，我们采用控制变量法，使用相同的训练和预测流程设计，训练使用的参数统一为batch_size=128、epoch=3，预测使用的待预测图像为一张狗的照片。运行程序、进行训练和预测的主要流程如下所示：</p>
+<ul>
+<li>首先，我们需要保证项目之前的输出被全部清空，且在“Kernel操作”中进行过至少一次的“重启”操作。</li>
+<li>之后，在最后一个cell的程序主函数中的model变量中确定对应模型的名称，若只需要使用已生成的模型文件进行预测而不需要再次训练，可以注释掉train训练主函数，只运行predict预测主函数。</li>
+<li>最后，选中第一个cell，点击“Notebook操作”中的“运行当前及下方所有”，开始程序的运行。</li>
+</ul>
+<p>各模型的具体运行结果截图可以参见下一章节“实验数据”。</p>
+<h3 id="实验数据"><a href="#实验数据" class="headerlink" title="实验数据"></a>实验数据</h3><p>在训练和预测流程执行完毕后，对于各个模型程序输出的原始数据结果截图如下所示：</p>
+<h4 id="VGG模型-1"><a href="#VGG模型-1" class="headerlink" title="VGG模型"></a>VGG模型</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-vgg.png" alt="VGG 模型的运行结果"></p>
+<center>图 3.1 VGG模型的运行结果（仅训练数据输出）</center>
+
+<p>可能是由于最终训练结果的精确度过低，在预测过程中出现了报错的情况，因此此处没有预测结果。</p>
+<h4 id="ResNet模型-1"><a href="#ResNet模型-1" class="headerlink" title="ResNet模型"></a>ResNet模型</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-resnet.png" alt="ResNet 模型的运行结果"></p>
+<center>图3.2 ResNet模型的训练和预测结果</center>
+
+<h4 id="GoogleNet模型-1"><a href="#GoogleNet模型-1" class="headerlink" title="GoogleNet模型"></a>GoogleNet模型</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-googlenet.png" alt="GoogleNet 模型的运行结果"></p>
+<h4 id="Inception-V4模型-1"><a href="#Inception-V4模型-1" class="headerlink" title="Inception-V4模型"></a>Inception-V4模型</h4><p>由于在理论上Inception-V4模型应当是GoogleNet（Inception-V1）的改进，但是首次训练和预测后的结果都完全差于GoogleNet，于是我们查询了该模型代码来源的GitHub仓库上的参数设置，发现batch_size应当由128改为256。</p>
+<p>在针对该模型设置该特有参数值之后，我们进行了第二次的额外训练和预测。两次训练和预测的原始数据如下所示：</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-inception-v4-1.png" alt="Inception-v4 模型的首次运行结果"></p>
+<center>图3.4 Inception-V4模型首次运行时的训练和预测结果</center>
+
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-inception-v4-2.png" alt="Inception-v4 模型修改后的运行结果"></p>
+<center>图3.5 Inception-V4模型修改batch_size之后<br>再次运行时的训练和预测结果</center>
+
+<h3 id="实验数据处理"><a href="#实验数据处理" class="headerlink" title="实验数据处理"></a>实验数据处理</h3><h4 id="VGG模型数据图表"><a href="#VGG模型数据图表" class="headerlink" title="VGG模型数据图表"></a>VGG模型数据图表</h4><p>由于在“实验数据”环节所述的程序报错的关系，未能够通过python代码自动生成损失率图表，此处使用Excel生成相关图表：</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-vgg-1.png" alt="vgg 训练数据图表"></p>
+<center>图4.1 VGG训练数据图表</center>
+
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-vgg-2.png" alt="VGG 测试数据图表"></p>
+<center>图4.2 VGG测试数据图表</center>
+
+<p>可以看出，VGG模型在当前训练环境下，训练过程中损失率震荡较大，下降速率较慢，准确率同样在上下波动且上升速率较慢，而使用测试数据集生成的测试数据基本保持不变。而且准确率相当低，在10%左右徘徊，说明VGG模型在当前环境下的综合性能较差。</p>
+<h4 id="ResNet模型数据图表"><a href="#ResNet模型数据图表" class="headerlink" title="ResNet模型数据图表"></a>ResNet模型数据图表</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-resnet-1.png" alt="vgg 损失率数据图表"></p>
+<center>图4.3 实验程序生成的ResNet的训练和测试损失率图表</center>
+
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-resnet-2.png" alt="vgg 准确率数据图表"></p>
+<center>图4.4 ResNet的训练和测试准确率图表</center>
+
+<p>ResNet模型在当前训练环境下，训练过程中损失率震荡较小，下降速率在训练初期较快，之后趋于平缓。虽然测试过程中的损失率虽然震荡较大，但是参照训练过程，确实维持在一个合理的区间内。</p>
+<p>在训练和测试过程中，ResNet模型的准确率都保持着不断升高的趋势，最终的准确率接近70%。</p>
+<p>但是，在实际的预测过程中，ResNet模型却将带预测的图片分类为了horse马，说明在实际应用过程中，该模型仍存在可以提升的空间。</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-resnet.png" alt="restnet 实际预测结果"></p>
+<center>图4.5 ResNet模型实际预测结果</center>
+
+<h4 id="GoogleNet模型数据图表"><a href="#GoogleNet模型数据图表" class="headerlink" title="GoogleNet模型数据图表"></a>GoogleNet模型数据图表</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-googlenet-1.png" alt="googlenet 损失率数据图表"></p>
+<center>图4.6 实验程序生成的GoogleNet的训练和测试损失率图表</center>
+
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-googlenet-2.png" alt="googlenet 准确率数据图表"></p>
+<center>图4.7 GoogleNet的训练和测试准确率图表</center>
+
+<p>GoogleNet模型在当前训练环境下，训练过程中损失率几乎没有震荡，下降速率在训练初期极快，之后趋于平缓且不断逼近0。测试过程中的损失率曲线与训练过程曲线近乎重合。以上现象说明了在当前环境下，该模型的训练效果相当出色。</p>
+<p>在训练和测试过程中，GoogleNet模型的准确率都保持着不断升高的趋势，最终的准确率在60%左右。</p>
+<p>除了下降速率曲线之外，该模型还有如下2点令人印象深刻之处：</p>
+<ul>
+<li>训练速度快：相比其他模型，该模型的训练耗时相当少，当其他模型需要5~10秒才能训练完一个pass时，该模型只需1秒左右的时间，因此训练速度极快。我们认为训练速度快的主要原因是：该模型的网络层数相较于其他模型更少，且3个子网络分别输出损失率并加权求和的操作有助于优化器更加精确地计算出当前梯度，从而更准确地调整网络中各层神经元的权重参数。</li>
+<li>模型实际预测结果精准：如下图所示，在实际预测的过程中，该模型是唯一一个将该图片正确分类为dog狗的，可以看出该模型在实际应用方面的准确度相当高，虽然数据层面的准确率60%略逊于ResNet的70%。</li>
+</ul>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-googlenet.png" alt="GoogleNet 模型实际预测结果"></p>
+<center>图4.8 GoogleNet模型实际预测结果</center>
+
+<h4 id="Inception-V4模型数据图表"><a href="#Inception-V4模型数据图表" class="headerlink" title="Inception-V4模型数据图表"></a>Inception-V4模型数据图表</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-1.png" alt="inception-v4 损失率数据图表"></p>
+<center>图4.9 实验程序生成的Inception-V4的训练和测试损失率图表</center>
+
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-2.png" alt="inception-v4 损失率数据图表"></p>
+<center>图4.10 Inception-V4的训练和测试准确率图表</center>
+
+<p>Inception-V4模型在当前训练环境下，训练过程中损失率震荡严重，下降速率缓慢。测试过程中的损失率曲线与训练过程曲线同样近乎重合。以上现象说明了在当前环境下该模型训练效果较差。</p>
+<p>在训练和测试过程中，Inception-V4模型的准确率都保持着不断升高的趋势，但是最终的准确率在30%左右。</p>
+<p>在实际预测中，该模型将带预测图片分类为了truck卡车，说明其模型准确度确实不高。</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-inception-v4-1.png" alt="Inception-v4 模型实际预测结果"></p>
+<center>图4.11 Inception-v4 模型实际预测结果</center>
+
+<p>我们在“实验数据”环节就已经根据程序输出的实验数据提出了“为何作为GoogleNet的迭代版本，Inception-V4反而在性能和实际效果上不如GoogleNet”的疑问并根据相关资料修改了batch_size为256，并进行了第二次的训练和预测。实验数据处理如下所示：</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-3.png" alt="修改后inception-v4 损失率数据图表"></p>
+<center>图4.12 调整参数第二次训练后<br><br>实验程序生成的Inception-V4的训练和测试损失率图表<br></center>
+
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-4.png" alt="修改后inception-v4 准确率数据图表"></p>
+<center>图4.13 调整参数第二次训练后<br><br>Inception-V4的训练和测试准确率图表<br></center>
+
+<p>可以看出，Inception-V4模型在修改参数后的训练环境下，训练过程中损失率震荡有所收敛，但下降速率依旧缓慢。测试过程中的损失率曲线与训练过程曲线同样近乎重合。以上现象说明了在当前环境下该模型训练效果仍然较差。</p>
+<p>在训练和测试过程中，Inception-V4模型的准确率都保持着不断升高的趋势，但是最终的准确率还是在30%左右。<br>在实际预测中，该模型将带预测图片分类为了automobile轿车，说明其模型准确度仍然不高</p>
+<p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-inception-v4-2.png" alt="修改后Inception-v4 模型实际预测结果"></p>
+<center>图4.11 调整参数第二次训练后<br><br>GoogleNet模型实际预测结果<br></center>
+
+<p>我们初步怀疑调整参数后效果仍然较差的原因有如下两点：</p>
+<ul>
+<li>epoch的次数仍然偏少，因为Inception_V4的网络层数明显多于GoogleNet，因此需要更长时间的训练才能够获得一个较好的模型，但由于使用CPU训练速度较慢，实验时间有限，暂时不考虑进行更多次的实验。</li>
+<li>据Inception_V4对应的论文《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》中的描述，该模型的设计主要考虑到了TensorFlow等框架在内存分配等方面的优化设计，因此也存在着paddlepaddle不支持这些特性导致的模型性能表现的不佳。</li>
+</ul>
+<h3 id="实验结果与分析"><a href="#实验结果与分析" class="headerlink" title="实验结果与分析"></a>实验结果与分析</h3><h4 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h4><p>针对在“实验数据处理”章节中对实验数据的图表绘制处理和初步分析，我们能够得出以下综合分析结果：</p>
+<ul>
+<li>使用控制变量法在相同环境（尤其是采用相同参数）下的不同模型进行的性能评价结果，这一方法存在着很大的局限性。本次实验尤为突出的表现正是Inception系列的V1（GoogleNet）和V4之间的可以称之为逆转性的结果。在batch_size=128、epoch=3的条件下，V1在训练速度、训练数据展示的效果、实际预测效果上都优于V4。而出于对这一反常问题的好奇，我们将batch_size按照V4代码的初始来源处的参数改为了batch_size=256，结果效果改善程度有限。这些说明了控制变量法并不能够全面地衡量不同模型之间的性能和实际效果。</li>
+<li>在当前环境下，GoogleNet和ResNet在各项实验数据指标上优于其他模型，而GoogleNet为最优。ResNet仅在准确率的数据层面上的70%略胜于GoogleNet的60%，而GoogleNet无论是在训练所需时间、损失率曲线的震荡程度、损失率曲线的下降速率、以及实际预测的准确程度都明显优于ResNet，且是唯一一个正确分类了带预测图片的模型。</li>
+<li>但是这并不意味着Inception系列的Inception模块设计不存在缺陷，也并不意味着Inception系列不应该引入ResNet的结构设计，相反，ResNet的残差模块的结构设计在实际研究和应用过程中，确实有其“提升深层次网络训练结果的准确度和收敛速度”的独到之处。只不过由于实验时间的关系，我们并未继续引入Inception-ResNet-V1、Inception-ResNet-V2等两者相结合的模型，并进行进一步的实验和分析。</li>
+</ul>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><h5 id="实验结论"><a href="#实验结论" class="headerlink" title="实验结论"></a>实验结论</h5><p>本次实验基于百度AI Stuido平台的在线项目平台，使用了包括VGG、ResNet、GoogleNet（Inception-V1）、Inception-V4等图像分类神经网络模型以及CIFAR10数据集，对相同环境条件下的不同模型在训练和预测过程中的性能开销、数据指标变化情况、实际预测情况等进行了详细的分析讨论。尽管通过实验表明，本次实验所使用的控制变量法存在着一定的局限性，但是本次实验仍然得出了GoogleNet（代表Inception系列）、ResNet在性能指标和实际效果上较为优秀的结论，这肯定了Inception模块、残差模块的结构设计在模型训练、实际预测等多方面相较于传统的多层神经网络存在着相当大的优势。</p>
+<p>本次实验目的步骤明确、实验过程较为顺利、对实验结果的也进行了较为细致的处理和分析，是一次虽然存在问题，但在一定程度上较为成功的人工智能课程实验。</p>
+<h5 id="成果收获"><a href="#成果收获" class="headerlink" title="成果收获"></a>成果收获</h5><p>经过本次实验，我们团队成员收获了以下成果：</p>
+<ul>
+<li>通过研读paddlepaddle官方教程和文档以及其他网上相关资料、编写、移植以及逐行注释不同模型代码、处理分析实验数据等方式，我们锻炼了团队合作完成“查阅人工智能相关文献、理解相关基本概念、使用代码实现相应模型的结构设计、对实验数据进行处理和分析”的一整套人工智能领域研究流程的实战能力。</li>
+<li>通过对paddlepaddle框架的学习，我们初步掌握了深度学习框架、以及其他辅助用途的python库的基本使用方式，了解了使用深度学习框架的需要进行的“数据处理、参数设置、模型训练、测试集测试、结果输出”等一般流程。</li>
+<li>通过这次实验，我们也巩固了团队合作的情况下完成实验的任务分配、进度协调、成员沟通等综合能力。</li>
+</ul>
+<h5 id="待改进的地方"><a href="#待改进的地方" class="headerlink" title="待改进的地方"></a>待改进的地方</h5><p>经过本次实验，我们认为仍然存在以下待改进的地方：</p>
+<ul>
+<li>实验对不同模型的评估比较方法存在问题。控制单一变量法并不能够全面地让不同模型发挥出应有的性能效果，应当考虑给予不同模型以其目前研究水平下最佳的环境配置，通过基于单一测试数据的多次实际预测效果测试来衡量不同模型的性能，其结果会更好。</li>
+<li>未能引入更多较为新型的图像分类模型例如Inception-ResNet系列模型等，进行范围更加广泛的比较和分析。</li>
+</ul>
+<h3 id="鸣谢"><a href="#鸣谢" class="headerlink" title="鸣谢"></a>鸣谢</h3><p>最后，在整篇文章的结尾，我还是要一如既往地感谢本次与我合作完成这一项目的搭档：Jet Lian，他主要负责本次项目的相关文献资料的查阅和汇总，VGG、ResNet、Inception-V4模型代码的编写、注释，实验程序执行和实验数据结果的处理、分析，“实验内容与步骤”之后的实验报告的撰写。</p>
+<p>在他的合作之下，我才能够完成我自己的工作内容：实验方案选取、实验环境初始化、项目训练和预测函数等模块结构的搭建，基于paddlepaddle早期版本GoogleNet模型代码的移植、编写和注释，“实验内容与步骤”及之前的实验报告撰写。</p>
+<p>作为室友兼搭档，我个人是十分敬佩他分析问题、解决问题和实际编码的强大综合能力的，像他这样成绩优秀且技术能力过硬的同学，在USTB的CS专业中乃至SCCE学院中都是罕见的。真的十分荣幸，能够在这三年的时光中与他为友，在技术成长的道路上并肩前行。</p>
+<p>同时，我也十分感谢《人工智能》专业选修课的任课老师王睿老师、以及本次和AI专选课合作的百度AI Studio在线实验平台，正是老师和工作人员们的通力合作和不懈努力，为我们本届CS学生创造了一次实际体验深度学习训练到预测全过程的宝贵机会。希望这样的机会在未来的SCCE学院乃至整个行业会越来越多，再次感谢这些为技术知识的传播做出贡献的人们！</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
+<li>百度paddlepaddle官网教程《深度学习基础教程》的《图像分类》章节：<br><a href="http://paddlepaddle.org/documentation/docs/zh/1.4/beginners_guide/basics/image_classification/index.html" target="_blank" rel="noopener">http://paddlepaddle.org/documentation/docs/zh/1.4/beginners_guide/basics/image_classification/index.html</a></li>
+<li>基于paddlepaddle的inception-v4模型代码：<br><a href="https://github.com/PaddlePaddle/models/blob/43cdafbb97e52e6d93cc5bbdc6e7486f27665fc8/PaddleCV/image_classification/models/inception_v4.py" target="_blank" rel="noopener">https://github.com/PaddlePaddle/models/blob/43cdafbb97e52e6d93cc5bbdc6e7486f27665fc8/PaddleCV/image_classification/models/inception_v4.py</a></li>
+<li>基于paddlepaddle旧版的googlenet模型（本文中展示的是基于该项目移植到新版paddlepaddle后的代码）：<br><a href="https://www.cnblogs.com/charlotte77/p/8066867.html" target="_blank" rel="noopener">https://www.cnblogs.com/charlotte77/p/8066867.html</a></li>
+<li>Google Inception系列论文《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》：<br><a href="https://www.aaai.org/ocs/index.php/AAAI/AAAI17/paper/viewPDFInterstitial/14806/14311" target="_blank" rel="noopener">https://www.aaai.org/ocs/index.php/AAAI/AAAI17/paper/viewPDFInterstitial/14806/14311</a></li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/experience/" rel="tag"><i class="fa fa-tag"></i> experience</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/28/Training-Configuration-for-Yolo-darknet/" rel="next" title="Training Configuration for Yolo-darknet">
+                <i class="fa fa-chevron-left"></i> Training Configuration for Yolo-darknet
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/" rel="prev" title="Training DeepID1 Network for Face Comparison with Google Colab+Tensorflow">
+                Training DeepID1 Network for Face Comparison with Google Colab+Tensorflow <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Mengyin Liu" />
+            
+              <p class="site-author-name" itemprop="name">Mengyin Liu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lmy98129" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:lmy98129@163.com" target="_blank" title="Mail"><i class="fa fa-fw fa-envelope"></i>Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="http://blog.csdn.net/lmy98129" target="_blank" title="CSDN"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/liu-meng-yin-68/" target="_blank" title="知乎"><i class="fa fa-fw fa-comment"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#项目地址"><span class="nav-number">1.</span> <span class="nav-text">项目地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验目的"><span class="nav-number">2.</span> <span class="nav-text">实验目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验仪器"><span class="nav-number">3.</span> <span class="nav-text">实验仪器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验原理"><span class="nav-number">4.</span> <span class="nav-text">实验原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#实验项目概况"><span class="nav-number">4.1.</span> <span class="nav-text">实验项目概况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CIFAR数据集介绍"><span class="nav-number">4.2.</span> <span class="nav-text">CIFAR数据集介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VGG基本介绍"><span class="nav-number">4.3.</span> <span class="nav-text">VGG基本介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ResNet基本介绍"><span class="nav-number">4.4.</span> <span class="nav-text">ResNet基本介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GoogleNet（Inception-V1）基本介绍"><span class="nav-number">4.5.</span> <span class="nav-text">GoogleNet（Inception-V1）基本介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Inception-V4基本介绍"><span class="nav-number">4.6.</span> <span class="nav-text">Inception-V4基本介绍</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验内容与步骤"><span class="nav-number">5.</span> <span class="nav-text">实验内容与步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#项目初始化"><span class="nav-number">5.1.</span> <span class="nav-text">项目初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#登录AI-Studio平台"><span class="nav-number">5.1.1.</span> <span class="nav-text">登录AI Studio平台</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建项目"><span class="nav-number">5.1.2.</span> <span class="nav-text">创建项目</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#运行项目"><span class="nav-number">5.1.3.</span> <span class="nav-text">运行项目</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#加载数据集"><span class="nav-number">5.1.4.</span> <span class="nav-text">加载数据集</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编写项目主体代码"><span class="nav-number">5.2.</span> <span class="nav-text">编写项目主体代码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#导入系统模块代码"><span class="nav-number">5.2.1.</span> <span class="nav-text">导入系统模块代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#训练模型所需的模块函数"><span class="nav-number">5.2.2.</span> <span class="nav-text">训练模型所需的模块函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#训练主函数"><span class="nav-number">5.2.3.</span> <span class="nav-text">训练主函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#预测主函数"><span class="nav-number">5.2.4.</span> <span class="nav-text">预测主函数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#程序主函数"><span class="nav-number">5.2.5.</span> <span class="nav-text">程序主函数</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编写神经网络模型代码"><span class="nav-number">5.3.</span> <span class="nav-text">编写神经网络模型代码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#VGG模型"><span class="nav-number">5.3.1.</span> <span class="nav-text">VGG模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ResNet模型"><span class="nav-number">5.3.2.</span> <span class="nav-text">ResNet模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#GoogleNet模型"><span class="nav-number">5.3.3.</span> <span class="nav-text">GoogleNet模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Inception-V4模型"><span class="nav-number">5.3.4.</span> <span class="nav-text">Inception-V4模型</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#训练和预测"><span class="nav-number">5.4.</span> <span class="nav-text">训练和预测</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验数据"><span class="nav-number">6.</span> <span class="nav-text">实验数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VGG模型-1"><span class="nav-number">6.1.</span> <span class="nav-text">VGG模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ResNet模型-1"><span class="nav-number">6.2.</span> <span class="nav-text">ResNet模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GoogleNet模型-1"><span class="nav-number">6.3.</span> <span class="nav-text">GoogleNet模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Inception-V4模型-1"><span class="nav-number">6.4.</span> <span class="nav-text">Inception-V4模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验数据处理"><span class="nav-number">7.</span> <span class="nav-text">实验数据处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VGG模型数据图表"><span class="nav-number">7.1.</span> <span class="nav-text">VGG模型数据图表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ResNet模型数据图表"><span class="nav-number">7.2.</span> <span class="nav-text">ResNet模型数据图表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GoogleNet模型数据图表"><span class="nav-number">7.3.</span> <span class="nav-text">GoogleNet模型数据图表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Inception-V4模型数据图表"><span class="nav-number">7.4.</span> <span class="nav-text">Inception-V4模型数据图表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实验结果与分析"><span class="nav-number">8.</span> <span class="nav-text">实验结果与分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#结果分析"><span class="nav-number">8.1.</span> <span class="nav-text">结果分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结论"><span class="nav-number">8.2.</span> <span class="nav-text">结论</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#实验结论"><span class="nav-number">8.2.1.</span> <span class="nav-text">实验结论</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#成果收获"><span class="nav-number">8.2.2.</span> <span class="nav-text">成果收获</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#待改进的地方"><span class="nav-number">8.2.3.</span> <span class="nav-text">待改进的地方</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#鸣谢"><span class="nav-number">9.</span> <span class="nav-text">鸣谢</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mengyin Liu</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共56.4k字</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/exturl.js?v=6.0.4"></script>
+
+
+  
+
+</body>
+</html>
