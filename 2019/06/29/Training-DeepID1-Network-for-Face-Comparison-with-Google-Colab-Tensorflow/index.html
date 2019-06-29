@@ -125,7 +125,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-2.jpeg">
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-3.jpeg">
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-4.jpeg">
-<meta property="og:updated_time" content="2019-06-29T16:32:29.381Z">
+<meta property="og:updated_time" content="2019-06-29T16:56:06.266Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Training DeepID1 Network for Face Comparison with Google Colab+Tensorflow">
 <meta name="twitter:description" content="本文由2019年6月《软件工程》必修课的课程设计报告的AI部分改编 主要介绍了“员工考勤管理系统”课程设计中的员工人脸打卡子系统该系统使用了Google CoLab提供的在线Tensorflow GPU平台训练得到的DeepID人脸特征提取比对模型，以及基于该模型搭建的Tensorflow+OpenCV+Flask人脸比对Python服务器">
@@ -369,7 +369,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-06-30T00:32:29+08:00">2019-06-30</time>
+              <time title="更新于" itemprop="dateModified" datetime="2019-06-30T00:56:06+08:00">2019-06-30</time>
             
           </span>
 
@@ -410,29 +410,23 @@
 <li>GitHub（待发布）</li>
 </ol>
 <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><img src="/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/deepid.png" alt="deepid"></p>
-<center>图1.1 DeepID的网络结构<br><br>其中DeepID层能够提取出160维特征向量</center>
+<center>图1.1 DeepID的网络结构<br>其中DeepID层能够提取出160维特征向量<br><br></center>
 
 <p>DeepID是香港中文大学王晓刚教授团队在CVPR2014上发表的论文《Deep Learning Face Representation from Predicting 10,000 Classes》提出的方法，全称为Deep hidden IDentity feature（DeepID）。</p>
 <p>该方法是一种特征提取的算法，对于一个多层卷积-池化网络进行多分类任务训练后，在其中一层中间层DeepID层能够提取出输入的任意人脸图片的160维深层次特征向量（实际上是160x2x60维的特征向量）。</p>
 <p>而这种特征提取的能力是面向任意的（需要经过预先裁剪和对齐后的）人脸图像的，因此作者做出了一个形象的比喻：即使是分10000个类，网络也能够有效区分出每个类别的人脸的显著特征（从而通过特征之间的距离，识别出两张人脸是否为同一人）。</p>
 <p>因此，这一方法体现出的以下特性，使得我们最终在众多人脸特征提取方法中选取了DeepId:</p>
-<ul>
-<li><p>方法实现的仅需一次训练即可获得的人脸特征提取能力，十分适合企业员工人脸考勤环境下员工人脸库经常性变动、待对比人脸图像来源较为复杂的应用场景。</p>
-</li>
-<li><p>方法的网络结构简单，易于理解和实现。同时，网络层数较少，相应地也能够减少训练所消耗的时间和硬件资源，便于我们在短周期（8周，AI子系统开发仅一周）的软件工程课程设计开发过程中安排进度。最终，该算法的训练时长在Google CoLab上为50000次/2小时。</p>
-</li>
-<li><p>方法的准确率较高，在Tensorflow的实现+YouTube Aligned Faces数据集上的测试集人脸比对识别准确率能够达到96%。</p>
-</li>
-</ul>
+<ol>
+<li>方法实现的<strong>仅需一次训练即可获得的人脸特征提取能力</strong>，十分适合企业员工人脸考勤环境下员工人脸库经常性变动、待对比人脸图像来源较为复杂的应用场景。</li>
+<li>方法的<strong>网络结构简单，易于理解和实现。同时，网络层数较少，</strong>相应地也能够减少训练所消耗的时间和硬件资源，便于我们在短周期（8周，AI子系统开发仅一周）的软件工程课程设计开发过程中安排进度。最终，该算法的训练时长在Google CoLab上为50000次/2小时。</li>
+<li>方法的<strong>准确率较高</strong>，在Tensorflow的实现+YouTube Aligned Faces数据集上的测试集人脸比对识别准确率能够达到96%。</li>
+</ol>
 <p>当然，这一方法作为一个2014年提出的方法，（也是DeepID三代中的第一个版本）也存在着一定的缺陷：</p>
-<ul>
-<li><p>仅适用于提取图像中的正脸，也就是通过摄像头正对人脸拍摄的、或者是通过一定图像处理算法重新对齐的人脸。对于侧脸、带有一定歪斜的人脸等日常生活中常见的热恋图像，识别能力大打折扣。<strong>也正因如此，GitHub上DeepID的Tensorflow实现采用了Youtube Aligned Faces数据集，已经做过了人脸对齐的预处理</strong>，用来训练DeepID较为方便。</p>
-</li>
-<li><p>在实际使用的过程中，笔者发现这一模型对于裁剪得出的人脸图像的光线明暗、是否佩戴眼镜等变化是敏感的，只有在光照条件、人脸状况近似于人脸图像采集时的情况下，才能够被识别为同一人。</p>
-</li>
-</ul>
-<p>因此，目前主流的人脸特征比对方法都聚焦在人脸检测阶段的多特征点提取、侧脸特征点的重新对齐、人脸3D模型识别（一个最著名的案例，就是Apple在iPhone上用于FaceID的3D结构光特征点识别方案）等研究方向。</p>
-<p>至于Google Colab，是谷歌打造的的一个在线深度学习平台，基于Jupyter Notebook+Tensorflow，能够通过简单的配置，使用Google免费提供的云端GPU资源，从而无需本地硬件资源地轻松训练自己的神经网络。在很久之前的一次计设校赛上曾经使用过这一平台，因此本项目也继续使用这个平台对DeepID网络进行训练。</p>
+<ol>
+<li><strong>仅适用于提取图像中的正脸</strong>，也就是通过摄像头正对人脸拍摄的、或者是通过一定图像处理算法重新对齐的人脸。对于侧脸、带有一定歪斜的人脸等日常生活中常见的人脸图像，识别能力大打折扣。<strong>也正因如此，GitHub上DeepID的Tensorflow实现采用了Youtube Aligned Faces数据集，已经做过了人脸对齐的预处理</strong>，用来训练DeepID较为方便。</li>
+<li>在实际使用的过程中，笔者发现这一模型对于裁剪得出的人脸图像的<strong>光线明暗、是否佩戴眼镜</strong>等变化是敏感的，只有在光照条件、脸部配饰等状况近似于人脸图像采集时的情况下，才能够被识别为同一人。</li>
+</ol>
+<p>因此，目前主流的人脸特征比对方法都聚焦在人脸检测阶段的多特征点提取、侧脸特征点的重新对齐、人脸3D模型识别（一个最著名的案例，就是Apple在iPhone上用于FaceID的3D结构光特征点识别方案）等研究方向。<br>至于Google Colab，是谷歌打造的的一个在线深度学习平台，基于Jupyter Notebook+Tensorflow，能够通过简单的配置，使用Google免费提供的云端GPU资源，从而无需本地硬件资源地轻松训练自己的神经网络。在很久之前的一次计设校赛上曾经使用过这一平台，因此本项目也继续使用这个平台对DeepID网络进行训练。</p>
 <h3 id="训练环境搭建"><a href="#训练环境搭建" class="headerlink" title="训练环境搭建"></a>训练环境搭建</h3><p>访问 <a href="https://colab.research.google.com，如果没有谷歌账号可以先去注册一个，列表中是已有的Jupyter" target="_blank" rel="noopener">https://colab.research.google.com，如果没有谷歌账号可以先去注册一个，列表中是已有的Jupyter</a> Notebook文件，创建的文件一般会放在Google 云端硬盘的<code>/colab notebook</code>文件夹下。一般是创建Python 3笔记本，</p>
 <p><img src="/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/colab-1.png" alt="colab"></p>
 <center>图2.1 Google Colab的初始界面</center>
