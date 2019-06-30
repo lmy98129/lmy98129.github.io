@@ -140,7 +140,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-3.png">
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-4.png">
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-inception-v4-2.png">
-<meta property="og:updated_time" content="2019-06-29T17:01:44.432Z">
+<meta property="og:updated_time" content="2019-06-30T09:16:20.369Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Different Deep Learning Methods for Image Classification on CIFAR 10">
 <meta name="twitter:description" content="本文是2019年4月《人工智能》专业课的大作业报告摘录 主要内容是在同一数据集（CIFAR10）上使用不同的卷积神经网络模型进行多分类问题训练以及识别效果的横向评估">
@@ -384,7 +384,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-06-30T01:01:44+08:00">2019-06-30</time>
+              <time title="更新于" itemprop="dateModified" datetime="2019-06-30T17:16:20+08:00">2019-06-30</time>
             
           </span>
 
@@ -571,6 +571,8 @@
 <center>图3.2 ResNet模型的训练和预测结果</center>
 
 <h4 id="GoogleNet模型-1"><a href="#GoogleNet模型-1" class="headerlink" title="GoogleNet模型"></a>GoogleNet模型</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-googlenet.png" alt="GoogleNet 模型的运行结果"></p>
+<center>图3.3 GoogleNet模型的训练和预测结果</center>
+
 <h4 id="Inception-V4模型-1"><a href="#Inception-V4模型-1" class="headerlink" title="Inception-V4模型"></a>Inception-V4模型</h4><p>由于在理论上Inception-V4模型应当是GoogleNet（Inception-V1）的改进，但是首次训练和预测后的结果都完全差于GoogleNet，于是我们查询了该模型代码来源的GitHub仓库上的参数设置，发现batch_size应当由128改为256。</p>
 <p>在针对该模型设置该特有参数值之后，我们进行了第二次的额外训练和预测。两次训练和预测的原始数据如下所示：</p>
 <p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/data-inception-v4-1.png" alt="Inception-v4 模型的首次运行结果"></p>

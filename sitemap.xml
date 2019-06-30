@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/</loc>
+    
+    <lastmod>2019-06-30T09:16:20.369Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://lmy98129.github.io/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/</loc>
     
     <lastmod>2019-06-30T08:29:24.795Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>http://lmy98129.github.io/2019/06/30/Reading-Report-on-Relation-Shape-Convolutional-Neural-Network-for-Point-Cloud-Analysis-in-CVPR2019/</loc>
     
     <lastmod>2019-06-30T08:26:25.535Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://lmy98129.github.io/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/</loc>
-    
-    <lastmod>2019-06-29T17:01:44.432Z</lastmod>
     
   </url>
   
