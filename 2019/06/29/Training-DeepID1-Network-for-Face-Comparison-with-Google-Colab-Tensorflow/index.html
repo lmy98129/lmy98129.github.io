@@ -125,7 +125,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-2.jpeg">
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-3.jpeg">
 <meta property="og:image" content="http://lmy98129.github.io/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-4.jpeg">
-<meta property="og:updated_time" content="2019-06-29T16:56:06.266Z">
+<meta property="og:updated_time" content="2019-06-30T08:29:24.795Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Training DeepID1 Network for Face Comparison with Google Colab+Tensorflow">
 <meta name="twitter:description" content="本文由2019年6月《软件工程》必修课的课程设计报告的AI部分改编 主要介绍了“员工考勤管理系统”课程设计中的员工人脸打卡子系统该系统使用了Google CoLab提供的在线Tensorflow GPU平台训练得到的DeepID人脸特征提取比对模型，以及基于该模型搭建的Tensorflow+OpenCV+Flask人脸比对Python服务器">
@@ -369,7 +369,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2019-06-30T00:56:06+08:00">2019-06-30</time>
+              <time title="更新于" itemprop="dateModified" datetime="2019-06-30T16:29:24+08:00">2019-06-30</time>
             
           </span>
 
@@ -410,7 +410,10 @@
 <li>GitHub（待发布）</li>
 </ol>
 <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><img src="/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/deepid.png" alt="deepid"></p>
-<center>图1.1 DeepID的网络结构<br>其中DeepID层能够提取出160维特征向量<br><br></center>
+<center>图1.1 DeepID的网络结构
+其中DeepID层能够提取出160维特征向量
+
+</center>
 
 <p>DeepID是香港中文大学王晓刚教授团队在CVPR2014上发表的论文《Deep Learning Face Representation from Predicting 10,000 Classes》提出的方法，全称为Deep hidden IDentity feature（DeepID）。</p>
 <p>该方法是一种特征提取的算法，对于一个多层卷积-池化网络进行多分类任务训练后，在其中一层中间层DeepID层能够提取出输入的任意人脸图片的160维深层次特征向量（实际上是160x2x60维的特征向量）。</p>
@@ -511,7 +514,7 @@
 <p>最终，在前端小程序的手机前置摄像头调用和用户界面的配合下，该系统的最终效果如下所示：</p>
 <p>  <img src="/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-1.jpeg" alt="weapp-1"><br>  <center>图2.12 地图定位界面</center><br>  <img src="/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-2.jpeg" alt="weapp-2"><br>  <center>图2.13 人脸识别成功，正在比对人脸</center><br>  <img src="/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-3.jpeg" alt="weapp-3"><br>  <center>图2.14 未检测到人脸</center><br>  <img src="/2019/06/29/Training-DeepID1-Network-for-Face-Comparison-with-Google-Colab-Tensorflow/weapp-4.jpeg" alt="weapp-4"><br>  <center>图2.15 比对人脸为同一人后，打卡成功的结果</center></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>本次项目实践了使用OpenCV、Tensorflow、Tensorboard以及docker、Jupyter Notebook等深度学习模型训练的常用工具，并尝试将训练得出的模型进行Python flask后端+小程序前端应用落地。在这一过程中，笔者不但熟悉了从数据集预处理、模型训练框架搭建、模型训练过程监控再到模型实际应用的全过程，也通过编写中文注释、以及对Tensorflow不同版本API的移植重写，进一步熟悉深度学习的常用术语和内在含义，可以说是一次收获颇丰的实践案例。</p>
-<p>在此，特别感谢Google Colab免费提供的Nvidia GTX Tesla T4高性能GPU硬件资源以及在线训练平台，感谢他们为深度学习的推广和应用做出的无数努力和贡献。最后，感谢USTB的《机器学习》（自动化学院）、《人工智能》、《模式识别》等相关专选课老师的辛勤教学，是各位老师传授的宝贵知识和设置的一系列大作业帮助着我进一步理解、学习AI各个方向的知识并加以实践，为未来的研究和工作打下了知识基础。感谢大家！</p>
+<p>在此，特别感谢Google Colab免费提供的Nvidia GTX Tesla T4高性能GPU硬件资源以及在线训练平台，感谢他们为深度学习的推广和应用做出的无数努力和贡献。最后，感谢USTB的《机器学习》（自动化学院）、《人工智能》、《模式识别》、《软件工程》等相关课程老师的辛勤教学，是各位老师传授的宝贵知识和设置的一系列大作业帮助着我进一步理解、学习AI各个方向的知识并加以实践，为未来的研究和工作打下了知识基础。感谢大家！</p>
 <h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
 <li>GitHub上DeepID的Tensorflow实现（本文在此基础上修改了调用的TensorflowAPI到2.0bata，并添加中文注释）：<br><a href="https://github.com/jinze1994/DeepID1" target="_blank" rel="noopener">https://github.com/jinze1994/DeepID1</a></li>
 <li>DeepID1论文《Deep Learning Face Representation from Predicting 10,000 Classes》：<br><a href="https://www.cv-foundation.org/openaccess/content_cvpr_2014/papers/Sun_Deep_Learning_Face_2014_CVPR_paper.pdf" target="_blank" rel="noopener">https://www.cv-foundation.org/openaccess/content_cvpr_2014/papers/Sun_Deep_Learning_Face_2014_CVPR_paper.pdf</a></li>
@@ -561,6 +564,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/30/Reading-Report-on-Relation-Shape-Convolutional-Neural-Network-for-Point-Cloud-Analysis-in-CVPR2019/" rel="prev" title="Reading Report on Relation-Shape Convolutional Neural Network for Point Cloud Analysis in CVPR2019">
+                Reading Report on Relation-Shape Convolutional Neural Network for Point Cloud Analysis in CVPR2019 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -638,7 +645,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -772,7 +779,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共56.4k字</span>
+  <span class="post-count">博客全站共63.7k字</span>
 </div>
 
         
@@ -1240,6 +1247,13 @@
   
 
   
+  
+
+  
+  
+
+  
+
 
   
   

@@ -470,6 +470,7 @@
 </li>
 </ol>
 <h5 id="技术选型"><a href="#技术选型" class="headerlink" title="技术选型"></a>技术选型</h5><p>项目第一版的技术选型由fafnir完成，总体情况是采用了腾讯云提供的<a href="https://github.com/tencentyun/wafer" target="_blank" rel="noopener">wafer小程序一站式解决方案</a>，具体来说应该是wafer1，选择的理由是相比于wafer2中服务器无法取得完整访问权的形式，wafer1可以直接在服务器上部署后台管理网站。（<strong>虽然后来的经费结算显示，使用wafer2方案可能会更经济一些</strong>，而且截至文章发布，腾讯云已经不再主推wafer1，并撤换下了多个wafer小程序一站式解决方案的访问入口，当前能够全新购买的解决方案的只剩下基于开发者工具的wafer2方案，两者之间的不同以及基本架构可以<a href="https://cloud.tencent.com/developer/article/1007109" target="_blank" rel="noopener">看这里</a>）当时的具体项目选型如下：</p>
+<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -501,6 +502,7 @@
 </tr>
 </tbody>
 </table>
+</div>
 <h5 id="开发难点及笔记"><a href="#开发难点及笔记" class="headerlink" title="开发难点及笔记"></a>开发难点及笔记</h5><h6 id="JavaScript的异步单线程特性"><a href="#JavaScript的异步单线程特性" class="headerlink" title="JavaScript的异步单线程特性"></a>JavaScript的异步单线程特性</h6><p>由于对Node.js乃至JavaScript的异步单线程的特性，尤其是回调函数的理解还较为浅薄（可能也是在之前并未直接接触过前后端通信以及数据库通信的原因造成的。是的我之前的工作真的就是改改开源PHP项目的代码，没怎么认真研读过代码以及文档），所以在设计后端服务器与数据库通信模块时，仍然将思路停留在C/C++之类的线性思路上，例如有如下代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> res = <span class="string">'nothing'</span>;</span><br><span class="line">connection.query(<span class="string">"USE "</span>+database);</span><br><span class="line">connection.query(<span class="string">'SELECT * FROM '</span>+databaseForm, <span class="function"><span class="keyword">function</span> (<span class="params">error, results, fields</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (error) <span class="keyword">throw</span> error;</span><br><span class="line">    <span class="keyword">if</span> (results) &#123;</span><br><span class="line">        res = results;</span><br><span class="line">        <span class="built_in">console</span>.log(res);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(res);</span><br></pre></td></tr></table></figure></p>
 <p>其执行结果按照我的想象应该是：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nothing</span><br><span class="line">(查询的结果)</span><br><span class="line">(查询的结果)</span><br></pre></td></tr></table></figure></p>
 <p>结果是：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nothing</span><br><span class="line">(查询的结果)</span><br><span class="line">nothing</span><br></pre></td></tr></table></figure></p>
@@ -814,7 +816,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -948,7 +950,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共56.4k字</span>
+  <span class="post-count">博客全站共63.7k字</span>
 </div>
 
         
@@ -1416,6 +1418,13 @@
   
 
   
+  
+
+  
+  
+
+  
+
 
   
   

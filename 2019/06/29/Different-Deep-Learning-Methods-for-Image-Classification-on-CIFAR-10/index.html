@@ -483,7 +483,8 @@
 <p>但是这个特点同样带来了缺陷：并行的池化层并不会改变整个Inception模块的通道数量，并行卷积层构成的Inception在将各个并行层结果拼接后，特征的通道数较大，经过几层这样的模块堆积后，通道数会越来越大，导致参数和计算量也随之增大。因此，Inception还在每一个并行分支上引入了1*1卷积层进行降维操作，减少通道数，解决了这一问题。</p>
 <p>除此之外，GoogleNet的另一个显著特征就是采用了三个子网络，可以得到3个网络的损失率进行加权求和得出整个网络的损失，从而有利于使用优化器（optimizer）的训练程序计算更准确的梯度，加快收敛速度。</p>
 <h4 id="Inception-V4基本介绍"><a href="#Inception-V4基本介绍" class="headerlink" title="Inception-V4基本介绍"></a>Inception-V4基本介绍</h4><p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/inception-v4.png" alt="inception-v4"></p>
-<center>图1.6 inception-sterm模块示意图<br>（图片摘自论文《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》）<br></center>
+<center>图1.6 inception-sterm模块示意图<br>（图片摘自论文《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》）
+</center>
 
 <p>Inception-V4是Inception系列中的最新版本，经过V2版本添加batchnorm，V3版本对卷积层的调整，在Inception-V4中加入了同样基于卷积+池化并行理念的inception-sterm模块，并分化出了inception-A、B、C三种不同的模块类型。其设计的理念是要与添加了残差模块的Inception-ResNet具有相同的性能，因此使用了大量的经验性的结构设计，其对应的论文中没有对这些结构设计的由来做出进一步的解释说明。</p>
 <p>此外，该模型还添加了reduction模块，起到了之前版本中的一层单层池化层的作用，同样采用了卷积+池化并行的结构设计。</p>
@@ -628,15 +629,21 @@
 
 <p>我们在“实验数据”环节就已经根据程序输出的实验数据提出了“为何作为GoogleNet的迭代版本，Inception-V4反而在性能和实际效果上不如GoogleNet”的疑问并根据相关资料修改了batch_size为256，并进行了第二次的训练和预测。实验数据处理如下所示：</p>
 <p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-3.png" alt="修改后inception-v4 损失率数据图表"></p>
-<center>图4.12 调整参数第二次训练后<br><br>实验程序生成的Inception-V4的训练和测试损失率图表<br></center>
+<center>图4.12 调整参数第二次训练后<br>
+实验程序生成的Inception-V4的训练和测试损失率图表
+</center>
 
 <p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/graph-inception-v4-4.png" alt="修改后inception-v4 准确率数据图表"></p>
-<center>图4.13 调整参数第二次训练后<br><br>Inception-V4的训练和测试准确率图表<br></center>
+<center>图4.13 调整参数第二次训练后<br>
+Inception-V4的训练和测试准确率图表
+</center>
 
 <p>可以看出，Inception-V4模型在修改参数后的训练环境下，训练过程中损失率震荡有所收敛，但下降速率依旧缓慢。测试过程中的损失率曲线与训练过程曲线同样近乎重合。以上现象说明了在当前环境下该模型训练效果仍然较差。</p>
 <p>在训练和测试过程中，Inception-V4模型的准确率都保持着不断升高的趋势，但是最终的准确率还是在30%左右。<br>在实际预测中，该模型将带预测图片分类为了automobile轿车，说明其模型准确度仍然不高</p>
 <p><img src="/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/dog-inception-v4-2.png" alt="修改后Inception-v4 模型实际预测结果"></p>
-<center>图4.11 调整参数第二次训练后<br><br>GoogleNet模型实际预测结果<br></center>
+<center>图4.11 调整参数第二次训练后<br>
+GoogleNet模型实际预测结果
+</center>
 
 <p>我们初步怀疑调整参数后效果仍然较差的原因有如下两点：</p>
 <ul>
@@ -795,7 +802,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-count">11</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -929,7 +936,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共56.4k字</span>
+  <span class="post-count">博客全站共63.7k字</span>
 </div>
 
         
@@ -1397,6 +1404,13 @@
   
 
   
+  
+
+  
+  
+
+  
+
 
   
   
