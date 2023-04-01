@@ -6,10 +6,10 @@
 
 
 <html class="theme-next gemini use-motion" lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 <meta name="theme-color" content="#222">
 
 
@@ -22,8 +22,8 @@
 
 
 
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
 
 
 
@@ -40,15 +40,19 @@
 
 
 
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
 
-<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css">
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
 
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
@@ -71,11 +75,11 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '',
     scheme: 'Gemini',
     version: '6.0.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
-    fancybox: false,
+    fancybox: true,
     fastclick: false,
     lazyload: false,
     tabs: true,
@@ -97,35 +101,35 @@
 
 
   
-  <meta name="keywords" content="experience,">
+  <meta name="keywords" content="experience," />
 
 
 <meta name="description" content="Everything’s coming up roses.  续上次的笔记分享yolo-darknet神经网络训练全过程的配置经验">
-<meta name="keywords" content="experience">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Training Configuration for Yolo-darknet">
 <meta property="og:url" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/index.html">
 <meta property="og:site_name" content="NeXT">
 <meta property="og:description" content="Everything’s coming up roses.  续上次的笔记分享yolo-darknet神经网络训练全过程的配置经验">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:locale">
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/training3.png">
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/training4.png">
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/testing7.png">
 <meta property="og:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/testing1.png">
-<meta property="og:updated_time" content="2019-06-29T16:22:32.000Z">
+<meta property="article:published_time" content="2018-11-28T07:29:03.000Z">
+<meta property="article:modified_time" content="2019-06-29T16:22:32.000Z">
+<meta property="article:author" content="Mengyin Liu">
+<meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Training Configuration for Yolo-darknet">
-<meta name="twitter:description" content="Everything’s coming up roses.  续上次的笔记分享yolo-darknet神经网络训练全过程的配置经验">
 <meta name="twitter:image" content="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/training3.png">
 
 
 
-  <link rel="alternate" href="/atom.xml" title="NeXT" type="application/atom+xml">
+  <link rel="alternate" href="/atom.xml" title="NeXT" type="application/atom+xml" />
 
 
 
 
-  <link rel="canonical" href="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/">
+  <link rel="canonical" href="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/"/>
 
 
 
@@ -172,7 +176,7 @@
   </style>
 </noscript>
 
-</head>
+<meta name="generator" content="Hexo 5.4.2"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -190,7 +194,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/" class="brand" rel="start">
+      <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">NeXT</span>
         <span class="logo-line-after"><i></i></span>
@@ -219,25 +223,25 @@
         
         <li class="menu-item menu-item-home">
           <a href="/" rel="section">
-            <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
         </li>
       
         
         <li class="menu-item menu-item-academic">
           <a href="/academic/" rel="section">
-            <i class="menu-item-icon fa fa-fw fa-flask"></i> <br>学术</a>
+            <i class="menu-item-icon fa fa-fw fa-flask"></i> <br />学术</a>
         </li>
       
         
         <li class="menu-item menu-item-tags">
           <a href="/tags/" rel="section">
-            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
         </li>
       
         
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
-            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
         </li>
       
 
@@ -284,8 +288,8 @@
     <link itemprop="mainEntityOfPage" href="http://lmy98129.github.io/2018/11/28/Training-Configuration-for-Yolo-darknet/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Mengyin Liu">
-      <meta itemprop="description" content>
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.jpg">
     </span>
 
@@ -365,7 +369,7 @@
 <p>Everything’s coming up roses.</p>
 </blockquote>
 <p>续上次的笔记<br>分享yolo-darknet神经网络训练全过程的配置经验</p>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于本文中描述的yolo-darknet训练配置流程来源较多，而且训练配置时间为今年暑期，距离本文完稿时间较远，因此本文不可避免地会存在一定的失误和错漏。恳请发现问题的读者不吝赐教，通过首页的联系方式向作者提出宝贵意见。</p>
 <h2 id="数据集的标注、修改"><a href="#数据集的标注、修改" class="headerlink" title="数据集的标注、修改"></a>数据集的标注、修改</h2><p>数据集的采集来源以及采集方式属于项目内容，此处暂时不便叙述。对于采集得到的数据集，尤其是针对yolo-darknet的图片数据集，应当至少满足如下的要求：</p>
 <ul>
@@ -384,9 +388,9 @@
 <p>基本上就是对于标注的方框的位置和大小的记录。标注生成的是整个VOC数据集文件夹，一般有两个文件夹：图片文件夹Image和标记文件夹xml。标记文件夹中每一个xml文件的文件名基本上都对应了的图片文件夹中的图片文件。</p>
 <p>应当注意的是，一旦移动了xml文件夹或整个数据集文件夹，必须将所有xml文件中的图片文件夹、图片路径改成对应的新文件夹、新路径，否则必然报错。</p>
 <p>但问题是，一旦数据集规模像本项目一样巨大时，人工逐个更改xml就十分困难。所以需要python脚本进行批量文件处理。此处摘录一部分代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">'utf8'</span>) </span><br><span class="line"></span><br><span class="line">path = <span class="string">"/home/blean/VOC/validateImage/"</span></span><br><span class="line">oldpath = <span class="string">"/home/blean/VOC/pos/"</span></span><br><span class="line">newpath = <span class="string">"/home/blean/VOC/Image/"</span></span><br><span class="line">filelist = os.listdir(path)</span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> files <span class="keyword">in</span> filelist:</span><br><span class="line">    <span class="keyword">if</span> os.path.splitext(files)[<span class="number">1</span>] != <span class="string">".jpg"</span> <span class="keyword">and</span> os.path.splitext(files)[<span class="number">1</span>] != <span class="string">".txt"</span>:</span><br><span class="line">        tmp = os.path.splitext(files)[<span class="number">0</span>]</span><br><span class="line">        os.rename(path+files, path+tmp+<span class="string">".jpg"</span>)</span><br><span class="line">        <span class="comment"># 强行将非jpg的后缀，例如JPG大写后缀或png后缀更改成jpg</span></span><br><span class="line">        <span class="keyword">print</span> path+files</span><br><span class="line">        i = i + <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    tree = ET.parse(path+files)</span><br><span class="line">    root = tree.getroot()</span><br><span class="line">    filename = root.findall(<span class="string">'filename'</span>)[<span class="number">0</span>].text</span><br><span class="line">    tmp = os.path.splitext(filename)[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 寻找xml文件中对应的文件名</span></span><br><span class="line">    <span class="keyword">print</span> path+tmp+<span class="string">".xml"</span></span><br><span class="line">    os.rename(path+files, path+tmp+<span class="string">".xml"</span>)</span><br><span class="line">    <span class="comment"># 同样地将xml文件名改成后缀修改后的图片文件名</span></span><br><span class="line">    root.findall(<span class="string">'path'</span>)[<span class="number">0</span>].text = tmp.replace(oldpath, newpath)</span><br><span class="line">    <span class="comment"># 修改路径</span></span><br><span class="line">    tmp = root.findall(<span class="string">'filename'</span>)[<span class="number">0</span>].text</span><br><span class="line">    <span class="keyword">if</span> tmp.find(<span class="string">"捕获"</span>) != <span class="number">-1</span>:</span><br><span class="line">        <span class="keyword">print</span> tmp</span><br><span class="line">        root.findall(<span class="string">'filename'</span>)[<span class="number">0</span>].text = tmp.replace(<span class="string">"捕获"</span>, <span class="string">"buhuo"</span>)</span><br><span class="line">        tree.write(path+files)</span><br><span class="line">    <span class="comment"># 修改某些中文文件名</span></span><br><span class="line">    root.findall(<span class="string">'folder'</span>)[<span class="number">0</span>].text = tmp.replace(<span class="string">"pos"</span>, <span class="string">"Image"</span>)</span><br><span class="line">    <span class="comment"># 修改图片文件夹名称</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> i</span><br><span class="line"><span class="comment"># 打印总数</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">&#x27;utf8&#x27;</span>) </span><br><span class="line"></span><br><span class="line">path = <span class="string">&quot;/home/blean/VOC/validateImage/&quot;</span></span><br><span class="line">oldpath = <span class="string">&quot;/home/blean/VOC/pos/&quot;</span></span><br><span class="line">newpath = <span class="string">&quot;/home/blean/VOC/Image/&quot;</span></span><br><span class="line">filelist = os.listdir(path)</span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> files <span class="keyword">in</span> filelist:</span><br><span class="line">    <span class="keyword">if</span> os.path.splitext(files)[<span class="number">1</span>] != <span class="string">&quot;.jpg&quot;</span> <span class="keyword">and</span> os.path.splitext(files)[<span class="number">1</span>] != <span class="string">&quot;.txt&quot;</span>:</span><br><span class="line">        tmp = os.path.splitext(files)[<span class="number">0</span>]</span><br><span class="line">        os.rename(path+files, path+tmp+<span class="string">&quot;.jpg&quot;</span>)</span><br><span class="line">        <span class="comment"># 强行将非jpg的后缀，例如JPG大写后缀或png后缀更改成jpg</span></span><br><span class="line">        <span class="built_in">print</span> path+files</span><br><span class="line">        i = i + <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    tree = ET.parse(path+files)</span><br><span class="line">    root = tree.getroot()</span><br><span class="line">    filename = root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text</span><br><span class="line">    tmp = os.path.splitext(filename)[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 寻找xml文件中对应的文件名</span></span><br><span class="line">    <span class="built_in">print</span> path+tmp+<span class="string">&quot;.xml&quot;</span></span><br><span class="line">    os.rename(path+files, path+tmp+<span class="string">&quot;.xml&quot;</span>)</span><br><span class="line">    <span class="comment"># 同样地将xml文件名改成后缀修改后的图片文件名</span></span><br><span class="line">    root.findall(<span class="string">&#x27;path&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(oldpath, newpath)</span><br><span class="line">    <span class="comment"># 修改路径</span></span><br><span class="line">    tmp = root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text</span><br><span class="line">    <span class="keyword">if</span> tmp.find(<span class="string">&quot;捕获&quot;</span>) != -<span class="number">1</span>:</span><br><span class="line">        <span class="built_in">print</span> tmp</span><br><span class="line">        root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(<span class="string">&quot;捕获&quot;</span>, <span class="string">&quot;buhuo&quot;</span>)</span><br><span class="line">        tree.write(path+files)</span><br><span class="line">    <span class="comment"># 修改某些中文文件名</span></span><br><span class="line">    root.findall(<span class="string">&#x27;folder&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(<span class="string">&quot;pos&quot;</span>, <span class="string">&quot;Image&quot;</span>)</span><br><span class="line">    <span class="comment"># 修改图片文件夹名称</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> i</span><br><span class="line"><span class="comment"># 打印总数</span></span><br></pre></td></tr></table></figure>
 <p>注：以上代码是本人为了修正数据集格式自行编写的，具有很强的临时性，是不同功能的python代码之间的整合，如果不需要某些功能，可以将对应代码手动注释掉</p>
-<h2 id="训练数据集和验证数据集的拆分"><a href="#训练数据集和验证数据集的拆分" class="headerlink" title="训练数据集和验证数据集的拆分"></a>训练数据集和验证数据集的拆分</h2><p>数据集应当分成训练集和验证集，以便于对训练效果进行评估。<br>这里作者直接参考了这篇CSDN上的文章<a href="https://blog.csdn.net/qq_34484472/article/details/73135354" target="_blank" rel="noopener">《YOLO训练自己的数据集》</a>中的python脚本，内容摘录如下：</p>
+<h2 id="训练数据集和验证数据集的拆分"><a href="#训练数据集和验证数据集的拆分" class="headerlink" title="训练数据集和验证数据集的拆分"></a>训练数据集和验证数据集的拆分</h2><p>数据集应当分成训练集和验证集，以便于对训练效果进行评估。<br>这里作者直接参考了这篇CSDN上的文章<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34484472/article/details/73135354">《YOLO训练自己的数据集》</a>中的python脚本，内容摘录如下：</p>
 <blockquote>
 </blockquote>
 <pre><code>下载链接：http://pan.baidu.com/s/1hs22I7U 密码：wdv0
@@ -396,18 +400,18 @@
 </code></pre><blockquote>
 </blockquote>
 <p>下载好的python脚本一般不能立即用，根据运行python脚本出现的报错，应当对其进行相应的修改，例如：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">classes = [<span class="string">"cat"</span>] <span class="comment">#把这个标签改成你自己的数据集中标记的标签</span></span><br><span class="line"><span class="comment">#那个sets看起来很奇怪，但是不用改也能用。python研究的少，暂时不知道具体原因</span></span><br></pre></td></tr></table></figure>
-<h2 id="对darknet的配置和更改"><a href="#对darknet的配置和更改" class="headerlink" title="对darknet的配置和更改"></a>对darknet的配置和更改</h2><p>darknet本身并非完全开箱即用的图像识别训练框架，因此需要对它进行有针对性的配置和必要的更改。此处同样是根据<a href="https://blog.csdn.net/qq_34484472/article/details/73135354" target="_blank" rel="noopener">《YOLO训练自己的数据集》</a>以及其他几篇文章的指导和建议进行配置的，主要有以下几点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">classes = [<span class="string">&quot;cat&quot;</span>] <span class="comment">#把这个标签改成你自己的数据集中标记的标签</span></span><br><span class="line"><span class="comment">#那个sets看起来很奇怪，但是不用改也能用。python研究的少，暂时不知道具体原因</span></span><br></pre></td></tr></table></figure>
+<h2 id="对darknet的配置和更改"><a href="#对darknet的配置和更改" class="headerlink" title="对darknet的配置和更改"></a>对darknet的配置和更改</h2><p>darknet本身并非完全开箱即用的图像识别训练框架，因此需要对它进行有针对性的配置和必要的更改。此处同样是根据<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34484472/article/details/73135354">《YOLO训练自己的数据集》</a>以及其他几篇文章的指导和建议进行配置的，主要有以下几点：</p>
 <p>首先，对darknet的cfg/voc.data进行配置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">classes= 标签类别总数</span><br><span class="line">train = 填之前脚本生成的训练集文件列表trainImageId.txt</span><br><span class="line">valid = 填之前脚本生成的验证集文件列表validateImagePath.txt</span><br><span class="line">names = data/xxx.names</span><br><span class="line">backup = 存放训练结果模型的路径</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">classes= 标签类别总数</span><br><span class="line">train = 填之前脚本生成的训练集文件列表trainImageId.txt</span><br><span class="line">valid = 填之前脚本生成的验证集文件列表validateImagePath.txt</span><br><span class="line">names = data/xxx.names</span><br><span class="line">backup = 存放训练结果模型的路径</span><br></pre></td></tr></table></figure>
 <p>在data文件夹下的names文件中，每行写一条标签名称</p>
 <p>其次，对要使用的神经网络版本yolo2-voc对应的配置文件yolo2-voc.cfg，应当更改以下几处：</p>
 <ul>
 <li>将最后的[region]层神经网络的配置中的classes改为1（即标记类别的总数）</li>
 <li>将最后一个[convolutional]卷积层中的filter改为30（filter的公式filters=(classes+ coords+ 1)<em> (NUM) ，我的是(1+4+1)</em> 5=30）</li>
 </ul>
-<p>注：这里coords可以认为是坐标，设置的标记是一个方框则取4。NUM是神经网络的层数。filter公式的来源请参见国外开发者们的讨论：<a href="https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg" target="_blank" rel="noopener">https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg</a></p>
-<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>在yolo的官网下载预训练模型，地址：<a href="http://pjreddie.com/media/files/darknet53.conv.74" target="_blank" rel="noopener">http://pjreddie.com/media/files/darknet53.conv.74</a></p>
+<p>注：这里coords可以认为是坐标，设置的标记是一个方框则取4。NUM是神经网络的层数。filter公式的来源请参见国外开发者们的讨论：<a target="_blank" rel="noopener" href="https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg">https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg</a></p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>在yolo的官网下载预训练模型，地址：<a target="_blank" rel="noopener" href="http://pjreddie.com/media/files/darknet53.conv.74">http://pjreddie.com/media/files/darknet53.conv.74</a></p>
 <p>并执行训练命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./darknet detector train cfg/voc.data cfg/yolov2-voc.cfg darknet53.conv.74</span><br></pre></td></tr></table></figure>
 <p>之后便开始了对神经网络的训练，在1000次训练之内，每100次就在backup文件夹中生成一次权重模型，在1000次训练以上，每10000次生成一次权重模型。本项目的最终训练次数达到了50000次。</p>
@@ -426,16 +430,16 @@
 <p>网络图片：</p>
 <p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/testing1.png" alt="测试过程截图"></p>
 <p>但是，可以看出这样手动输入命令进行逐个测试的方法，在测试上文中提到的从标记数据集中拆分出来的有一定数量图片的验证集时十分地不友好。而且必须手工收集每次测试中得到的准确度信息、手工进行统计计算。</p>
-<p>所以这里参考了CSDN上的另一篇文章<a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754" target="_blank" rel="noopener">《YOLOv3批量测试图片并保存在自定义文件夹下》</a>以及简书上的一篇文章<a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754" target="_blank" rel="noopener">《Darknet 评估训练好的网络的性能》</a>对darknet中的example文件夹下的detector.c文件中的代码进行更改，以便于进行批量测试、统计、评估模型在验证集上的准确度，并输出结果：</p>
+<p>所以这里参考了CSDN上的另一篇文章<a target="_blank" rel="noopener" href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">《YOLOv3批量测试图片并保存在自定义文件夹下》</a>以及简书上的一篇文章<a target="_blank" rel="noopener" href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">《Darknet 评估训练好的网络的性能》</a>对darknet中的example文件夹下的detector.c文件中的代码进行更改，以便于进行批量测试、统计、评估模型在验证集上的准确度，并输出结果：</p>
 <ol>
 <li>修改validate_detector_recall函数定义和调用为：</li>
 </ol>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">validate_detector_recall</span><span class="params">(<span class="keyword">char</span> *datacfg, <span class="keyword">char</span> *cfgfile, <span class="keyword">char</span> *weightfile)</span></span></span><br><span class="line"><span class="function"><span class="title">validate_detector_recall</span><span class="params">(datacfg, cfg, weights)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">validate_detector_recall</span><span class="params">(<span class="type">char</span> *datacfg, <span class="type">char</span> *cfgfile, <span class="type">char</span> *weightfile)</span></span></span><br><span class="line"><span class="function"><span class="title">validate_detector_recall</span><span class="params">(datacfg, cfg, weights)</span></span>;</span><br></pre></td></tr></table></figure>
 <ol start="2">
 <li>修改validate_detector_recall的初始化代码</li>
 </ol>
-<p>修改前：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">list</span> *plist = get_paths(<span class="string">"data/voc.2007.test"</span>);</span><br><span class="line"><span class="keyword">char</span> **paths = (<span class="keyword">char</span> **)list_to_array(plist);</span><br></pre></td></tr></table></figure></p>
-<p>修改后：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">list</span> *options = read_data_cfg(datacfg);</span><br><span class="line"><span class="keyword">char</span> *valid_images = option_find_str(options, <span class="string">"valid"</span>, <span class="string">"/home/blean/VOC/validateImagePath.txt"</span>);</span><br><span class="line"><span class="built_in">list</span> *plist = get_paths(valid_images);</span><br><span class="line"><span class="keyword">char</span> **paths = (<span class="keyword">char</span> **)list_to_array(plist);</span><br></pre></td></tr></table></figure></p>
+<p>修改前：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">list *plist = <span class="built_in">get_paths</span>(<span class="string">&quot;data/voc.2007.test&quot;</span>);</span><br><span class="line"><span class="type">char</span> **paths = (<span class="type">char</span> **)<span class="built_in">list_to_array</span>(plist);</span><br></pre></td></tr></table></figure></p>
+<p>修改后：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">list *options = <span class="built_in">read_data_cfg</span>(datacfg);</span><br><span class="line"><span class="type">char</span> *valid_images = <span class="built_in">option_find_str</span>(options, <span class="string">&quot;valid&quot;</span>, <span class="string">&quot;/home/blean/VOC/validateImagePath.txt&quot;</span>);</span><br><span class="line">list *plist = <span class="built_in">get_paths</span>(valid_images);</span><br><span class="line"><span class="type">char</span> **paths = (<span class="type">char</span> **)<span class="built_in">list_to_array</span>(plist);</span><br></pre></td></tr></table></figure></p>
 <ol start="3">
 <li>修改结束后需要重新编译darknet主程序，命令如下</li>
 </ol>
@@ -443,7 +447,7 @@
 <p>在完成上述修改后即可使用darknet的recall命令进行评估测试并输出结果</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./darknet detector recall cfg/voc.data cfg/yolov2-voc.cfg backup/yolov2-voc_50000.weights -out drowning_recall.txt</span><br></pre></td></tr></table></figure>
 <p>输出的结果如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> Number Correct Total 	Rps/Img 	IOU 		Recall </span><br><span class="line"> 0     1     1	RPs/Img: 23.00	IOU: 71.42%	Recall:100.00%</span><br><span class="line"> 1     2     2	RPs/Img: 19.00	IOU: 66.04%	Recall:100.00%</span><br><span class="line"> 2     3     3	RPs/Img: 31.00	IOU: 65.52%	Recall:100.00%</span><br><span class="line"> 3     4     4	RPs/Img: 31.75	IOU: 65.22%	Recall:100.00%</span><br><span class="line"> 4     5     5	RPs/Img: 29.40	IOU: 65.55%	Recall:100.00%</span><br><span class="line"> 5     6     6	RPs/Img: 29.67	IOU: 67.34%	Recall:100.00%</span><br><span class="line"> 6     6     7	RPs/Img: 32.00	IOU: 60.25%	Recall:85.71%</span><br><span class="line"> 7     7     8	RPs/Img: 35.12	IOU: 59.75%	Recall:87.50%</span><br><span class="line"> 8     8     9	RPs/Img: 33.11	IOU: 60.55%	Recall:88.89%</span><br><span class="line"> 9     8    10	RPs/Img: 33.20	IOU: 59.48%	Recall:80.00%</span><br><span class="line">10     9    11	RPs/Img: 34.00	IOU: 59.27%	Recall:81.82%</span><br><span class="line">11    10    12	RPs/Img: 33.00	IOU: 59.65%	Recall:83.33%</span><br><span class="line">12    11    13	RPs/Img: 32.00	IOU: 60.33%	Recall:84.62%</span><br><span class="line">13    12    14	RPs/Img: 30.64	IOU: 60.85%	Recall:85.71%</span><br><span class="line">14    12    14	RPs/Img: 29.60	IOU: 60.85%	Recall:85.71%</span><br><span class="line">15    13    15	RPs/Img: 29.62	IOU: 61.41%	Recall:86.67%</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> Number Correct Total 	Rps/Img 	IOU 		Recall </span><br><span class="line"> 0     1     1	RPs/Img: 23.00	IOU: 71.42%	Recall:100.00%</span><br><span class="line"> 1     2     2	RPs/Img: 19.00	IOU: 66.04%	Recall:100.00%</span><br><span class="line"> 2     3     3	RPs/Img: 31.00	IOU: 65.52%	Recall:100.00%</span><br><span class="line"> 3     4     4	RPs/Img: 31.75	IOU: 65.22%	Recall:100.00%</span><br><span class="line"> 4     5     5	RPs/Img: 29.40	IOU: 65.55%	Recall:100.00%</span><br><span class="line"> 5     6     6	RPs/Img: 29.67	IOU: 67.34%	Recall:100.00%</span><br><span class="line"> 6     6     7	RPs/Img: 32.00	IOU: 60.25%	Recall:85.71%</span><br><span class="line"> 7     7     8	RPs/Img: 35.12	IOU: 59.75%	Recall:87.50%</span><br><span class="line"> 8     8     9	RPs/Img: 33.11	IOU: 60.55%	Recall:88.89%</span><br><span class="line"> 9     8    10	RPs/Img: 33.20	IOU: 59.48%	Recall:80.00%</span><br><span class="line">10     9    11	RPs/Img: 34.00	IOU: 59.27%	Recall:81.82%</span><br><span class="line">11    10    12	RPs/Img: 33.00	IOU: 59.65%	Recall:83.33%</span><br><span class="line">12    11    13	RPs/Img: 32.00	IOU: 60.33%	Recall:84.62%</span><br><span class="line">13    12    14	RPs/Img: 30.64	IOU: 60.85%	Recall:85.71%</span><br><span class="line">14    12    14	RPs/Img: 29.60	IOU: 60.85%	Recall:85.71%</span><br><span class="line">15    13    15	RPs/Img: 29.62	IOU: 61.41%	Recall:86.67%</span><br></pre></td></tr></table></figure>
 <p>其中各项参数的解释如下：</p>
 <ul>
 <li>Number表示处理到第几张图片。</li>
@@ -455,10 +459,10 @@
 </ul>
 <p>可以从最后一条代表处理了全部验证集的统计结果看出，经过验证集的检验，训练得出的模型识别目标物体的总正确率大致在86%左右，可以说训练效果较为理想。</p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
-<li>YOLO-darknet官网<br><a href="https://pjreddie.com/darknet/yolo/" target="_blank" rel="noopener">https://pjreddie.com/darknet/yolo/</a></li>
-<li>YOLO训练自己的数据集：<br><a href="https://blog.csdn.net/qq_34484472/article/details/73135354" target="_blank" rel="noopener">https://blog.csdn.net/qq_34484472/article/details/73135354</a></li>
-<li>YOLOv3批量测试图片并保存在自定义文件夹下：<br><a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754" target="_blank" rel="noopener">https://blog.csdn.net/mieleizhi0522/article/details/79989754</a></li>
-<li>Darknet 评估训练好的网络的性能：<br><a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754" target="_blank" rel="noopener">https://blog.csdn.net/mieleizhi0522/article/details/79989754</a></li>
+<li>YOLO-darknet官网<br><a target="_blank" rel="noopener" href="https://pjreddie.com/darknet/yolo/">https://pjreddie.com/darknet/yolo/</a></li>
+<li>YOLO训练自己的数据集：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34484472/article/details/73135354">https://blog.csdn.net/qq_34484472/article/details/73135354</a></li>
+<li>YOLOv3批量测试图片并保存在自定义文件夹下：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">https://blog.csdn.net/mieleizhi0522/article/details/79989754</a></li>
+<li>Darknet 评估训练好的网络的性能：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">https://blog.csdn.net/mieleizhi0522/article/details/79989754</a></li>
 <li>Environment-Configuration-for-Yolo-darknet | NeXT （就是之前的那篇笔记）<br><a href="https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet">https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet</a></li>
 </ol>
 <blockquote>
@@ -572,9 +576,11 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Mengyin Liu">
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="" />
             
-              <p class="site-author-name" itemprop="name">Mengyin Liu</p>
+              <p class="site-author-name" itemprop="name"></p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
 
@@ -583,9 +589,9 @@
               
                 <div class="site-state-item site-state-posts">
                 
-                  <a href="/archives/">
+                  <a href="/archives/%7C%7C%20archive">
                 
-                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -630,7 +636,7 @@
                 </span>
               
                 <span class="links-of-author-item">
-                  <a href="mailto:lmy98129@163.com" target="_blank" title="Mail"><i class="fa fa-fw fa-envelope"></i>Mail</a>
+                  <a href="mailto:blean@live.cn" target="_blank" title="Mail"><i class="fa fa-fw fa-envelope"></i>Mail</a>
                   
                 </span>
               
@@ -671,7 +677,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据集的标注、修改"><span class="nav-number">2.</span> <span class="nav-text">数据集的标注、修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练数据集和验证数据集的拆分"><span class="nav-number">3.</span> <span class="nav-text">训练数据集和验证数据集的拆分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对darknet的配置和更改"><span class="nav-number">4.</span> <span class="nav-text">对darknet的配置和更改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练"><span class="nav-number">5.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#批量测试、评估以及需要对darknet进行的相应修改"><span class="nav-number">6.</span> <span class="nav-text">批量测试、评估以及需要对darknet进行的相应修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%A0%87%E6%B3%A8%E3%80%81%E4%BF%AE%E6%94%B9"><span class="nav-number">2.</span> <span class="nav-text">数据集的标注、修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%95%B0%E6%8D%AE%E9%9B%86%E5%92%8C%E9%AA%8C%E8%AF%81%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%8B%86%E5%88%86"><span class="nav-number">3.</span> <span class="nav-text">训练数据集和验证数据集的拆分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9darknet%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E6%9B%B4%E6%94%B9"><span class="nav-number">4.</span> <span class="nav-text">对darknet的配置和更改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83"><span class="nav-number">5.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E6%B5%8B%E8%AF%95%E3%80%81%E8%AF%84%E4%BC%B0%E4%BB%A5%E5%8F%8A%E9%9C%80%E8%A6%81%E5%AF%B9darknet%E8%BF%9B%E8%A1%8C%E7%9A%84%E7%9B%B8%E5%BA%94%E4%BF%AE%E6%94%B9"><span class="nav-number">6.</span> <span class="nav-text">批量测试、评估以及需要对darknet进行的相应修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
@@ -692,7 +698,7 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -717,7 +723,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共57.3k字</span>
+  <span class="post-count">博客全站共54.2k字</span>
 </div>
 
         
@@ -781,6 +787,8 @@
 
 
 
+  
+
 
 
 
@@ -808,6 +816,11 @@
   
   
     <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
   
 
 
