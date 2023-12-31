@@ -116,7 +116,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/reparameterization.png">
 <meta property="og:image" content="http://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/latent-ode.png">
 <meta property="article:published_time" content="2023-12-30T09:52:30.000Z">
-<meta property="article:modified_time" content="2023-12-31T10:04:13.490Z">
+<meta property="article:modified_time" content="2023-12-31T10:09:23.191Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -333,7 +333,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2023-12-31T18:04:13+08:00">2023-12-31</time>
+              <time title="更新于" itemprop="dateModified" datetime="2023-12-31T18:09:23+08:00">2023-12-31</time>
             
           </span>
 
@@ -402,7 +402,7 @@
 <p>$$<br>q_\theta(z) = \theta\mathrm{e}^{-\theta z}\cdot \mathrm{I}(z\geq 0) = \left\{<br>\begin{aligned}<br>&amp; \theta \mathrm{e}^{-\theta z} &amp;z\geq 0 \cr<br>&amp;0 &amp;z&lt;0 \cr<br>\end{aligned}<br>\right.<br>$$</p>
 <p>计算前述式子（2）里的ELBO，记作$\mathcal{L}_q$：</p>
 <p>$$<br>\begin{align}<br>\mathcal{L}_q = &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\theta}(z) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \cdot \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) \nonumber \\<br>&amp; - \log \theta\mathrm{e}^{-\theta z}\cdot \mathrm{I}(z\geq 0) ] \nonumber \\<br>\end{align}<br>$$</p>
-<p>由于$\log (\cdot)$函数的定义域就是$(0, \infty)$，同时$\mathrm{I}(z\geq 0)$表示$z&lt;0$时取$0$作为加权，导致代入$\log (\cdot)$无意义，所以可以直接舍去。将指数函数$\mathrm(e)^(\cdot)$与$\log(\cdot)$抵消，并整理与$z$和$\theta$无关的项为常数$\mathrm{C}$后，得到：</p>
+<p>由于$\log (\cdot)$函数的定义域就是$(0, \infty)$，同时$\mathrm{I}(z\geq 0)$表示$z&lt;0$时取$0$作为加权，导致代入$\log (\cdot)$无意义，所以可以直接舍去。将指数函数$\mathrm{e}^{(\cdot)}$与$\log(\cdot)$抵消，并整理与$z$和$\theta$无关的项为常数$\mathrm{C}$后，得到：</p>
 <p>$$<br>\mathcal{L}_q = \mathbb{E}_{z\sim q} [ -\frac{1}{2}z^2 + (x - 1 + \theta)z - \log \theta + \mathrm{C} ]<br>$$</p>
 <p>对带参数$\theta$的指数分布$q$求期望，有$\mathbb{E}_\theta [z^n] = \frac{n!}{\theta^n}$，则上式中的$z^2$和$z$项目均可以代入该期望公式。同时，$\log \theta$与$z$无关，对其求期望的结果还是本身：</p>
 <p>$$<br>\mathcal{L}_q = - \frac{1}{\theta^2} + \frac{x-1+\theta}{\theta} - \log \theta + \mathrm{C}<br>$$</p>
