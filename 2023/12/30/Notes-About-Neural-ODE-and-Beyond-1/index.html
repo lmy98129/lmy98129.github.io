@@ -116,7 +116,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/reparameterization.png">
 <meta property="og:image" content="http://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/latent-ode.png">
 <meta property="article:published_time" content="2023-12-30T09:52:30.000Z">
-<meta property="article:modified_time" content="2023-12-31T09:57:47.625Z">
+<meta property="article:modified_time" content="2023-12-31T10:04:13.490Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -333,7 +333,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2023-12-31T17:57:47+08:00">2023-12-31</time>
+              <time title="更新于" itemprop="dateModified" datetime="2023-12-31T18:04:13+08:00">2023-12-31</time>
             
           </span>
 
@@ -424,7 +424,7 @@
 <p>$$<br>\begin{align}<br>\mathcal{L}_q = &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\phi}(z|x)] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z)p(z) - \log q_{\phi}(z|x) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) + \log p(z) - \log q_{\phi}(z|x) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) - \log \frac{q_{\phi}(z|x)}{p(z)} ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) ] - D(q_{\phi}(z|x)||p(z))  \\<br>\end{align}<br>$$</p>
 <p>在式子（3）中，可以看到最终的两项分别对应了生成器和编码器：1）第一项$\mathbb{E}_{z\sim q} [ \log p_\theta(x|z) ]$的意思是，给定隐式向量$z$，生成器重构出真实观测值$x$的概率应当最大，重构出其他无关观测值的概率应当最小（因为我们是最大化ELBO），注意是采若干个$z\sim q$，对应若干个$x$，算期望；2）第二项$- D(q_{\phi}(z|x)||p(z))$，其实就是最小化KL散度$D(q_{\phi}(z|x)||p(z))$，也就是给定观测值$x$，编码器的编码的隐式向量$z$应当服从其先验概率分布$p(z)$。</p>
 <p>与$p(x)$不同，隐式向量$z$是编码器学出来的，因此其概率分布可以预设。而$p(x)$是与数据观测值$x$有关，是一个自然分布，无法进行有效的预设，只能尝试拟合。因此，可以将先验概率分布设为标准高斯分布$\mathcal{N}(0, \mathrm{I})$。</p>
-<p>当然，仔细看过的学习者会发现：不对啊，根据前面变分推断的分析，我最初设立$q_\phi(z|x)$的初衷是去拟合后验概率分布$p(z|x)$的，怎么这里又要去与一个先验概率分布$p(z)$拉近呢，这不是矛盾了吗？事实上，在一些场景里面，这会引发“后验塌陷”问题，也就是在学习过程中，$q_\phi(z|x$过于接近先验分布$p(z)$，而不接近真实的后验分布$p(z|x)$。相当于直接将观测样本“死记硬背”，映射到标准高斯分布$\mathcal{N}(0, \mathrm{I})$里面，至于编码就不怎么学了。</p>
+<p>当然，仔细看过的学习者会发现：不对啊，根据前面变分推断的分析，我最初设立$q_\phi(z|x)$的初衷是去拟合后验概率分布$p(z|x)$的，怎么这里又要去与一个先验概率分布$p(z)$拉近呢，这不是矛盾了吗？事实上，在一些场景里面，这会引发“后验塌陷”问题，也就是在学习过程中，$q_\phi(z|x)$过于接近先验分布$p(z)$，而不接近真实的后验分布$p(z|x)$。相当于直接将观测样本“死记硬背”，映射到标准高斯分布$\mathcal{N}(0, \mathrm{I})$里面，至于编码就不怎么学了。</p>
 <p>这种情况可以通过多种方式解决：1）修改ELBO的优化目标，既然ELBO有两项，就可以调整加权，例如$\beta$-VAE使用$\beta&gt;1$来鼓励模型更多地使用隐式状态$z$，而不是直接去$p(z)$里映射<sup class="refplus-num"><a href="#ref-Beta-VAE">[4]</a></sup>；2）修改先验分布，防止过拟合；3）修改模型架构，例如递归VAE<sup class="refplus-num"><a href="#ref-Recursive-VAE">[5]</a></sup>。</p>
 <h2 id="重参数化技巧-Reparameterization"><a href="#重参数化技巧-Reparameterization" class="headerlink" title="重参数化技巧 Reparameterization"></a>重参数化技巧 Reparameterization</h2><p>对于式子（3）的ELBO，将其转换为编码器和解码器的损失函数。对于编码器对应的KL散度项，由于两者都是高斯函数：1）基于给定观测数据$x$，编码器预测了高斯函数的均值方差参数$q_\phi(z|x) = \mathcal{N}(z;\mu_\phi(x), \mathrm{\Sigma}_\phi(x))$，2）先验概率分布是标准高斯$q(z)=\mathcal{N}(z; 0, \mathrm{I})$。所以，直接代入高斯函数的KL散度公式：</p>
 <p>$$<br>\begin{align}<br>&amp; D(\mathcal{N}(\mu_0, \mathrm{\Sigma}_0) || \mathcal{N}(\mu_1, \mathrm{\Sigma}_1)) \nonumber \\<br>&amp; = \frac{1}{2}(\mathrm{tr}(\mathrm{\Sigma_1}^{-1}\mathrm{\Sigma_0})  + (\mu_1 - \mu_0)^\top\mathrm{\Sigma_1^{-1}}(\mu_1-\mu_0) \nonumber \\<br>&amp; - \mathrm{K} + \log \frac{\mathrm{det}\mathrm{\Sigma_1}}{\mathrm{det}\mathrm{\Sigma_0}}) \nonumber \\<br>\end{align}<br>$$</p>
