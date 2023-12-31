@@ -116,7 +116,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/reparameterization.png">
 <meta property="og:image" content="http://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/latent-ode.png">
 <meta property="article:published_time" content="2023-12-30T09:52:30.000Z">
-<meta property="article:modified_time" content="2023-12-31T09:02:42.476Z">
+<meta property="article:modified_time" content="2023-12-31T09:57:47.625Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -333,7 +333,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2023-12-31T17:02:42+08:00">2023-12-31</time>
+              <time title="更新于" itemprop="dateModified" datetime="2023-12-31T17:57:47+08:00">2023-12-31</time>
             
           </span>
 
@@ -367,12 +367,12 @@
 <p>为了较为全面地理解其中的VAE思想，首先需要学习一些基础知识，例如Variational Inference变分推断<br>比较复杂的其他过程，包括ODE、伴随方程、以及更进阶的SDE，会在之后的笔记中再记录。</p>
 <span id="more"></span>
 <h2 id="前言-Introduction"><a href="#前言-Introduction" class="headerlink" title="前言 Introduction"></a>前言 Introduction</h2><p>最近，估计是搜了若干比较数学理论的东西，被B站的推荐系统疯狂轰炸，各种统计学、数据科学、机器学习的视频都在强调“变分推断”。然而，我总是看不懂，反复问自己“为什么要使用变分推断？”，“为什么大家都在强调变分推断很重要，最新的研究也一直层出不穷？”。</p>
-<p>起初，我觉得这就是一个高大上的名词，反正在CV、NLP乃至语音，大力出奇迹的事情多了去了，用得着再回到统计理论这边吗？感觉统计理论总是没有太多的落地，用的数据集有很多也是比较玩具的（理想化）。然而万万没想到，项目确实碰到了这个问题，需要用到类似Neural ODE的方法，基于观测来建模一个过程的内部状态变化，那么深入了解变分推断就是很重要的工作了。</p>
+<p>起初，我觉得这就是一个高大上的名词，反正在CV、NLP乃至语音，大力出奇迹的事情多了去了，用得着再回到统计理论这边吗？感觉统计理论距离落地应用总是很远，用的数据集有很多也是比较玩具的（理想化）。然而万万没想到，项目确实碰到了这个问题，需要用到类似Neural ODE的方法，基于观测来建模一个过程的内部状态变化，那么深入了解变分推断就是很重要的工作了。</p>
 <p>虽然，我确实接触过VAE（变分自编码器Variational Auto-Encoder）的概念，知道自编码器确实可以通过高斯分布的$\mu$和$\sigma$的显式形式，来代替隐式的表征$z$，来实现更加可控地重构图像$x$，也知道为了保证这一点，需要找出一个ELBO（证据下界，Evidence Lower Bound）作为网络的优化目标。但是从头到尾，“变分”这个名词总如天外来客，没有由来。</p>
 <p>PS：下面的各种过程主要都是变量代换，以及一些现成的公式，不涉及很深的数学理论，可以根据每章首尾的前后衔接，按需跳读。</p>
 <h2 id="贝叶斯公式-Bayes-Formula"><a href="#贝叶斯公式-Bayes-Formula" class="headerlink" title="贝叶斯公式 Bayes Formula"></a>贝叶斯公式 Bayes Formula</h2><p>事实上，这仍然是最底层的贝叶斯理论引出，这里就参考B站视频<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup>。首先讲一个CV的例子：有观测到的图像$x$，其隐式状态是one-hot的类别编码$z$。例如，有三个类A、B、C，如果这个图像是A类，则$z=(1, 0, 0)^\top$。为了知道这个图像到是否真的属于类别A，需要知道相应的概率。也就是给定观测值$x$，其隐式状态应该属于$z$的概率。这显然是一个条件概率，写作$p(z|x)$。根据贝叶斯公式，有：</p>
 <p>$$<br>p(z|x)=\frac{p(x|z)p(z)}{p(x)}<br>$$</p>
-<p>各个项表达的意思是：1）分母：$p(x|z)p(z)=p(x,z)$，观测值$x$和隐式状态$z$的联合概率（Joint Probability），就是观测值$x$和隐式状态$z$同时出现的概率，其中$p(z)$为隐式状态出现的先验概率（Prior Probability），$p(x|z)$就是隐式状态固定的条件下，样本出现的概率；2）分子：$p(x)=\int_0^\mathrm{N} p(x,z) dz$，观测值本身出现的先验概率，就是所有可能的隐式状态$z$下，观测值$x$出现的概率之和；3）总体：$p(z|x)$后验概率（Posterior Probability），在观测值已经出现的这一种先验下（分母），观测值与隐式状态同时出现的概率（分子）。</p>
+<p>各个项表达的意思是：1）分子：$p(x|z)p(z)=p(x,z)$，观测值$x$和隐式状态$z$的联合概率（Joint Probability），就是观测值$x$和隐式状态$z$同时出现的概率，其中$p(z)$为隐式状态出现的先验概率（Prior Probability），$p(x|z)$就是隐式状态固定的条件下，样本出现的概率；2）分母：$p(x)=\int_0^\mathrm{\infty} p(x,z) dz$，观测值本身出现的先验概率，就是所有可能的隐式状态$z$下，观测值$x$出现的概率之和；3）总体：$p(z|x)$后验概率（Posterior Probability），在观测值已经出现的这一种先验下（分母），观测值与隐式状态同时出现的概率（分子）。</p>
 <p>很多人都知道在学贝叶斯的过程中，他们会被告知$p(z|x) \sim p(x|z)p(z)$，因为一旦$x$确定下来了，$p(x)$就是个常数。但是，这个常数到底能不能省略呢？如果要知道$p(z|x)$的确切数值的话，其实是必须知道的。按照我个人的理解，如果观测值$x$是一个过于罕见或者常见的样本，导致$p(x)$本身非常小或者非常大，那么这将会决定$p(z|x)$的最终数值，联合概率$p(x,z)$再大再小也不能与后验概率$p(z|x)$划等号。</p>
 <p>换而言之，不同的观测值$x$决定了不同的$p(x)$，而不同的$p(x)$最终决定了$p(z|x)$的取值。例如，这个B站视频<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup>里面的一个可视化例子，横轴为不同的隐式状态取值$z$，纵轴为不同方法计算出的概率取值，取不同的观测值$x$：</p>
 <p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/example-prior.png" alt="example-prior"></p>

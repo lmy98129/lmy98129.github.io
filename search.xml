@@ -1,6 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Environment Configuration for Yolo-darknet</title>
+    <url>/2018/02/20/Environment-Configuration-for-Yolo-darknet/</url>
+    <content><![CDATA[<blockquote>
+<p>Just do it.<br>Just do something new and do it yourself.</p>
+</blockquote>
+<p>记录一些关于yolo-darknet环境配置踩过的坑。<br>能力有限，但求指点，欢迎交流。</p>
+<span id="more"></span>
+<h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><ul>
+<li>OS: Ubuntu 16.04 LTS</li>
+<li>PC: ASUS K550J (EFI enable)</li>
+<li>GPU: GTX950M</li>
+<li>CPU: i5-4200H</li>
+<li>RAM: 4G</li>
+<li>DISK: 1T HDD (no SSD) </li>
+</ul>
+<h2 id="配置过程"><a href="#配置过程" class="headerlink" title="配置过程"></a>配置过程</h2><h3 id="安装Ubuntu"><a href="#安装Ubuntu" class="headerlink" title="安装Ubuntu"></a>安装Ubuntu</h3><ol>
+<li>用UltraISO把iso文件烧到你的U盘，<strong>进BIOS打开EFI引导，并选择EFI模式下的U盘为第一引导项</strong></li>
+<li>安装Ubuntu到一个空白分区（可以通过分区压缩获得，如果是全新电脑就直接开始分区了）：<ul>
+<li><strong>注意根据提示划分那块bios efi的小分区，几十K即可</strong>；</li>
+<li><strong>划分swap交换分区，一般是你内存大小的3倍大，划在主分区后面</strong>；</li>
+<li>剩下的划给主分区；</li>
+<li>选择安装启动器到<strong>Windows使用的那个EFI启动分区</strong>。</li>
+</ul>
+</li>
+<li>进入分区界面前有几个选项要注意：<ul>
+<li>让你顺带安装更新的那个，<strong>不要勾选</strong>，更新的源大多自动匹配到了国外的，网速你懂的；</li>
+<li>让你安装第三方闭源驱动和软件的，<strong>必须勾选</strong>，能解决很多开源驱动带来的问题。</li>
+</ul>
+</li>
+<li>安装，然后回到BIOS里面你会惊奇的发现出现了Ubuntu的EFI模式引导项（准确来说是两个，估计是那次我多搞了一个/boot）选择它为第一个。</li>
+<li>成功进入Ubuntu</li>
+</ol>
+<h3 id="安装OpenCV"><a href="#安装OpenCV" class="headerlink" title="安装OpenCV"></a>安装OpenCV</h3><p>安装OpenCV主要是为了使用外置摄像头进行图像采集。</p>
+<p>GitHub上有自动安装版本</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo su </span><br><span class="line">git <span class="built_in">clone</span> https://github.com/jayrambhia/Install-OpenCV/tree/master/Ubuntu</span><br></pre></td></tr></table></figure>
+<p>进入安装目录下的/2.4，提升*.sh文件的权限并执行</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo su</span><br><span class="line"><span class="built_in">chmod</span> a+x *.sh</span><br><span class="line">./opencv2_4_10.sh</span><br></pre></td></tr></table></figure>
+<p>然后就会开始<strong>极其漫长</strong>的安装过程。</p>
+<blockquote>
+<p>第一次安装到某个阶段的时候卡死，<br>硬盘灯不闪，鼠标键盘没反应，我还以为安装失败强行重启了。<br>然后又开始一遍，又卡死。<br>我绝望了，但是冷静了下来，想了想<br>——怕是自己电脑配置太渣。<br>然后在安装前关闭了所有无关程序，<br>唯独打开了系统监视器（即Windows下的任务管理器）。<br>之后就非常惊奇地看到卡死的时候：<br>内存+CPU，全部占用100%<br>然后过了大概一个多小时，又全部降回去了，<br>没过三分钟，又是内存飙到100%，CPU反倒正常了<br>目测过了三个多小时，还是这个样子，倒是命令行每隔十几分钟跳一次字，<br>系统时钟已经卡到了和实际时间存在了十分钟到半小时不等的时差，<br>只有某几次命令行跳字的时候，内存占用下来了一点，系统时间一秒刷新了十几分钟<br>最后一脸无奈地睡了。<br>第二天打开笔记本盖子一看，<br>装好了，老大一个success。</p>
+</blockquote>
+<h3 id="安装darknet"><a href="#安装darknet" class="headerlink" title="安装darknet"></a>安装darknet</h3><p>打开终端<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo su</span><br><span class="line">git <span class="built_in">clone</span> http://github.com/pjreddie/darknet.git</span><br><span class="line"><span class="built_in">cd</span> darknet</span><br></pre></td></tr></table></figure><br>用gedit修改makefile文件<br><strong>令OPENCV=1</strong><br>然后在终端输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make -j8</span><br></pre></td></tr></table></figure>
+<h3 id="安装NVIDIA官方GPU驱动"><a href="#安装NVIDIA官方GPU驱动" class="headerlink" title="安装NVIDIA官方GPU驱动"></a>安装NVIDIA官方GPU驱动</h3><p>首先<strong>禁用开源驱动</strong></p>
+<p>新建一个.conf文件</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo gedit /etc/modprobe.d/blacklist-nouveau.conf</span><br></pre></td></tr></table></figure>
+<p>写入以下内容<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">blacklist nouveau</span><br><span class="line">blacklist lbm-nouveau</span><br><span class="line">options nouveau modeset=0</span><br><span class="line">alias nouveau off</span><br><span class="line">alias lbm-nouveau off</span><br></pre></td></tr></table></figure><br>保存，重启后再打开终端，输入<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lsmod | grep nouveau</span><br></pre></td></tr></table></figure><br>无输出即禁用成功</p>
+<p>正式开始安装NVIDIA官方驱动了<br>我这里选择的是<strong>直接到系统的“软件和更新”里的“附加驱动”选择安装NVIDIA的专有驱动</strong><br>（不要管他是否显示tested，安装就是了）</p>
+<p>等待安装成功后，重启打开终端，输入<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure><br>正确显示你当前GPU的状况就OK了</p>
+<h3 id="安装CUDA"><a href="#安装CUDA" class="headerlink" title="安装CUDA"></a>安装CUDA</h3><p>CUDA下载地址：<a href="https://developer.nvidia.com/cuda-downloads">https://developer.nvidia.com/cuda-downloads</a><br>选项顺序是Linux-x86_64-Ubuntu-16.04-deb(local)<br>1点多G，然后找个下载速度快的地方下了它，推荐<strong>迅雷等下载工具</strong>，<br>虽然并没有加速，但毕竟服务器在境外，<strong>浏览器没法断点续传</strong>，连接一断就得重新下载。</p>
+<p>然后把下载好的文件包拷到“/home/用户名/”目录下，在终端里面输入<br><strong>（注意你的deb文件名不一定是这个，这个是旧版的了）</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo dpkg -i cuda-repo-ubuntu1404-7-5-local_7.5-18_amd64.deb</span><br><span class="line">sudo apt-get update </span><br><span class="line">sudo apt-get install cuda</span><br></pre></td></tr></table></figure>
+<p>安装完成后输入<br><strong>（注意你的cuda文件夹不一定是这个7.5的，这个是旧版的了）</strong><br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/usr/local/cuda/lib64:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=/usr/local/cuda-7.5/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="再次安装darknet"><a href="#再次安装darknet" class="headerlink" title="再次安装darknet"></a>再次安装darknet</h3><p>再次用gedit打开makefile<br><strong>（注意你的cuda文件夹不一定是这个7.5的，这个是旧版的了）</strong><br>令开头GPU=1，同时令NVCC = /usr/local/cuda-7.5/bin/nvcc后保存退出<br>然后在终端输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make -j8</span><br></pre></td></tr></table></figure>
+<h2 id="测试darknet"><a href="#测试darknet" class="headerlink" title="测试darknet"></a>测试darknet</h2><h3 id="下载模型-测试模型"><a href="#下载模型-测试模型" class="headerlink" title="下载模型+测试模型"></a>下载模型+测试模型</h3><p>到这儿下载*.weight格式的模型：<a href="http://pjreddie.com/darknet/yolo/">http://pjreddie.com/darknet/yolo/</a></p>
+<p>终端切换到darknet的安装目录下<br>示例命令如下：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detect cfg/yolo.cfg yolo.weight data/horses.jpg</span><br><span class="line">./darknet yolo <span class="built_in">test</span> cfg/yolo-tiny.cfg yolo-tiny.weight</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用电脑-手机摄像头采集图像"><a href="#使用电脑-手机摄像头采集图像" class="headerlink" title="使用电脑/手机摄像头采集图像"></a>使用电脑/手机摄像头采集图像</h3><p>电脑摄像头：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector demo cfg/voc.data cfg/tiny-yolo-voc.cfg weights/tiny-yolo-voc.weights</span><br></pre></td></tr></table></figure></p>
+<p>手机摄像头：</p>
+<p>先在手机上安装好<strong>IP摄像头</strong>APP，配置好地址后，先用浏览器访问以确定视频源的路径<br><strong>(因此这里的地址是你配置并确定好视频源的地址)</strong><br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector demo data/coco.data yolo.cfg yolo.weights http://192.168.191.2:8080/video</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a href="http://blog.csdn.net/samylee/article/details/51684856">http://blog.csdn.net/samylee/article/details/51684856</a></li>
+<li><a href="http://blog.csdn.net/wjbwjbwjbwjb/article/details/52125475">http://blog.csdn.net/wjbwjbwjbwjb/article/details/52125475</a></li>
+<li><a href="http://blog.csdn.net/u014696921/article/details/65626751">http://blog.csdn.net/u014696921/article/details/65626751</a></li>
+<li><a href="http://blog.csdn.net/wuzuyu365/article/details/52469131">http://blog.csdn.net/wuzuyu365/article/details/52469131</a></li>
+<li><a href="http://blog.csdn.net/zafir_410/article/details/73188228">http://blog.csdn.net/zafir_410/article/details/73188228</a></li>
+<li><a href="http://blog.csdn.net/u013832707/article/details/53438574">http://blog.csdn.net/u013832707/article/details/53438574</a></li>
+<li><a href="https://www.cnblogs.com/jackchen-Net/p/7954138.html">https://www.cnblogs.com/jackchen-Net/p/7954138.html</a></li>
+</ol>
+<blockquote>
+<p>最后，这是本站的第六篇正式发文，感谢阅读。<br>如有意见和建议，欢迎通过首页的联系方式联系作者，<br>本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。</p>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>experience</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Different Deep Learning Methods for Image Classification on CIFAR 10</title>
     <url>/2019/06/29/Different-Deep-Learning-Methods-for-Image-Classification-on-CIFAR-10/</url>
     <content><![CDATA[<p>本文是2019年4月《人工智能》专业课的大作业报告摘录</p>
@@ -284,6 +362,231 @@
 ]]></content>
       <tags>
         <tag>intro</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Training Configuration for Yolo-darknet</title>
+    <url>/2018/11/28/Training-Configuration-for-Yolo-darknet/</url>
+    <content><![CDATA[<blockquote>
+<p>Everything’s coming up roses.</p>
+</blockquote>
+<p>续上次的笔记<br>分享yolo-darknet神经网络训练全过程的配置经验</p>
+<span id="more"></span>
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于本文中描述的yolo-darknet训练配置流程来源较多，而且训练配置时间为今年暑期，距离本文完稿时间较远，因此本文不可避免地会存在一定的失误和错漏。恳请发现问题的读者不吝赐教，通过首页的联系方式向作者提出宝贵意见。</p>
+<h2 id="数据集的标注、修改"><a href="#数据集的标注、修改" class="headerlink" title="数据集的标注、修改"></a>数据集的标注、修改</h2><p>数据集的采集来源以及采集方式属于项目内容，此处暂时不便叙述。对于采集得到的数据集，尤其是针对yolo-darknet的图片数据集，应当至少满足如下的要求：</p>
+<ul>
+<li>文件名称中不应当出现中文</li>
+<li>多次采集得到的文件应当分开命名前缀，否则存在同名文件覆盖的问题</li>
+<li>最好是同一种后缀格式，例如jpg格式。后缀大写JPG和小写jpg，darknet不会认为是同一种文件类型而报错。另外，png格式比较灵活，可以强行改成jpg后缀且内容仍可以读取</li>
+</ul>
+<p>本项目中除了采集了原始数据之外，也通过python脚本对图片素材进行翻转、随机颜色等基本变换来对数据集规模进行扩充。此为额外操作，不影响yolo-darknet训练过程。</p>
+<p>数据集的标注采用的是基于python的ImageLabel，标注界面是可视化的，流程基本上是：</p>
+<ul>
+<li>设置你标注的物体对应的标签，例如dog，cat等，可以设置默认标签</li>
+<li>打开素材文件夹到程序中，设置当前的标签，对图片进行逐个画框标注</li>
+<li>标注后自动生成数个xml文件，xml文件的内容一般如下</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">annotation</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">folder</span>&gt;</span>图片文件夹<span class="tag">&lt;/<span class="name">folder</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filename</span>&gt;</span>图片名称<span class="tag">&lt;/<span class="name">filename</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">path</span>&gt;</span>图片路径<span class="tag">&lt;/<span class="name">path</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">source</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">database</span>&gt;</span>Unknown<span class="tag">&lt;/<span class="name">database</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">size</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">width</span>&gt;</span>600<span class="tag">&lt;/<span class="name">width</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">height</span>&gt;</span>338<span class="tag">&lt;/<span class="name">height</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">depth</span>&gt;</span>3<span class="tag">&lt;/<span class="name">depth</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">size</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">segmented</span>&gt;</span>0<span class="tag">&lt;/<span class="name">segmented</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">object</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>标签名字<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">pose</span>&gt;</span>Unspecified<span class="tag">&lt;/<span class="name">pose</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">truncated</span>&gt;</span>0<span class="tag">&lt;/<span class="name">truncated</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">difficult</span>&gt;</span>0<span class="tag">&lt;/<span class="name">difficult</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">bndbox</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">xmin</span>&gt;</span>291<span class="tag">&lt;/<span class="name">xmin</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ymin</span>&gt;</span>76<span class="tag">&lt;/<span class="name">ymin</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">xmax</span>&gt;</span>412<span class="tag">&lt;/<span class="name">xmax</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ymax</span>&gt;</span>192<span class="tag">&lt;/<span class="name">ymax</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">bndbox</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">object</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">annotation</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>基本上就是对于标注的方框的位置和大小的记录。标注生成的是整个VOC数据集文件夹，一般有两个文件夹：图片文件夹Image和标记文件夹xml。标记文件夹中每一个xml文件的文件名基本上都对应了的图片文件夹中的图片文件。</p>
+<p>应当注意的是，一旦移动了xml文件夹或整个数据集文件夹，必须将所有xml文件中的图片文件夹、图片路径改成对应的新文件夹、新路径，否则必然报错。</p>
+<p>但问题是，一旦数据集规模像本项目一样巨大时，人工逐个更改xml就十分困难。所以需要python脚本进行批量文件处理。此处摘录一部分代码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">&#x27;utf8&#x27;</span>) </span><br><span class="line"></span><br><span class="line">path = <span class="string">&quot;/home/blean/VOC/validateImage/&quot;</span></span><br><span class="line">oldpath = <span class="string">&quot;/home/blean/VOC/pos/&quot;</span></span><br><span class="line">newpath = <span class="string">&quot;/home/blean/VOC/Image/&quot;</span></span><br><span class="line">filelist = os.listdir(path)</span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> files <span class="keyword">in</span> filelist:</span><br><span class="line">    <span class="keyword">if</span> os.path.splitext(files)[<span class="number">1</span>] != <span class="string">&quot;.jpg&quot;</span> <span class="keyword">and</span> os.path.splitext(files)[<span class="number">1</span>] != <span class="string">&quot;.txt&quot;</span>:</span><br><span class="line">        tmp = os.path.splitext(files)[<span class="number">0</span>]</span><br><span class="line">        os.rename(path+files, path+tmp+<span class="string">&quot;.jpg&quot;</span>)</span><br><span class="line">        <span class="comment"># 强行将非jpg的后缀，例如JPG大写后缀或png后缀更改成jpg</span></span><br><span class="line">        <span class="built_in">print</span> path+files</span><br><span class="line">        i = i + <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    tree = ET.parse(path+files)</span><br><span class="line">    root = tree.getroot()</span><br><span class="line">    filename = root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text</span><br><span class="line">    tmp = os.path.splitext(filename)[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 寻找xml文件中对应的文件名</span></span><br><span class="line">    <span class="built_in">print</span> path+tmp+<span class="string">&quot;.xml&quot;</span></span><br><span class="line">    os.rename(path+files, path+tmp+<span class="string">&quot;.xml&quot;</span>)</span><br><span class="line">    <span class="comment"># 同样地将xml文件名改成后缀修改后的图片文件名</span></span><br><span class="line">    root.findall(<span class="string">&#x27;path&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(oldpath, newpath)</span><br><span class="line">    <span class="comment"># 修改路径</span></span><br><span class="line">    tmp = root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text</span><br><span class="line">    <span class="keyword">if</span> tmp.find(<span class="string">&quot;捕获&quot;</span>) != -<span class="number">1</span>:</span><br><span class="line">        <span class="built_in">print</span> tmp</span><br><span class="line">        root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(<span class="string">&quot;捕获&quot;</span>, <span class="string">&quot;buhuo&quot;</span>)</span><br><span class="line">        tree.write(path+files)</span><br><span class="line">    <span class="comment"># 修改某些中文文件名</span></span><br><span class="line">    root.findall(<span class="string">&#x27;folder&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(<span class="string">&quot;pos&quot;</span>, <span class="string">&quot;Image&quot;</span>)</span><br><span class="line">    <span class="comment"># 修改图片文件夹名称</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> i</span><br><span class="line"><span class="comment"># 打印总数</span></span><br></pre></td></tr></table></figure>
+<p>注：以上代码是本人为了修正数据集格式自行编写的，具有很强的临时性，是不同功能的python代码之间的整合，如果不需要某些功能，可以将对应代码手动注释掉</p>
+<h2 id="训练数据集和验证数据集的拆分"><a href="#训练数据集和验证数据集的拆分" class="headerlink" title="训练数据集和验证数据集的拆分"></a>训练数据集和验证数据集的拆分</h2><p>数据集应当分成训练集和验证集，以便于对训练效果进行评估。<br>这里作者直接参考了这篇CSDN上的文章<a href="https://blog.csdn.net/qq_34484472/article/details/73135354">《YOLO训练自己的数据集》</a>中的python脚本，内容摘录如下：</p>
+<blockquote>
+</blockquote>
+<pre><code>下载链接：http://pan.baidu.com/s/1hs22I7U 密码：wdv0
+运行traindata.py：生成trainImage文件夹，存放训练图片；生成trainImageXML文件夹，存放训练图片xml标签；生成validateImage文件夹，存放验证集图片；生成validateImageXML文件夹，存放验证集图片的xml标签。
+运行trans.py，生成trainImageLabelTxt文件夹，存放训练图片通过xml标签转化得到的txt文件（若在训练过程提示txt文件找不到，则把此文件夹下的txt文件夹移动到trainImage文件夹）；生成validateImageLabelTxt文件夹，道理一样。
+另外得到的trainImagePath.txt和validateImagePath.txt存放着训练图片和验证图片的路径。
+</code></pre><blockquote>
+</blockquote>
+<p>下载好的python脚本一般不能立即用，根据运行python脚本出现的报错，应当对其进行相应的修改，例如：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">classes = [<span class="string">&quot;cat&quot;</span>] <span class="comment">#把这个标签改成你自己的数据集中标记的标签</span></span><br><span class="line"><span class="comment">#那个sets看起来很奇怪，但是不用改也能用。python研究的少，暂时不知道具体原因</span></span><br></pre></td></tr></table></figure>
+<h2 id="对darknet的配置和更改"><a href="#对darknet的配置和更改" class="headerlink" title="对darknet的配置和更改"></a>对darknet的配置和更改</h2><p>darknet本身并非完全开箱即用的图像识别训练框架，因此需要对它进行有针对性的配置和必要的更改。此处同样是根据<a href="https://blog.csdn.net/qq_34484472/article/details/73135354">《YOLO训练自己的数据集》</a>以及其他几篇文章的指导和建议进行配置的，主要有以下几点：</p>
+<p>首先，对darknet的cfg/voc.data进行配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">classes= 标签类别总数</span><br><span class="line">train = 填之前脚本生成的训练集文件列表trainImageId.txt</span><br><span class="line">valid = 填之前脚本生成的验证集文件列表validateImagePath.txt</span><br><span class="line">names = data/xxx.names</span><br><span class="line">backup = 存放训练结果模型的路径</span><br></pre></td></tr></table></figure>
+<p>在data文件夹下的names文件中，每行写一条标签名称</p>
+<p>其次，对要使用的神经网络版本yolo2-voc对应的配置文件yolo2-voc.cfg，应当更改以下几处：</p>
+<ul>
+<li>将最后的[region]层神经网络的配置中的classes改为1（即标记类别的总数）</li>
+<li>将最后一个[convolutional]卷积层中的filter改为30（filter的公式filters=(classes+ coords+ 1)<em> (NUM) ，我的是(1+4+1)</em> 5=30）</li>
+</ul>
+<p>注：这里coords可以认为是坐标，设置的标记是一个方框则取4。NUM是神经网络的层数。filter公式的来源请参见国外开发者们的讨论：<a href="https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg">https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg</a></p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>在yolo的官网下载预训练模型，地址：<a href="http://pjreddie.com/media/files/darknet53.conv.74">http://pjreddie.com/media/files/darknet53.conv.74</a></p>
+<p>并执行训练命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector train cfg/voc.data cfg/yolov2-voc.cfg darknet53.conv.74</span><br></pre></td></tr></table></figure>
+<p>之后便开始了对神经网络的训练，在1000次训练之内，每100次就在backup文件夹中生成一次权重模型，在1000次训练以上，每10000次生成一次权重模型。本项目的最终训练次数达到了50000次。</p>
+<p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/training3.png" alt="训练过程截图"></p>
+<p>上图为训练到500次左右时的结果截图</p>
+<p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/training4.png" alt="训练过程截图"></p>
+<p>训练生成的模型文件</p>
+<h2 id="批量测试、评估以及需要对darknet进行的相应修改"><a href="#批量测试、评估以及需要对darknet进行的相应修改" class="headerlink" title="批量测试、评估以及需要对darknet进行的相应修改"></a>批量测试、评估以及需要对darknet进行的相应修改</h2><p>本人<a href="https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet">之前的笔记</a>中曾经提到了使用单张图片测试，以及连接计算机摄像头、网络视频推流进行实时识别的命令，命令内容大致如下：</p>
+<p>单张图片：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detect cfg/yolo.cfg yolo.weight data/horses.jpg</span><br></pre></td></tr></table></figure></p>
+<p>电脑摄像头：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector demo cfg/voc.data cfg/tiny-yolo-voc.cfg weights/tiny-yolo-voc.weights</span><br></pre></td></tr></table></figure></p>
+<p>手机摄像头（通过网络视频实时推流，使用工具为IP摄像头APP）：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector demo data/coco.data yolo.cfg yolo.weights http://192.168.191.2:8080/video</span><br></pre></td></tr></table></figure>
+<p>得到的效果大致如下：</p>
+<p>实地场景：</p>
+<p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/testing7.png" alt="测试过程截图"></p>
+<p>网络图片：</p>
+<p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/testing1.png" alt="测试过程截图"></p>
+<p>但是，可以看出这样手动输入命令进行逐个测试的方法，在测试上文中提到的从标记数据集中拆分出来的有一定数量图片的验证集时十分地不友好。而且必须手工收集每次测试中得到的准确度信息、手工进行统计计算。</p>
+<p>所以这里参考了CSDN上的另一篇文章<a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">《YOLOv3批量测试图片并保存在自定义文件夹下》</a>以及简书上的一篇文章<a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">《Darknet 评估训练好的网络的性能》</a>对darknet中的example文件夹下的detector.c文件中的代码进行更改，以便于进行批量测试、统计、评估模型在验证集上的准确度，并输出结果：</p>
+<ol>
+<li>修改validate_detector_recall函数定义和调用为：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">validate_detector_recall</span><span class="params">(<span class="type">char</span> *datacfg, <span class="type">char</span> *cfgfile, <span class="type">char</span> *weightfile)</span></span></span><br><span class="line"><span class="function"><span class="title">validate_detector_recall</span><span class="params">(datacfg, cfg, weights)</span></span>;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>修改validate_detector_recall的初始化代码</li>
+</ol>
+<p>修改前：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">list *plist = <span class="built_in">get_paths</span>(<span class="string">&quot;data/voc.2007.test&quot;</span>);</span><br><span class="line"><span class="type">char</span> **paths = (<span class="type">char</span> **)<span class="built_in">list_to_array</span>(plist);</span><br></pre></td></tr></table></figure></p>
+<p>修改后：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">list *options = <span class="built_in">read_data_cfg</span>(datacfg);</span><br><span class="line"><span class="type">char</span> *valid_images = <span class="built_in">option_find_str</span>(options, <span class="string">&quot;valid&quot;</span>, <span class="string">&quot;/home/blean/VOC/validateImagePath.txt&quot;</span>);</span><br><span class="line">list *plist = <span class="built_in">get_paths</span>(valid_images);</span><br><span class="line"><span class="type">char</span> **paths = (<span class="type">char</span> **)<span class="built_in">list_to_array</span>(plist);</span><br></pre></td></tr></table></figure></p>
+<ol start="3">
+<li>修改结束后需要重新编译darknet主程序，命令如下</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make -j8</span><br></pre></td></tr></table></figure>
+<p>在完成上述修改后即可使用darknet的recall命令进行评估测试并输出结果</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector recall cfg/voc.data cfg/yolov2-voc.cfg backup/yolov2-voc_50000.weights -out drowning_recall.txt</span><br></pre></td></tr></table></figure>
+<p>输出的结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> Number Correct Total 	Rps/Img 	IOU 		Recall </span><br><span class="line"> 0     1     1	RPs/Img: 23.00	IOU: 71.42%	Recall:100.00%</span><br><span class="line"> 1     2     2	RPs/Img: 19.00	IOU: 66.04%	Recall:100.00%</span><br><span class="line"> 2     3     3	RPs/Img: 31.00	IOU: 65.52%	Recall:100.00%</span><br><span class="line"> 3     4     4	RPs/Img: 31.75	IOU: 65.22%	Recall:100.00%</span><br><span class="line"> 4     5     5	RPs/Img: 29.40	IOU: 65.55%	Recall:100.00%</span><br><span class="line"> 5     6     6	RPs/Img: 29.67	IOU: 67.34%	Recall:100.00%</span><br><span class="line"> 6     6     7	RPs/Img: 32.00	IOU: 60.25%	Recall:85.71%</span><br><span class="line"> 7     7     8	RPs/Img: 35.12	IOU: 59.75%	Recall:87.50%</span><br><span class="line"> 8     8     9	RPs/Img: 33.11	IOU: 60.55%	Recall:88.89%</span><br><span class="line"> 9     8    10	RPs/Img: 33.20	IOU: 59.48%	Recall:80.00%</span><br><span class="line">10     9    11	RPs/Img: 34.00	IOU: 59.27%	Recall:81.82%</span><br><span class="line">11    10    12	RPs/Img: 33.00	IOU: 59.65%	Recall:83.33%</span><br><span class="line">12    11    13	RPs/Img: 32.00	IOU: 60.33%	Recall:84.62%</span><br><span class="line">13    12    14	RPs/Img: 30.64	IOU: 60.85%	Recall:85.71%</span><br><span class="line">14    12    14	RPs/Img: 29.60	IOU: 60.85%	Recall:85.71%</span><br><span class="line">15    13    15	RPs/Img: 29.62	IOU: 61.41%	Recall:86.67%</span><br></pre></td></tr></table></figure>
+<p>其中各项参数的解释如下：</p>
+<ul>
+<li>Number表示处理到第几张图片。</li>
+<li>Correct表示正确的识别出了多少bbox（即标记目标物体的方框）。这个值算出来的步骤是这样的，丢进网络一张图片，网络会预测出很多bbox，每个bbox都有其置信概率，概率大于threshold的bbox与实际的bbox，也就是labels中txt的内容计算IOU，找出IOU最大的bbox，如果这个最大值大于预设的IOU的threshold，那么correct加1。</li>
+<li>Total表示实际有多少个bbox。</li>
+<li>Rps/img表示平均每个图片会预测出来多少个bbox。</li>
+<li>IOU： 这个是预测出的bbox和实际标注的bbox的交集 除以 他们的并集。显然，这个数值越大，说明预测的结果越好。</li>
+<li>Recall召回率， 意思是检测出物体的个数 除以 标注的所有物体个数。通过代码我们也能看出来就是Correct除以Total的值。</li>
+</ul>
+<p>可以从最后一条代表处理了全部验证集的统计结果看出，经过验证集的检验，训练得出的模型识别目标物体的总正确率大致在86%左右，可以说训练效果较为理想。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>YOLO-darknet官网<br><a href="https://pjreddie.com/darknet/yolo/">https://pjreddie.com/darknet/yolo/</a></li>
+<li>YOLO训练自己的数据集：<br><a href="https://blog.csdn.net/qq_34484472/article/details/73135354">https://blog.csdn.net/qq_34484472/article/details/73135354</a></li>
+<li>YOLOv3批量测试图片并保存在自定义文件夹下：<br><a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">https://blog.csdn.net/mieleizhi0522/article/details/79989754</a></li>
+<li>Darknet 评估训练好的网络的性能：<br><a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">https://blog.csdn.net/mieleizhi0522/article/details/79989754</a></li>
+<li>Environment-Configuration-for-Yolo-darknet | NeXT （就是之前的那篇笔记）<br><a href="https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet">https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet</a></li>
+</ol>
+<blockquote>
+<p>最后，这是本站的第八篇正式发文，感谢阅读。<br>如有意见和建议，欢迎通过首页的联系方式联系作者，<br>本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。</p>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>experience</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Notes About Neural ODE and Beyond 1</title>
+    <url>/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/</url>
+    <content><![CDATA[<p>本文是学习Neural ODE过程中的第一篇个人笔记</p>
+<p>为了较为全面地理解其中的VAE思想，首先需要学习一些基础知识，例如Variational Inference变分推断<br>比较复杂的其他过程，包括ODE、伴随方程、以及更进阶的SDE，会在之后的笔记中再记录。</p>
+<span id="more"></span>
+<h2 id="前言-Introduction"><a href="#前言-Introduction" class="headerlink" title="前言 Introduction"></a>前言 Introduction</h2><p>最近，估计是搜了若干比较数学理论的东西，被B站的推荐系统疯狂轰炸，各种统计学、数据科学、机器学习的视频都在强调“变分推断”。然而，我总是看不懂，反复问自己“为什么要使用变分推断？”，“为什么大家都在强调变分推断很重要，最新的研究也一直层出不穷？”。</p>
+<p>起初，我觉得这就是一个高大上的名词，反正在CV、NLP乃至语音，大力出奇迹的事情多了去了，用得着再回到统计理论这边吗？感觉统计理论距离落地应用总是很远，用的数据集有很多也是比较玩具的（理想化）。然而万万没想到，项目确实碰到了这个问题，需要用到类似Neural ODE的方法，基于观测来建模一个过程的内部状态变化，那么深入了解变分推断就是很重要的工作了。</p>
+<p>虽然，我确实接触过VAE（变分自编码器Variational Auto-Encoder）的概念，知道自编码器确实可以通过高斯分布的$\mu$和$\sigma$的显式形式，来代替隐式的表征$z$，来实现更加可控地重构图像$x$，也知道为了保证这一点，需要找出一个ELBO（证据下界，Evidence Lower Bound）作为网络的优化目标。但是从头到尾，“变分”这个名词总如天外来客，没有由来。</p>
+<p>PS：下面的各种过程主要都是变量代换，以及一些现成的公式，不涉及很深的数学理论，可以根据每章首尾的前后衔接，按需跳读。</p>
+<h2 id="贝叶斯公式-Bayes-Formula"><a href="#贝叶斯公式-Bayes-Formula" class="headerlink" title="贝叶斯公式 Bayes Formula"></a>贝叶斯公式 Bayes Formula</h2><p>事实上，这仍然是最底层的贝叶斯理论引出，这里就参考B站视频<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup>。首先讲一个CV的例子：有观测到的图像$x$，其隐式状态是one-hot的类别编码$z$。例如，有三个类A、B、C，如果这个图像是A类，则$z=(1, 0, 0)^\top$。为了知道这个图像到是否真的属于类别A，需要知道相应的概率。也就是给定观测值$x$，其隐式状态应该属于$z$的概率。这显然是一个条件概率，写作$p(z|x)$。根据贝叶斯公式，有：</p>
+<p>$$<br>p(z|x)=\frac{p(x|z)p(z)}{p(x)}<br>$$</p>
+<p>各个项表达的意思是：1）分子：$p(x|z)p(z)=p(x,z)$，观测值$x$和隐式状态$z$的联合概率（Joint Probability），就是观测值$x$和隐式状态$z$同时出现的概率，其中$p(z)$为隐式状态出现的先验概率（Prior Probability），$p(x|z)$就是隐式状态固定的条件下，样本出现的概率；2）分母：$p(x)=\int_0^\mathrm{\infty} p(x,z) dz$，观测值本身出现的先验概率，就是所有可能的隐式状态$z$下，观测值$x$出现的概率之和；3）总体：$p(z|x)$后验概率（Posterior Probability），在观测值已经出现的这一种先验下（分母），观测值与隐式状态同时出现的概率（分子）。</p>
+<p>很多人都知道在学贝叶斯的过程中，他们会被告知$p(z|x) \sim p(x|z)p(z)$，因为一旦$x$确定下来了，$p(x)$就是个常数。但是，这个常数到底能不能省略呢？如果要知道$p(z|x)$的确切数值的话，其实是必须知道的。按照我个人的理解，如果观测值$x$是一个过于罕见或者常见的样本，导致$p(x)$本身非常小或者非常大，那么这将会决定$p(z|x)$的最终数值，联合概率$p(x,z)$再大再小也不能与后验概率$p(z|x)$划等号。</p>
+<p>换而言之，不同的观测值$x$决定了不同的$p(x)$，而不同的$p(x)$最终决定了$p(z|x)$的取值。例如，这个B站视频<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup>里面的一个可视化例子，横轴为不同的隐式状态取值$z$，纵轴为不同方法计算出的概率取值，取不同的观测值$x$：</p>
+<p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/example-prior.png" alt="example-prior"></p>
+<center>可以看到，单纯地估计联合概率（蓝线“Joint”）是不够的<br>与真正带有先验$p(x)$的后验概率（红线“True Posterior”，通过数值计算得到）有非常明显的不同。<br><a href="https://www.bilibili.com/video/BV1Gs4y157BU?t=388.3">视频截图</a>来自B站<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup></center>
+
+<p><br></p>
+<p>所以，正如上面的截图中所说，需要找到一个更简单的分布，来逼近这个因为先验概率$p(x)=\int_0^\mathrm{N} p(x,z) dz$比较难算（因为没办法穷尽所有的可能，去找到观测值$x$本身出现的概率），而导致本身比较难算的后验概率$p(z|x)$。</p>
+<h2 id="变分推断-Variational-Inference"><a href="#变分推断-Variational-Inference" class="headerlink" title="变分推断 Variational Inference"></a>变分推断 Variational Inference</h2><p>为了解决这个问题，变分的思想就是使用一些可以参数化的（例如高斯分布可以用$\mu$和$\sigma$两个参数来表示）、更简单的概率分布，来近似一个难算的概率分布，例如在这边就是后验分布$p(z|x)$。从泛函的角度来讲，就是由一族函数构成的空间（类比机器学习里面常提的参数空间），我们要通过变化输入参数（Variable），来找到这个空间中最能满足近似目标的一个函数。</p>
+<p>至于为什么叫推断，实际上还是前面的一套贝叶斯的思路，用先验分布和联合分布来推断后验分布，所以如果不用变分操作，就可以直接叫贝叶斯推断（Bayesian Inference）了。</p>
+<p>首先，为了逼近、近似一个分布，肯定需要衡量我们预测的分布和目标分布的相似度。最常用的就是KL散度（Kullback-Leibler Divergence）：</p>
+<p>$$<br>\begin{align}<br>D(q||p) = &amp; \ H(q, p)-H(q) \nonumber \\<br>= &amp; \ \int q(x)\log\frac{q(x)}{p(x)}dx \nonumber \\<br>= &amp; \ \mathbb{E}_{x\sim q}[\log q(x) - \log p(x)] \nonumber \\<br>\end{align}<br>$$</p>
+<p>由于后验分布$p(z|x)$中，难算的主要是$p(x)$，所以我们不能直接近似它，而且在近似过程中肯定不能再引入$x$了，那么只剩下隐式状态$z$。我们用来近似$p(z|x)$的后验概率就记作$q_\theta(z)$，其中$\theta$就是参数。那么，基于KL散度来衡量两者的相似度，有这样的计算过程：</p>
+<p>$$<br>\begin{align}<br>&amp; D(q_{\theta}(z)||p(z|x)) \nonumber \\<br>&amp; = \ \mathbb{E}_{z\sim q} [ \log q_{\theta}(z) - \log \frac{p(x, z)}{p(x)} ] \nonumber \\<br>&amp; = \ \mathbb{E}_{z\sim q} [ \log q_{\theta}(z) - \log p(x, z) ]  + \log p(x)<br>\end{align}<br>$$</p>
+<p>其中，$\log p(x)$和$z$没关系，所以用期望公式的$q_\theta(z)$来加权求和之后，还是自己本身，所以可以从里面拿出来。那么，我们整理上述公式，$\log p(x)$等于式子（1）中的期望项的负号和KL散度的组合：</p>
+<p>$$<br>\begin{align}<br>\log p(x) = &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\theta}(z) ] \nonumber \\<br>&amp; + D(q_{\theta}(z)||p(z|x)) \nonumber \\<br>\geq &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\theta}(z) ]<br>\end{align}<br>$$</p>
+<p>可以看到，不等号右边的期望里，一个是近似结果$q_\theta(z)$，另一个是贝叶斯的分子、比较好算的联合概率分布$p(x,z)$，完全避开了最难算的$p(x)$。而且，虽然$p(x)$具体取值不知道，但是我们知道它是一个定值，所以不等号左边，如果KL散度越来越小了，那么两个分布越来越接近，反过来期望就越来越大。那么，我们的优化目标就可以从式子(1)中的最大化的KL散度，迁移到式子(2)的最大化不等号右边的下界。</p>
+<p>这个最大化的意思就是，因为这个下界恒小于等于$\log p(x)$的真实值。那么，不断抬高这个下界，就能使得这个下界的值，逼近$\log p(x)$的真实值。这个下界也就是VAE等带“变分”二字的方法中常说的ELBO（证据下界，Evidence Lower Bound），这个“证据”就指的是$p(x)$，因为它反映了观测数据的真实分布。</p>
+<h2 id="示例-Example"><a href="#示例-Example" class="headerlink" title="示例 Example"></a>示例 Example</h2><p>假定一个标量形式的隐式状态$z$的先验概率分布$p(z)$为：</p>
+<p>$$<br>p(z) = \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) = \left\{<br>\begin{aligned}<br>&amp;\mathrm{e}^{-z} &amp;z\geq 0 \cr<br>&amp;0 &amp;z&lt;0 \cr<br>\end{aligned}<br>\right.<br>$$</p>
+<p>给定隐式状态取值为$z$时，观测值$x$的条件概率$p(x|z)$为高斯分布：</p>
+<p>$$<br>\begin{align}<br>p(x|z) = &amp; \ \mathcal{N}(x; \mu=z, \sigma=1) \nonumber \\<br>= &amp; \ \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \nonumber \\<br>\end{align}<br>$$</p>
+<p>那么，可以计算出联合分布$p(x, z)$，以及进一步对联合分布中的所有隐式状态$z$积分，得到的观测值$x$的先验概率分布$p(x)$</p>
+<p>$$<br>\begin{align}<br>p(x, z) = &amp; \ p(x|z)p(z) \nonumber \\<br>= &amp; \ \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \cdot \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) \nonumber \\<br>\end{align}<br>$$</p>
+<p>$$<br>\begin{align}<br>p(x) = &amp; \ \int_0^\infty p(x, z) dz \nonumber \\<br>= &amp; \ \int_0^\infty \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \cdot \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) dz \nonumber \\<br>\end{align}<br>$$</p>
+<p>可以看到，联合分布$p(x, z)$本身是两个指数函数的乘积，可以正常地算出函数值。但是对其在$[0, \infty)$（也就是$z\geq 0$）上算积分，事实上是非常难算的。而实践中大部分场景就是若干个指数函数（或者带有指数函数的高斯分布）组合成的，只能通过数值解法插值出来，也就是上面视频截图里的红线部分。</p>
+<p>那么，基于上一章节描述的变分推断，是否能比较好地解这个问题（也就是近似后验概率$p(z|x)$）呢？首先，我们给出一个简单的参数化概率分布$q_\theta(z)$：</p>
+<p>$$<br>q_\theta(z) = \theta\mathrm{e}^{-\theta z}\cdot \mathrm{I}(z\geq 0) = \left\{<br>\begin{aligned}<br>&amp; \theta \mathrm{e}^{-\theta z} &amp;z\geq 0 \cr<br>&amp;0 &amp;z&lt;0 \cr<br>\end{aligned}<br>\right.<br>$$</p>
+<p>计算前述式子（2）里的ELBO，记作$\mathcal{L}_q$：</p>
+<p>$$<br>\begin{align}<br>\mathcal{L}_q = &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\theta}(z) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \cdot \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) \nonumber \\<br>&amp; - \log \theta\mathrm{e}^{-\theta z}\cdot \mathrm{I}(z\geq 0) ] \nonumber \\<br>\end{align}<br>$$</p>
+<p>由于$\log (\cdot)$函数的定义域就是$(0, \infty)$，同时$\mathrm{I}(z\geq 0)$表示$z&lt;0$时取$0$作为加权，导致代入$\log (\cdot)$无意义，所以可以直接舍去。将指数函数$\mathrm(e)^(\cdot)$与$\log(\cdot)$抵消，并整理与$z$和$\theta$无关的项为常数$\mathrm{C}$后，得到：</p>
+<p>$$<br>\mathcal{L}_q = \mathbb{E}_{z\sim q} [ -\frac{1}{2}z^2 + (x - 1 + \theta)z - \log \theta + \mathrm{C} ]<br>$$</p>
+<p>对带参数$\theta$的指数分布$q$求期望，有$\mathbb{E}_\theta [z^n] = \frac{n!}{\theta^n}$，则上式中的$z^2$和$z$项目均可以代入该期望公式。同时，$\log \theta$与$z$无关，对其求期望的结果还是本身：</p>
+<p>$$<br>\mathcal{L}_q = - \frac{1}{\theta^2} + \frac{x-1+\theta}{\theta} - \log \theta + \mathrm{C}<br>$$</p>
+<p>上式就是化简后的ELBO，为了求这个ELBO最大化时的参数$\theta$，令导数$\frac{\partial \mathcal{L}_q}{\partial \theta}=0$，代入$x=1.5$：</p>
+<p>$$<br>\frac{\partial \mathcal{L}_q}{\partial \theta} = \frac{2}{\theta^3} - \frac{0.5}{\theta^2} + \frac{1}{\theta} = 0<br>$$</p>
+<p>计算得到方程的解是$\theta=1.186$。将该参数代入$q_\theta(z)$，可以画出绿色曲线如下图所示：</p>
+<p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/example-vi.png" alt="example-vi"></p>
+<center>联合概率为蓝线“Joint”，真正带有先验$p(x)$的后验概率为红线“True Posterior”（通过数值计算得到），<br>以及变分推理后得到的绿线$q_\theta(z)$。<a href="https://www.bilibili.com/video/BV1Gs4y157BU?t=822.4">视频截图</a>来自B站<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup></center>
+
+<p><br></p>
+<p>一方面，可以看到虽然绿色的曲线比蓝色的（联合分布）稍微好点了，但是距离红色（真实的后验概率）还是很远，说明$q_\theta(z)$的构造和选取很影响最终结果，而且这也只是一个观测数据点$x=1.5$的解，需要遍历所有数据点，每个样本优化出一个参数$\theta_x$，数据集无限大则参数无限大，拟合成本高且不实用。</p>
+<p>从均摊分析（Amortized Analysis）的角度上考虑，机器学习、神经网络等学习方法可以有$\mathrm{K}$个全局参数，在训练过程中联合调整，与数据集规模无关，这样就能得到有限个参数，且训练结束后即可直接应用到测试集上。</p>
+<p>另一方面，即使是标量形式的隐式状态$z$和观测值$x$都如此地难近似，更不要说高维的数据了，此时就需要机器学习、神经网络等学习方法，用更大规模的参数$\theta$在高维数据上学习拟合到更好的函数$q_\theta(z)$。</p>
+<h2 id="在VAE中的变体-Variant-in-VAE"><a href="#在VAE中的变体-Variant-in-VAE" class="headerlink" title="在VAE中的变体 Variant in VAE"></a>在VAE中的变体 Variant in VAE</h2><p>首先，需要强调的一点是，Neural ODE<sup class="refplus-num"><a href="#ref-Neural-ODE">[3]</a></sup>作为2018年的理论三大会NeurIPS的Best Paper，肯定是有其基本理论的，其中之一就是VAE。因此，它的底层学习机制还是一个生成式的模型，因为它的大部分任务是对时间序列的内插和外推，所以需要基于学习到的隐式状态，生成新的数据。</p>
+<p>而前面描述的变分推断还是一个判别式的模型，粗浅一点讲，判别式模型是$x\rightarrow z$，而生成式模型是$z\rightarrow x$。但是从因果图来说，都是$z\rightarrow x$，因为这是数据产生的方式，要先有客观状态（物体就是类别A），才能有相应的观测（类别A的图片），生成式模型尝试模拟这个过程，判别式模型倒推反演这个过程。</p>
+<p>那么是否有判别式的模型，帮助我们直接从观测数据倒推出内部的隐式状态呢？其实是有的，之后的记录中会详细对比，这里先讲基础的VAE和Neural ODE（而且Neural ODE真的不能有判别任务吗？也不尽然，其实原文里面有对应实验）。</p>
+<p>这里参考B站视频<sup class="refplus-num"><a href="#ref-Bilibili-VAE">[2]</a></sup>，VAE的编码器Encoder是$q_\phi(z|x)$，给定输入数据求解隐式状态，生成器Decoder是$p_\theta(x|z)$，给定隐式状态求解生成数据，同时先验概率$p(x)$仍然是难求解的项目。同时，为了继承原有的变分性质，有别于普通自编码器（Auto-Encoder）输出了纯黑盒的中间隐式向量$z$，$q_\phi(z|x)$对于每个样本都输出$\mu_\phi(x)$和$\sigma_\phi(x)$，作为用于近似后验概率$p(z|x)$的高斯分布函数的参数。</p>
+<p>同样，从均摊分析的角度考虑，如果ELBO使用式子（2）里的$q_\theta(z)$，每个样本仍然是要都学习一个$\theta_x$。因此，直接引入编码器$q_\phi(z|x)$，包含全局的参数$\phi$。重新构造ELBO（$\mathcal{L}_q$）如下所示：</p>
+<p>$$<br>\begin{align}<br>\mathcal{L}_q = &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\phi}(z|x)] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z)p(z) - \log q_{\phi}(z|x) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) + \log p(z) - \log q_{\phi}(z|x) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) - \log \frac{q_{\phi}(z|x)}{p(z)} ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) ] - D(q_{\phi}(z|x)||p(z))  \\<br>\end{align}<br>$$</p>
+<p>在式子（3）中，可以看到最终的两项分别对应了生成器和编码器：1）第一项$\mathbb{E}_{z\sim q} [ \log p_\theta(x|z) ]$的意思是，给定隐式向量$z$，生成器重构出真实观测值$x$的概率应当最大，重构出其他无关观测值的概率应当最小（因为我们是最大化ELBO），注意是采若干个$z\sim q$，对应若干个$x$，算期望；2）第二项$- D(q_{\phi}(z|x)||p(z))$，其实就是最小化KL散度$D(q_{\phi}(z|x)||p(z))$，也就是给定观测值$x$，编码器的编码的隐式向量$z$应当服从其先验概率分布$p(z)$。</p>
+<p>与$p(x)$不同，隐式向量$z$是编码器学出来的，因此其概率分布可以预设。而$p(x)$是与数据观测值$x$有关，是一个自然分布，无法进行有效的预设，只能尝试拟合。因此，可以将先验概率分布设为标准高斯分布$\mathcal{N}(0, \mathrm{I})$。</p>
+<p>当然，仔细看过的学习者会发现：不对啊，根据前面变分推断的分析，我最初设立$q_\phi(z|x)$的初衷是去拟合后验概率分布$p(z|x)$的，怎么这里又要去与一个先验概率分布$p(z)$拉近呢，这不是矛盾了吗？事实上，在一些场景里面，这会引发“后验塌陷”问题，也就是在学习过程中，$q_\phi(z|x$过于接近先验分布$p(z)$，而不接近真实的后验分布$p(z|x)$。相当于直接将观测样本“死记硬背”，映射到标准高斯分布$\mathcal{N}(0, \mathrm{I})$里面，至于编码就不怎么学了。</p>
+<p>这种情况可以通过多种方式解决：1）修改ELBO的优化目标，既然ELBO有两项，就可以调整加权，例如$\beta$-VAE使用$\beta&gt;1$来鼓励模型更多地使用隐式状态$z$，而不是直接去$p(z)$里映射<sup class="refplus-num"><a href="#ref-Beta-VAE">[4]</a></sup>；2）修改先验分布，防止过拟合；3）修改模型架构，例如递归VAE<sup class="refplus-num"><a href="#ref-Recursive-VAE">[5]</a></sup>。</p>
+<h2 id="重参数化技巧-Reparameterization"><a href="#重参数化技巧-Reparameterization" class="headerlink" title="重参数化技巧 Reparameterization"></a>重参数化技巧 Reparameterization</h2><p>对于式子（3）的ELBO，将其转换为编码器和解码器的损失函数。对于编码器对应的KL散度项，由于两者都是高斯函数：1）基于给定观测数据$x$，编码器预测了高斯函数的均值方差参数$q_\phi(z|x) = \mathcal{N}(z;\mu_\phi(x), \mathrm{\Sigma}_\phi(x))$，2）先验概率分布是标准高斯$q(z)=\mathcal{N}(z; 0, \mathrm{I})$。所以，直接代入高斯函数的KL散度公式：</p>
+<p>$$<br>\begin{align}<br>&amp; D(\mathcal{N}(\mu_0, \mathrm{\Sigma}_0) || \mathcal{N}(\mu_1, \mathrm{\Sigma}_1)) \nonumber \\<br>&amp; = \frac{1}{2}(\mathrm{tr}(\mathrm{\Sigma_1}^{-1}\mathrm{\Sigma_0})  + (\mu_1 - \mu_0)^\top\mathrm{\Sigma_1^{-1}}(\mu_1-\mu_0) \nonumber \\<br>&amp; - \mathrm{K} + \log \frac{\mathrm{det}\mathrm{\Sigma_1}}{\mathrm{det}\mathrm{\Sigma_0}}) \nonumber \\<br>\end{align}<br>$$</p>
+<p>$$<br>\begin{align}<br>&amp; D(q_\phi(z|x)||p(z)) = \frac{1}{2}(\mathrm{tr}(\mathrm{\Sigma_\phi(x)})  + \mu_\phi(x)^\top\mu_\phi(x) \nonumber \\<br>&amp; - \mathrm{K} + \log (\mathrm{det}\mathrm{\Sigma_\phi(x)})) \nonumber \\<br>\end{align}<br>$$</p>
+<p>其中，$\mathrm{K}$是隐式向量$z$的维度大小。不得不说，这公式具体怎么来的，我也没推导过。可以看到式子可微，通过反向传播能更新参数，问题不大。</p>
+<p>对于解码器对应的最大化重建项，将重建结果的概率$p_\theta(x|z)$也建模为一个高斯分布$p_\theta(x|z) = \mathcal{N}(x; \mu_\theta(z), \sigma^2\mathrm{I})$，$\sigma$为定值，这样求$\log (\cdot)$之后，有：</p>
+<p>$$<br>\log p_\theta(x|z) = -\mathrm{C}\Vert x-\mu_\theta(z) \Vert^2 + \mathrm{D}<br>$$</p>
+<p>其中，$\mathrm{C}$和$\mathrm{D}$都是与$\theta$无关的常数项。因此，在后续反向传播求梯度时，只需要求解$\nabla_\theta \Vert x-\mu_\theta(z) \Vert^2$，就是真实观测值$x$与基于$z$的重建结果$\mu_\phi(z)$算L2-范数。但是，真正的最大化重建项是一个期望$\mathbb{E}_{z\sim q_\phi} [ \log p_\theta(x|z) ]$，需要在编码器预测的高斯分布$q_\phi(z|x) = \mathcal{N}(z;\mu_\phi(x), \mathrm{\Sigma}_\phi(x))$上多次采样，这个多次前向采样的过程，是无法通过反向传播，从而一路更新到编码器这边（相当于是要根据解码器输出的均值方差$\mu_\phi(x)$，$\mathrm{\Sigma}_\phi(x)$，新建一个高斯分布）。</p>
+<p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/reparameterization.png" alt="reparameterization"></p>
+<center>红框内就是无法回传梯度，需要新建高斯分布进行随机采样的环节<br>可以看到重参数之后，编码器预测的均值方差$\mu_\phi(x)$，$\mathrm{\Sigma}_\phi(x)$，能够收到梯度。<a href="https://www.bilibili.com/video/BV1Ns4y1J7tK?t=462.7">视频截图</a>来自B站<sup class="refplus-num"><a href="#ref-Bilibili-VAE">[2]</a></sup></center>
+
+<p><br></p>
+<p>那么就需要避免这种新建高斯分布进行随机采样的操作。如上图的右半图所示，重参数技巧选择在一个标准高斯分布上采样，然后让采样的结果与编码器预测的均值方差$\mu_\phi(x)$，$\mathrm{\Sigma}_\phi(x)$，进行线性变换，从而得到与直接在编码器输出的高斯分布上采样等效的结果，还能传梯度到编码器（黑框和黑线）。</p>
+<h2 id="在Neural-ODE中的应用-Application-in-Neural-ODE"><a href="#在Neural-ODE中的应用-Application-in-Neural-ODE" class="headerlink" title="在Neural ODE中的应用 Application in Neural ODE"></a>在Neural ODE中的应用 Application in Neural ODE</h2><p>想要了解VAE在Neural ODE中的应用，最直观的肯定是看pipeline和学习目标ELBO。很巧的是，陈天琦团队在2019年NeurIPS发表的Neural ODE续作Latent ODE<sup class="refplus-num"><a href="#ref-Latent-ODE">[6]</a></sup>中，应该是作者们特别设计了排版，让pipeline和学习目标放在了同一页相邻的地方。这篇文章其实和Neural ODE也就左半边编码器Encoder不一样（一个是RNN，一个是ODE-RNN），所以我们直接看Latent ODE的图：</p>
+<p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/latent-ode.png" alt="latent-ode"></p>
+<p>可以看到，这个ELBO式子（9）可以说是和前面的式子（3）一模一样，也是对生成器（ODESolve的红色部分）最大化重构项，以及最小化编码器（ODE-RNN的绿色部分）输出的高斯分布（图正中间的$\mu$和$\sigma$）与先验分布的KL散度。</p>
+<p>但是需要注意的是，这也继承了VAE的任务特性：一方面，训练的过程是自监督的，观测数据既作为输入，也作为重构目标，如果观测数据的数量以及内容偏少，学习的实际效果是难以保证的（例如直接观测数据点太少的情况）；另一方面，隐式状态的表达形式是高斯分布的参数，虽然它相比于自编码的黑盒向量更加显式，但还不是我们想要的与客观世界对应的、结构化的内在状态（例如类别、阶段、变化等）。</p>
+<p>而且，这也并不是Neural ODE的特殊之处，把左右两边的编解码器，全部换成RNN或者Transformer，其实也能对时序数据的隐式状态进行建模。而Neural ODE真正的优势，简而言之，正是Latent ODE的标题：不均匀采样的时间序列，而这就要等到下次笔记了。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul id="refplus"><li id="ref-Bilibili-VI" data-num="1">[1]  车库里的老锤.【15分钟】了解变分推理.  https://www.bilibili.com/video/BV1Gs4y157BU</li><li id="ref-Bilibili-VAE" data-num="2">[2]  车库里的老锤.【15分钟】了解变分自编码器. https://www.bilibili.com/video/BV1Ns4y1J7tK</li><li id="ref-Neural-ODE" data-num="3">[3]  Chen R T Q, Rubanova Y, Bettencourt J, et al. Neural ordinary differential equations[J]. Advances in neural information processing systems, 2018, 31.</li><li id="ref-Beta-VAE" data-num="4">[4]  Higgins I, Matthey L, Pal A, et al. beta-vae: Learning basic visual concepts with a constrained variational framework[C]//International conference on learning representations. 2016.</li><li id="ref-Recursive-VAE" data-num="5">[5]  Kim M, Pavlovic V. Recursive inference for variational autoencoders[J]. Advances in Neural Information Processing Systems, 2020, 33: 19632-19641.</li><li id="ref-Latent-ODE" data-num="6">[6]  Rubanova Y, Chen R T Q, Duvenaud D K. Latent ordinary differential equations for irregularly-sampled time series[J]. Advances in neural information processing systems, 2019, 32.</li></ul>
+<p><br></p>
+<blockquote>
+<p>感谢阅读！在2023年的最后一天，终于写好了这篇笔记！<br>也是时隔多年，再次在博客里发一篇技术文章，令人万分感慨。<br>如有意见和建议，欢迎通过首页的联系方式联系作者。<br>本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。</p>
+</blockquote>
+
+    <style>
+    #refplus, #refplus li{ 
+        padding:0;
+        margin:0;
+        list-style:none;
+    }；
+    </style>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+    document.querySelectorAll(".refplus-num").forEach((ref) => {
+        let refid = ref.firstChild.href.replace(location.origin+location.pathname,'');
+        let refel = document.querySelector(refid);
+        let refnum = refel.dataset.num;
+        let ref_content = refel.innerText.replace(`[${refnum}]`,'');
+        tippy(ref, {
+            content: ref_content,
+        });
+    });
+    </script>
+    ]]></content>
+      <tags>
+        <tag>experience</tag>
       </tags>
   </entry>
   <entry>
@@ -702,120 +1005,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Notes About Neural ODE and Beyond 1</title>
-    <url>/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/</url>
-    <content><![CDATA[<p>本文是学习Neural ODE过程中的第一篇个人笔记</p>
-<p>为了较为全面地理解其中的VAE思想，首先需要学习一些基础知识，例如Variational Inference变分推断<br>比较复杂的其他过程，包括ODE、伴随方程、以及更进阶的SDE，会在之后的笔记中再记录。</p>
-<span id="more"></span>
-<h2 id="前言-Introduction"><a href="#前言-Introduction" class="headerlink" title="前言 Introduction"></a>前言 Introduction</h2><p>最近，估计是搜了若干比较数学理论的东西，被B站的推荐系统疯狂轰炸，各种统计学、数据科学、机器学习的视频都在强调“变分推断”。然而，我总是看不懂，反复问自己“为什么要使用变分推断？”，“为什么大家都在强调变分推断很重要，最新的研究也一直层出不穷？”。</p>
-<p>起初，我觉得这就是一个高大上的名词，反正在CV、NLP乃至语音，大力出奇迹的事情多了去了，用得着再回到统计理论这边吗？感觉统计理论总是没有太多的落地，用的数据集有很多也是比较玩具的（理想化）。然而万万没想到，项目确实碰到了这个问题，需要用到类似Neural ODE的方法，基于观测来建模一个过程的内部状态变化，那么深入了解变分推断就是很重要的工作了。</p>
-<p>虽然，我确实接触过VAE（变分自编码器Variational Auto-Encoder）的概念，知道自编码器确实可以通过高斯分布的$\mu$和$\sigma$的显式形式，来代替隐式的表征$z$，来实现更加可控地重构图像$x$，也知道为了保证这一点，需要找出一个ELBO（证据下界，Evidence Lower Bound）作为网络的优化目标。但是从头到尾，“变分”这个名词总如天外来客，没有由来。</p>
-<p>PS：下面的各种过程主要都是变量代换，以及一些现成的公式，不涉及很深的数学理论，可以根据每章首尾的前后衔接，按需跳读。</p>
-<h2 id="贝叶斯公式-Bayes-Formula"><a href="#贝叶斯公式-Bayes-Formula" class="headerlink" title="贝叶斯公式 Bayes Formula"></a>贝叶斯公式 Bayes Formula</h2><p>事实上，这仍然是最底层的贝叶斯理论引出，这里就参考B站视频<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup>。首先讲一个CV的例子：有观测到的图像$x$，其隐式状态是one-hot的类别编码$z$。例如，有三个类A、B、C，如果这个图像是A类，则$z=(1, 0, 0)^\top$。为了知道这个图像到是否真的属于类别A，需要知道相应的概率。也就是给定观测值$x$，其隐式状态应该属于$z$的概率。这显然是一个条件概率，写作$p(z|x)$。根据贝叶斯公式，有：</p>
-<p>$$<br>p(z|x)=\frac{p(x|z)p(z)}{p(x)}<br>$$</p>
-<p>各个项表达的意思是：1）分母：$p(x|z)p(z)=p(x,z)$，观测值$x$和隐式状态$z$的联合概率（Joint Probability），就是观测值$x$和隐式状态$z$同时出现的概率，其中$p(z)$为隐式状态出现的先验概率（Prior Probability），$p(x|z)$就是隐式状态固定的条件下，样本出现的概率；2）分子：$p(x)=\int_0^\mathrm{N} p(x,z) dz$，观测值本身出现的先验概率，就是所有可能的隐式状态$z$下，观测值$x$出现的概率之和；3）总体：$p(z|x)$后验概率（Posterior Probability），在观测值已经出现的这一种先验下（分母），观测值与隐式状态同时出现的概率（分子）。</p>
-<p>很多人都知道在学贝叶斯的过程中，他们会被告知$p(z|x) \sim p(x|z)p(z)$，因为一旦$x$确定下来了，$p(x)$就是个常数。但是，这个常数到底能不能省略呢？如果要知道$p(z|x)$的确切数值的话，其实是必须知道的。按照我个人的理解，如果观测值$x$是一个过于罕见或者常见的样本，导致$p(x)$本身非常小或者非常大，那么这将会决定$p(z|x)$的最终数值，联合概率$p(x,z)$再大再小也不能与后验概率$p(z|x)$划等号。</p>
-<p>换而言之，不同的观测值$x$决定了不同的$p(x)$，而不同的$p(x)$最终决定了$p(z|x)$的取值。例如，这个B站视频<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup>里面的一个可视化例子，横轴为不同的隐式状态取值$z$，纵轴为不同方法计算出的概率取值，取不同的观测值$x$：</p>
-<p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/example-prior.png" alt="example-prior"></p>
-<center>可以看到，单纯地估计联合概率（蓝线“Joint”）是不够的<br>与真正带有先验$p(x)$的后验概率（红线“True Posterior”，通过数值计算得到）有非常明显的不同。<br><a href="https://www.bilibili.com/video/BV1Gs4y157BU?t=388.3">视频截图</a>来自B站<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup></center>
-
-<p><br></p>
-<p>所以，正如上面的截图中所说，需要找到一个更简单的分布，来逼近这个因为先验概率$p(x)=\int_0^\mathrm{N} p(x,z) dz$比较难算（因为没办法穷尽所有的可能，去找到观测值$x$本身出现的概率），而导致本身比较难算的后验概率$p(z|x)$。</p>
-<h2 id="变分推断-Variational-Inference"><a href="#变分推断-Variational-Inference" class="headerlink" title="变分推断 Variational Inference"></a>变分推断 Variational Inference</h2><p>为了解决这个问题，变分的思想就是使用一些可以参数化的（例如高斯分布可以用$\mu$和$\sigma$两个参数来表示）、更简单的概率分布，来近似一个难算的概率分布，例如在这边就是后验分布$p(z|x)$。从泛函的角度来讲，就是由一族函数构成的空间（类比机器学习里面常提的参数空间），我们要通过变化输入参数（Variable），来找到这个空间中最能满足近似目标的一个函数。</p>
-<p>至于为什么叫推断，实际上还是前面的一套贝叶斯的思路，用先验分布和联合分布来推断后验分布，所以如果不用变分操作，就可以直接叫贝叶斯推断（Bayesian Inference）了。</p>
-<p>首先，为了逼近、近似一个分布，肯定需要衡量我们预测的分布和目标分布的相似度。最常用的就是KL散度（Kullback-Leibler Divergence）：</p>
-<p>$$<br>\begin{align}<br>D(q||p) = &amp; \ H(q, p)-H(q) \nonumber \\<br>= &amp; \ \int q(x)\log\frac{q(x)}{p(x)}dx \nonumber \\<br>= &amp; \ \mathbb{E}_{x\sim q}[\log q(x) - \log p(x)] \nonumber \\<br>\end{align}<br>$$</p>
-<p>由于后验分布$p(z|x)$中，难算的主要是$p(x)$，所以我们不能直接近似它，而且在近似过程中肯定不能再引入$x$了，那么只剩下隐式状态$z$。我们用来近似$p(z|x)$的后验概率就记作$q_\theta(z)$，其中$\theta$就是参数。那么，基于KL散度来衡量两者的相似度，有这样的计算过程：</p>
-<p>$$<br>\begin{align}<br>&amp; D(q_{\theta}(z)||p(z|x)) \nonumber \\<br>&amp; = \ \mathbb{E}_{z\sim q} [ \log q_{\theta}(z) - \log \frac{p(x, z)}{p(x)} ] \nonumber \\<br>&amp; = \ \mathbb{E}_{z\sim q} [ \log q_{\theta}(z) - \log p(x, z) ]  + \log p(x)<br>\end{align}<br>$$</p>
-<p>其中，$\log p(x)$和$z$没关系，所以用期望公式的$q_\theta(z)$来加权求和之后，还是自己本身，所以可以从里面拿出来。那么，我们整理上述公式，$\log p(x)$等于式子（1）中的期望项的负号和KL散度的组合：</p>
-<p>$$<br>\begin{align}<br>\log p(x) = &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\theta}(z) ] \nonumber \\<br>&amp; + D(q_{\theta}(z)||p(z|x)) \nonumber \\<br>\geq &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\theta}(z) ]<br>\end{align}<br>$$</p>
-<p>可以看到，不等号右边的期望里，一个是近似结果$q_\theta(z)$，另一个是贝叶斯的分子、比较好算的联合概率分布$p(x,z)$，完全避开了最难算的$p(x)$。而且，虽然$p(x)$具体取值不知道，但是我们知道它是一个定值，所以不等号左边，如果KL散度越来越小了，那么两个分布越来越接近，反过来期望就越来越大。那么，我们的优化目标就可以从式子(1)中的最大化的KL散度，迁移到式子(2)的最大化不等号右边的下界。</p>
-<p>这个最大化的意思就是，因为这个下界恒小于等于$\log p(x)$的真实值。那么，不断抬高这个下界，就能使得这个下界的值，逼近$\log p(x)$的真实值。这个下界也就是VAE等带“变分”二字的方法中常说的ELBO（证据下界，Evidence Lower Bound），这个“证据”就指的是$p(x)$，因为它反映了观测数据的真实分布。</p>
-<h2 id="示例-Example"><a href="#示例-Example" class="headerlink" title="示例 Example"></a>示例 Example</h2><p>假定一个标量形式的隐式状态$z$的先验概率分布$p(z)$为：</p>
-<p>$$<br>p(z) = \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) = \left\{<br>\begin{aligned}<br>&amp;\mathrm{e}^{-z} &amp;z\geq 0 \cr<br>&amp;0 &amp;z&lt;0 \cr<br>\end{aligned}<br>\right.<br>$$</p>
-<p>给定隐式状态取值为$z$时，观测值$x$的条件概率$p(x|z)$为高斯分布：</p>
-<p>$$<br>\begin{align}<br>p(x|z) = &amp; \ \mathcal{N}(x; \mu=z, \sigma=1) \nonumber \\<br>= &amp; \ \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \nonumber \\<br>\end{align}<br>$$</p>
-<p>那么，可以计算出联合分布$p(x, z)$，以及进一步对联合分布中的所有隐式状态$z$积分，得到的观测值$x$的先验概率分布$p(x)$</p>
-<p>$$<br>\begin{align}<br>p(x, z) = &amp; \ p(x|z)p(z) \nonumber \\<br>= &amp; \ \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \cdot \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) \nonumber \\<br>\end{align}<br>$$</p>
-<p>$$<br>\begin{align}<br>p(x) = &amp; \ \int_0^\infty p(x, z) dz \nonumber \\<br>= &amp; \ \int_0^\infty \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \cdot \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) dz \nonumber \\<br>\end{align}<br>$$</p>
-<p>可以看到，联合分布$p(x, z)$本身是两个指数函数的乘积，可以正常地算出函数值。但是对其在$[0, \infty)$（也就是$z\geq 0$）上算积分，事实上是非常难算的。而实践中大部分场景就是若干个指数函数（或者带有指数函数的高斯分布）组合成的，只能通过数值解法插值出来，也就是上面视频截图里的红线部分。</p>
-<p>那么，基于上一章节描述的变分推断，是否能比较好地解这个问题（也就是近似后验概率$p(z|x)$）呢？首先，我们给出一个简单的参数化概率分布$q_\theta(z)$：</p>
-<p>$$<br>q_\theta(z) = \theta\mathrm{e}^{-\theta z}\cdot \mathrm{I}(z\geq 0) = \left\{<br>\begin{aligned}<br>&amp; \theta \mathrm{e}^{-\theta z} &amp;z\geq 0 \cr<br>&amp;0 &amp;z&lt;0 \cr<br>\end{aligned}<br>\right.<br>$$</p>
-<p>计算前述式子（2）里的ELBO，记作$\mathcal{L}_q$：</p>
-<p>$$<br>\begin{align}<br>\mathcal{L}_q = &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\theta}(z) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log \frac{1}{\sqrt{2\pi}}\mathrm{e}^{(-\frac{1}{2}(x-z)^2)} \cdot \mathrm{e}^{-z}\cdot \mathrm{I}(z\geq 0) \nonumber \\<br>&amp; - \log \theta\mathrm{e}^{-\theta z}\cdot \mathrm{I}(z\geq 0) ] \nonumber \\<br>\end{align}<br>$$</p>
-<p>由于$\log (\cdot)$函数的定义域就是$(0, \infty)$，同时$\mathrm{I}(z\geq 0)$表示$z&lt;0$时取$0$作为加权，导致代入$\log (\cdot)$无意义，所以可以直接舍去。将指数函数$\mathrm(e)^(\cdot)$与$\log(\cdot)$抵消，并整理与$z$和$\theta$无关的项为常数$\mathrm{C}$后，得到：</p>
-<p>$$<br>\mathcal{L}_q = \mathbb{E}_{z\sim q} [ -\frac{1}{2}z^2 + (x - 1 + \theta)z - \log \theta + \mathrm{C} ]<br>$$</p>
-<p>对带参数$\theta$的指数分布$q$求期望，有$\mathbb{E}_\theta [z^n] = \frac{n!}{\theta^n}$，则上式中的$z^2$和$z$项目均可以代入该期望公式。同时，$\log \theta$与$z$无关，对其求期望的结果还是本身：</p>
-<p>$$<br>\mathcal{L}_q = - \frac{1}{\theta^2} + \frac{x-1+\theta}{\theta} - \log \theta + \mathrm{C}<br>$$</p>
-<p>上式就是化简后的ELBO，为了求这个ELBO最大化时的参数$\theta$，令导数$\frac{\partial \mathcal{L}_q}{\partial \theta}=0$，代入$x=1.5$：</p>
-<p>$$<br>\frac{\partial \mathcal{L}_q}{\partial \theta} = \frac{2}{\theta^3} - \frac{0.5}{\theta^2} + \frac{1}{\theta} = 0<br>$$</p>
-<p>计算得到方程的解是$\theta=1.186$。将该参数代入$q_\theta(z)$，可以画出绿色曲线如下图所示：</p>
-<p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/example-vi.png" alt="example-vi"></p>
-<center>联合概率为蓝线“Joint”，真正带有先验$p(x)$的后验概率为红线“True Posterior”（通过数值计算得到），<br>以及变分推理后得到的绿线$q_\theta(z)$。<a href="https://www.bilibili.com/video/BV1Gs4y157BU?t=822.4">视频截图</a>来自B站<sup class="refplus-num"><a href="#ref-Bilibili-VI">[1]</a></sup></center>
-
-<p><br></p>
-<p>一方面，可以看到虽然绿色的曲线比蓝色的（联合分布）稍微好点了，但是距离红色（真实的后验概率）还是很远，说明$q_\theta(z)$的构造和选取很影响最终结果，而且这也只是一个观测数据点$x=1.5$的解，需要遍历所有数据点，每个样本优化出一个参数$\theta_x$，数据集无限大则参数无限大，拟合成本高且不实用。</p>
-<p>从均摊分析（Amortized Analysis）的角度上考虑，机器学习、神经网络等学习方法可以有$\mathrm{K}$个全局参数，在训练过程中联合调整，与数据集规模无关，这样就能得到有限个参数，且训练结束后即可直接应用到测试集上。</p>
-<p>另一方面，即使是标量形式的隐式状态$z$和观测值$x$都如此地难近似，更不要说高维的数据了，此时就需要机器学习、神经网络等学习方法，用更大规模的参数$\theta$在高维数据上学习拟合到更好的函数$q_\theta(z)$。</p>
-<h2 id="在VAE中的变体-Variant-in-VAE"><a href="#在VAE中的变体-Variant-in-VAE" class="headerlink" title="在VAE中的变体 Variant in VAE"></a>在VAE中的变体 Variant in VAE</h2><p>首先，需要强调的一点是，Neural ODE<sup class="refplus-num"><a href="#ref-Neural-ODE">[3]</a></sup>作为2018年的理论三大会NeurIPS的Best Paper，肯定是有其基本理论的，其中之一就是VAE。因此，它的底层学习机制还是一个生成式的模型，因为它的大部分任务是对时间序列的内插和外推，所以需要基于学习到的隐式状态，生成新的数据。</p>
-<p>而前面描述的变分推断还是一个判别式的模型，粗浅一点讲，判别式模型是$x\rightarrow z$，而生成式模型是$z\rightarrow x$。但是从因果图来说，都是$z\rightarrow x$，因为这是数据产生的方式，要先有客观状态（物体就是类别A），才能有相应的观测（类别A的图片），生成式模型尝试模拟这个过程，判别式模型倒推反演这个过程。</p>
-<p>那么是否有判别式的模型，帮助我们直接从观测数据倒推出内部的隐式状态呢？其实是有的，之后的记录中会详细对比，这里先讲基础的VAE和Neural ODE（而且Neural ODE真的不能有判别任务吗？也不尽然，其实原文里面有对应实验）。</p>
-<p>这里参考B站视频<sup class="refplus-num"><a href="#ref-Bilibili-VAE">[2]</a></sup>，VAE的编码器Encoder是$q_\phi(z|x)$，给定输入数据求解隐式状态，生成器Decoder是$p_\theta(x|z)$，给定隐式状态求解生成数据，同时先验概率$p(x)$仍然是难求解的项目。同时，为了继承原有的变分性质，有别于普通自编码器（Auto-Encoder）输出了纯黑盒的中间隐式向量$z$，$q_\phi(z|x)$对于每个样本都输出$\mu_\phi(x)$和$\sigma_\phi(x)$，作为用于近似后验概率$p(z|x)$的高斯分布函数的参数。</p>
-<p>同样，从均摊分析的角度考虑，如果ELBO使用式子（2）里的$q_\theta(z)$，每个样本仍然是要都学习一个$\theta_x$。因此，直接引入编码器$q_\phi(z|x)$，包含全局的参数$\phi$。重新构造ELBO（$\mathcal{L}_q$）如下所示：</p>
-<p>$$<br>\begin{align}<br>\mathcal{L}_q = &amp; \ \mathbb{E}_{z\sim q} [ \log p(x, z) - \log q_{\phi}(z|x)] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z)p(z) - \log q_{\phi}(z|x) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) + \log p(z) - \log q_{\phi}(z|x) ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) - \log \frac{q_{\phi}(z|x)}{p(z)} ] \nonumber \\<br>= &amp; \ \mathbb{E}_{z\sim q} [ \log p_\theta(x|z) ] - D(q_{\phi}(z|x)||p(z))  \\<br>\end{align}<br>$$</p>
-<p>在式子（3）中，可以看到最终的两项分别对应了生成器和编码器：1）第一项$\mathbb{E}_{z\sim q} [ \log p_\theta(x|z) ]$的意思是，给定隐式向量$z$，生成器重构出真实观测值$x$的概率应当最大，重构出其他无关观测值的概率应当最小（因为我们是最大化ELBO），注意是采若干个$z\sim q$，对应若干个$x$，算期望；2）第二项$- D(q_{\phi}(z|x)||p(z))$，其实就是最小化KL散度$D(q_{\phi}(z|x)||p(z))$，也就是给定观测值$x$，编码器的编码的隐式向量$z$应当服从其先验概率分布$p(z)$。</p>
-<p>与$p(x)$不同，隐式向量$z$是编码器学出来的，因此其概率分布可以预设。而$p(x)$是与数据观测值$x$有关，是一个自然分布，无法进行有效的预设，只能尝试拟合。因此，可以将先验概率分布设为标准高斯分布$\mathcal{N}(0, \mathrm{I})$。</p>
-<p>当然，仔细看过的学习者会发现：不对啊，根据前面变分推断的分析，我最初设立$q_\phi(z|x)$的初衷是去拟合后验概率分布$p(z|x)$的，怎么这里又要去与一个先验概率分布$p(z)$拉近呢，这不是矛盾了吗？事实上，在一些场景里面，这会引发“后验塌陷”问题，也就是在学习过程中，$q_\phi(z|x$过于接近先验分布$p(z)$，而不接近真实的后验分布$p(z|x)$。相当于直接将观测样本“死记硬背”，映射到标准高斯分布$\mathcal{N}(0, \mathrm{I})$里面，至于编码就不怎么学了。</p>
-<p>这种情况可以通过多种方式解决：1）修改ELBO的优化目标，既然ELBO有两项，就可以调整加权，例如$\beta$-VAE使用$\beta&gt;1$来鼓励模型更多地使用隐式状态$z$，而不是直接去$p(z)$里映射<sup class="refplus-num"><a href="#ref-Beta-VAE">[4]</a></sup>；2）修改先验分布，防止过拟合；3）修改模型架构，例如递归VAE<sup class="refplus-num"><a href="#ref-Recursive-VAE">[5]</a></sup>。</p>
-<h2 id="重参数化技巧-Reparameterization"><a href="#重参数化技巧-Reparameterization" class="headerlink" title="重参数化技巧 Reparameterization"></a>重参数化技巧 Reparameterization</h2><p>对于式子（3）的ELBO，将其转换为编码器和解码器的损失函数。对于编码器对应的KL散度项，由于两者都是高斯函数：1）基于给定观测数据$x$，编码器预测了高斯函数的均值方差参数$q_\phi(z|x) = \mathcal{N}(z;\mu_\phi(x), \mathrm{\Sigma}_\phi(x))$，2）先验概率分布是标准高斯$q(z)=\mathcal{N}(z; 0, \mathrm{I})$。所以，直接代入高斯函数的KL散度公式：</p>
-<p>$$<br>\begin{align}<br>&amp; D(\mathcal{N}(\mu_0, \mathrm{\Sigma}_0) || \mathcal{N}(\mu_1, \mathrm{\Sigma}_1)) \nonumber \\<br>&amp; = \frac{1}{2}(\mathrm{tr}(\mathrm{\Sigma_1}^{-1}\mathrm{\Sigma_0})  + (\mu_1 - \mu_0)^\top\mathrm{\Sigma_1^{-1}}(\mu_1-\mu_0) \nonumber \\<br>&amp; - \mathrm{K} + \log \frac{\mathrm{det}\mathrm{\Sigma_1}}{\mathrm{det}\mathrm{\Sigma_0}}) \nonumber \\<br>\end{align}<br>$$</p>
-<p>$$<br>\begin{align}<br>&amp; D(q_\phi(z|x)||p(z)) = \frac{1}{2}(\mathrm{tr}(\mathrm{\Sigma_\phi(x)})  + \mu_\phi(x)^\top\mu_\phi(x) \nonumber \\<br>&amp; - \mathrm{K} + \log (\mathrm{det}\mathrm{\Sigma_\phi(x)})) \nonumber \\<br>\end{align}<br>$$</p>
-<p>其中，$\mathrm{K}$是隐式向量$z$的维度大小。不得不说，这公式具体怎么来的，我也没推导过。可以看到式子可微，通过反向传播能更新参数，问题不大。</p>
-<p>对于解码器对应的最大化重建项，将重建结果的概率$p_\theta(x|z)$也建模为一个高斯分布$p_\theta(x|z) = \mathcal{N}(x; \mu_\theta(z), \sigma^2\mathrm{I})$，$\sigma$为定值，这样求$\log (\cdot)$之后，有：</p>
-<p>$$<br>\log p_\theta(x|z) = -\mathrm{C}\Vert x-\mu_\theta(z) \Vert^2 + \mathrm{D}<br>$$</p>
-<p>其中，$\mathrm{C}$和$\mathrm{D}$都是与$\theta$无关的常数项。因此，在后续反向传播求梯度时，只需要求解$\nabla_\theta \Vert x-\mu_\theta(z) \Vert^2$，就是真实观测值$x$与基于$z$的重建结果$\mu_\phi(z)$算L2-范数。但是，真正的最大化重建项是一个期望$\mathbb{E}_{z\sim q_\phi} [ \log p_\theta(x|z) ]$，需要在编码器预测的高斯分布$q_\phi(z|x) = \mathcal{N}(z;\mu_\phi(x), \mathrm{\Sigma}_\phi(x))$上多次采样，这个多次前向采样的过程，是无法通过反向传播，从而一路更新到编码器这边（相当于是要根据解码器输出的均值方差$\mu_\phi(x)$，$\mathrm{\Sigma}_\phi(x)$，新建一个高斯分布）。</p>
-<p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/reparameterization.png" alt="reparameterization"></p>
-<center>红框内就是无法回传梯度，需要新建高斯分布进行随机采样的环节<br>可以看到重参数之后，编码器预测的均值方差$\mu_\phi(x)$，$\mathrm{\Sigma}_\phi(x)$，能够收到梯度。<a href="https://www.bilibili.com/video/BV1Ns4y1J7tK?t=462.7">视频截图</a>来自B站<sup class="refplus-num"><a href="#ref-Bilibili-VAE">[2]</a></sup></center>
-
-<p><br></p>
-<p>那么就需要避免这种新建高斯分布进行随机采样的操作。如上图的右半图所示，重参数技巧选择在一个标准高斯分布上采样，然后让采样的结果与编码器预测的均值方差$\mu_\phi(x)$，$\mathrm{\Sigma}_\phi(x)$，进行线性变换，从而得到与直接在编码器输出的高斯分布上采样等效的结果，还能传梯度到编码器（黑框和黑线）。</p>
-<h2 id="在Neural-ODE中的应用-Application-in-Neural-ODE"><a href="#在Neural-ODE中的应用-Application-in-Neural-ODE" class="headerlink" title="在Neural ODE中的应用 Application in Neural ODE"></a>在Neural ODE中的应用 Application in Neural ODE</h2><p>想要了解VAE在Neural ODE中的应用，最直观的肯定是看pipeline和学习目标ELBO。很巧的是，陈天琦团队在2019年NeurIPS发表的Neural ODE续作Latent ODE<sup class="refplus-num"><a href="#ref-Latent-ODE">[6]</a></sup>中，应该是作者们特别设计了排版，让pipeline和学习目标放在了同一页相邻的地方。这篇文章其实和Neural ODE也就左半边编码器Encoder不一样（一个是RNN，一个是ODE-RNN），所以我们直接看Latent ODE的图：</p>
-<p><img src="/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/latent-ode.png" alt="latent-ode"></p>
-<p>可以看到，这个ELBO式子（9）可以说是和前面的式子（3）一模一样，也是对生成器（ODESolve的红色部分）最大化重构项，以及最小化编码器（ODE-RNN的绿色部分）输出的高斯分布（图正中间的$\mu$和$\sigma$）与先验分布的KL散度。</p>
-<p>但是需要注意的是，这也继承了VAE的任务特性：一方面，训练的过程是自监督的，观测数据既作为输入，也作为重构目标，如果观测数据的数量以及内容偏少，学习的实际效果是难以保证的（例如直接观测数据点太少的情况）；另一方面，隐式状态的表达形式是高斯分布的参数，虽然它相比于自编码的黑盒向量更加显式，但还不是我们想要的与客观世界对应的、结构化的内在状态（例如类别、阶段、变化等）。</p>
-<p>而且，这也并不是Neural ODE的特殊之处，把左右两边的编解码器，全部换成RNN或者Transformer，其实也能对时序数据的隐式状态进行建模。而Neural ODE真正的优势，简而言之，正是Latent ODE的标题：不均匀采样的时间序列，而这就要等到下次笔记了。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul id="refplus"><li id="ref-Bilibili-VI" data-num="1">[1]  车库里的老锤.【15分钟】了解变分推理.  https://www.bilibili.com/video/BV1Gs4y157BU</li><li id="ref-Bilibili-VAE" data-num="2">[2]  车库里的老锤.【15分钟】了解变分自编码器. https://www.bilibili.com/video/BV1Ns4y1J7tK</li><li id="ref-Neural-ODE" data-num="3">[3]  Chen R T Q, Rubanova Y, Bettencourt J, et al. Neural ordinary differential equations[J]. Advances in neural information processing systems, 2018, 31.</li><li id="ref-Beta-VAE" data-num="4">[4]  Higgins I, Matthey L, Pal A, et al. beta-vae: Learning basic visual concepts with a constrained variational framework[C]//International conference on learning representations. 2016.</li><li id="ref-Recursive-VAE" data-num="5">[5]  Kim M, Pavlovic V. Recursive inference for variational autoencoders[J]. Advances in Neural Information Processing Systems, 2020, 33: 19632-19641.</li><li id="ref-Latent-ODE" data-num="6">[6]  Rubanova Y, Chen R T Q, Duvenaud D K. Latent ordinary differential equations for irregularly-sampled time series[J]. Advances in neural information processing systems, 2019, 32.</li></ul>
-<p><br></p>
-<blockquote>
-<p>感谢阅读！在2023年的最后一天，终于写好了这篇笔记！<br>也是时隔多年，再次在博客里发一篇技术文章，令人万分感慨。<br>如有意见和建议，欢迎通过首页的联系方式联系作者。<br>本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。</p>
-</blockquote>
-
-    <style>
-    #refplus, #refplus li{ 
-        padding:0;
-        margin:0;
-        list-style:none;
-    }；
-    </style>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/tippy.js@6"></script>
-    <script>
-    document.querySelectorAll(".refplus-num").forEach((ref) => {
-        let refid = ref.firstChild.href.replace(location.origin+location.pathname,'');
-        let refel = document.querySelector(refid);
-        let refnum = refel.dataset.num;
-        let ref_content = refel.innerText.replace(`[${refnum}]`,'');
-        tippy(ref, {
-            content: ref_content,
-        });
-    });
-    </script>
-    ]]></content>
-      <tags>
-        <tag>experience</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Reading Report on Relation-Shape Convolutional Neural Network for Point Cloud Analysis in CVPR2019</title>
     <url>/2019/06/30/Reading-Report-on-Relation-Shape-Convolutional-Neural-Network-for-Point-Cloud-Analysis-in-CVPR2019/</url>
     <content><![CDATA[<p>本文是2019年5月《模式识别》专业课的读书报告</p>
@@ -956,195 +1145,6 @@
 <li>论文作者建立的2017年以来点云分析的重要研究文献资料GitHub仓库：<br><a href="https://github.com/Yochengliu/awesome-point-cloud-analysis">https://github.com/Yochengliu/awesome-point-cloud-analysis</a></li>
 <li>中文解读：<br><a href="http://www.ijiandao.com/2b/baijia/250710.html">http://www.ijiandao.com/2b/baijia/250710.html</a></li>
 </ol>
-]]></content>
-      <tags>
-        <tag>experience</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Training Configuration for Yolo-darknet</title>
-    <url>/2018/11/28/Training-Configuration-for-Yolo-darknet/</url>
-    <content><![CDATA[<blockquote>
-<p>Everything’s coming up roses.</p>
-</blockquote>
-<p>续上次的笔记<br>分享yolo-darknet神经网络训练全过程的配置经验</p>
-<span id="more"></span>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>由于本文中描述的yolo-darknet训练配置流程来源较多，而且训练配置时间为今年暑期，距离本文完稿时间较远，因此本文不可避免地会存在一定的失误和错漏。恳请发现问题的读者不吝赐教，通过首页的联系方式向作者提出宝贵意见。</p>
-<h2 id="数据集的标注、修改"><a href="#数据集的标注、修改" class="headerlink" title="数据集的标注、修改"></a>数据集的标注、修改</h2><p>数据集的采集来源以及采集方式属于项目内容，此处暂时不便叙述。对于采集得到的数据集，尤其是针对yolo-darknet的图片数据集，应当至少满足如下的要求：</p>
-<ul>
-<li>文件名称中不应当出现中文</li>
-<li>多次采集得到的文件应当分开命名前缀，否则存在同名文件覆盖的问题</li>
-<li>最好是同一种后缀格式，例如jpg格式。后缀大写JPG和小写jpg，darknet不会认为是同一种文件类型而报错。另外，png格式比较灵活，可以强行改成jpg后缀且内容仍可以读取</li>
-</ul>
-<p>本项目中除了采集了原始数据之外，也通过python脚本对图片素材进行翻转、随机颜色等基本变换来对数据集规模进行扩充。此为额外操作，不影响yolo-darknet训练过程。</p>
-<p>数据集的标注采用的是基于python的ImageLabel，标注界面是可视化的，流程基本上是：</p>
-<ul>
-<li>设置你标注的物体对应的标签，例如dog，cat等，可以设置默认标签</li>
-<li>打开素材文件夹到程序中，设置当前的标签，对图片进行逐个画框标注</li>
-<li>标注后自动生成数个xml文件，xml文件的内容一般如下</li>
-</ul>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">annotation</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">folder</span>&gt;</span>图片文件夹<span class="tag">&lt;/<span class="name">folder</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">filename</span>&gt;</span>图片名称<span class="tag">&lt;/<span class="name">filename</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">path</span>&gt;</span>图片路径<span class="tag">&lt;/<span class="name">path</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">source</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">database</span>&gt;</span>Unknown<span class="tag">&lt;/<span class="name">database</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">size</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">width</span>&gt;</span>600<span class="tag">&lt;/<span class="name">width</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">height</span>&gt;</span>338<span class="tag">&lt;/<span class="name">height</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">depth</span>&gt;</span>3<span class="tag">&lt;/<span class="name">depth</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">size</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">segmented</span>&gt;</span>0<span class="tag">&lt;/<span class="name">segmented</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">object</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">name</span>&gt;</span>标签名字<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">pose</span>&gt;</span>Unspecified<span class="tag">&lt;/<span class="name">pose</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">truncated</span>&gt;</span>0<span class="tag">&lt;/<span class="name">truncated</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">difficult</span>&gt;</span>0<span class="tag">&lt;/<span class="name">difficult</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">bndbox</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">xmin</span>&gt;</span>291<span class="tag">&lt;/<span class="name">xmin</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ymin</span>&gt;</span>76<span class="tag">&lt;/<span class="name">ymin</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">xmax</span>&gt;</span>412<span class="tag">&lt;/<span class="name">xmax</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">ymax</span>&gt;</span>192<span class="tag">&lt;/<span class="name">ymax</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">bndbox</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">object</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">annotation</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>基本上就是对于标注的方框的位置和大小的记录。标注生成的是整个VOC数据集文件夹，一般有两个文件夹：图片文件夹Image和标记文件夹xml。标记文件夹中每一个xml文件的文件名基本上都对应了的图片文件夹中的图片文件。</p>
-<p>应当注意的是，一旦移动了xml文件夹或整个数据集文件夹，必须将所有xml文件中的图片文件夹、图片路径改成对应的新文件夹、新路径，否则必然报错。</p>
-<p>但问题是，一旦数据集规模像本项目一样巨大时，人工逐个更改xml就十分困难。所以需要python脚本进行批量文件处理。此处摘录一部分代码</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">reload(sys)</span><br><span class="line">sys.setdefaultencoding(<span class="string">&#x27;utf8&#x27;</span>) </span><br><span class="line"></span><br><span class="line">path = <span class="string">&quot;/home/blean/VOC/validateImage/&quot;</span></span><br><span class="line">oldpath = <span class="string">&quot;/home/blean/VOC/pos/&quot;</span></span><br><span class="line">newpath = <span class="string">&quot;/home/blean/VOC/Image/&quot;</span></span><br><span class="line">filelist = os.listdir(path)</span><br><span class="line">i = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> files <span class="keyword">in</span> filelist:</span><br><span class="line">    <span class="keyword">if</span> os.path.splitext(files)[<span class="number">1</span>] != <span class="string">&quot;.jpg&quot;</span> <span class="keyword">and</span> os.path.splitext(files)[<span class="number">1</span>] != <span class="string">&quot;.txt&quot;</span>:</span><br><span class="line">        tmp = os.path.splitext(files)[<span class="number">0</span>]</span><br><span class="line">        os.rename(path+files, path+tmp+<span class="string">&quot;.jpg&quot;</span>)</span><br><span class="line">        <span class="comment"># 强行将非jpg的后缀，例如JPG大写后缀或png后缀更改成jpg</span></span><br><span class="line">        <span class="built_in">print</span> path+files</span><br><span class="line">        i = i + <span class="number">1</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    tree = ET.parse(path+files)</span><br><span class="line">    root = tree.getroot()</span><br><span class="line">    filename = root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text</span><br><span class="line">    tmp = os.path.splitext(filename)[<span class="number">0</span>]</span><br><span class="line">    <span class="comment"># 寻找xml文件中对应的文件名</span></span><br><span class="line">    <span class="built_in">print</span> path+tmp+<span class="string">&quot;.xml&quot;</span></span><br><span class="line">    os.rename(path+files, path+tmp+<span class="string">&quot;.xml&quot;</span>)</span><br><span class="line">    <span class="comment"># 同样地将xml文件名改成后缀修改后的图片文件名</span></span><br><span class="line">    root.findall(<span class="string">&#x27;path&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(oldpath, newpath)</span><br><span class="line">    <span class="comment"># 修改路径</span></span><br><span class="line">    tmp = root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text</span><br><span class="line">    <span class="keyword">if</span> tmp.find(<span class="string">&quot;捕获&quot;</span>) != -<span class="number">1</span>:</span><br><span class="line">        <span class="built_in">print</span> tmp</span><br><span class="line">        root.findall(<span class="string">&#x27;filename&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(<span class="string">&quot;捕获&quot;</span>, <span class="string">&quot;buhuo&quot;</span>)</span><br><span class="line">        tree.write(path+files)</span><br><span class="line">    <span class="comment"># 修改某些中文文件名</span></span><br><span class="line">    root.findall(<span class="string">&#x27;folder&#x27;</span>)[<span class="number">0</span>].text = tmp.replace(<span class="string">&quot;pos&quot;</span>, <span class="string">&quot;Image&quot;</span>)</span><br><span class="line">    <span class="comment"># 修改图片文件夹名称</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span> i</span><br><span class="line"><span class="comment"># 打印总数</span></span><br></pre></td></tr></table></figure>
-<p>注：以上代码是本人为了修正数据集格式自行编写的，具有很强的临时性，是不同功能的python代码之间的整合，如果不需要某些功能，可以将对应代码手动注释掉</p>
-<h2 id="训练数据集和验证数据集的拆分"><a href="#训练数据集和验证数据集的拆分" class="headerlink" title="训练数据集和验证数据集的拆分"></a>训练数据集和验证数据集的拆分</h2><p>数据集应当分成训练集和验证集，以便于对训练效果进行评估。<br>这里作者直接参考了这篇CSDN上的文章<a href="https://blog.csdn.net/qq_34484472/article/details/73135354">《YOLO训练自己的数据集》</a>中的python脚本，内容摘录如下：</p>
-<blockquote>
-</blockquote>
-<pre><code>下载链接：http://pan.baidu.com/s/1hs22I7U 密码：wdv0
-运行traindata.py：生成trainImage文件夹，存放训练图片；生成trainImageXML文件夹，存放训练图片xml标签；生成validateImage文件夹，存放验证集图片；生成validateImageXML文件夹，存放验证集图片的xml标签。
-运行trans.py，生成trainImageLabelTxt文件夹，存放训练图片通过xml标签转化得到的txt文件（若在训练过程提示txt文件找不到，则把此文件夹下的txt文件夹移动到trainImage文件夹）；生成validateImageLabelTxt文件夹，道理一样。
-另外得到的trainImagePath.txt和validateImagePath.txt存放着训练图片和验证图片的路径。
-</code></pre><blockquote>
-</blockquote>
-<p>下载好的python脚本一般不能立即用，根据运行python脚本出现的报错，应当对其进行相应的修改，例如：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">classes = [<span class="string">&quot;cat&quot;</span>] <span class="comment">#把这个标签改成你自己的数据集中标记的标签</span></span><br><span class="line"><span class="comment">#那个sets看起来很奇怪，但是不用改也能用。python研究的少，暂时不知道具体原因</span></span><br></pre></td></tr></table></figure>
-<h2 id="对darknet的配置和更改"><a href="#对darknet的配置和更改" class="headerlink" title="对darknet的配置和更改"></a>对darknet的配置和更改</h2><p>darknet本身并非完全开箱即用的图像识别训练框架，因此需要对它进行有针对性的配置和必要的更改。此处同样是根据<a href="https://blog.csdn.net/qq_34484472/article/details/73135354">《YOLO训练自己的数据集》</a>以及其他几篇文章的指导和建议进行配置的，主要有以下几点：</p>
-<p>首先，对darknet的cfg/voc.data进行配置</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">classes= 标签类别总数</span><br><span class="line">train = 填之前脚本生成的训练集文件列表trainImageId.txt</span><br><span class="line">valid = 填之前脚本生成的验证集文件列表validateImagePath.txt</span><br><span class="line">names = data/xxx.names</span><br><span class="line">backup = 存放训练结果模型的路径</span><br></pre></td></tr></table></figure>
-<p>在data文件夹下的names文件中，每行写一条标签名称</p>
-<p>其次，对要使用的神经网络版本yolo2-voc对应的配置文件yolo2-voc.cfg，应当更改以下几处：</p>
-<ul>
-<li>将最后的[region]层神经网络的配置中的classes改为1（即标记类别的总数）</li>
-<li>将最后一个[convolutional]卷积层中的filter改为30（filter的公式filters=(classes+ coords+ 1)<em> (NUM) ，我的是(1+4+1)</em> 5=30）</li>
-</ul>
-<p>注：这里coords可以认为是坐标，设置的标记是一个方框则取4。NUM是神经网络的层数。filter公式的来源请参见国外开发者们的讨论：<a href="https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg">https://groups.google.com/forum/#!topic/darknet/B4rSpOo84yg</a></p>
-<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>在yolo的官网下载预训练模型，地址：<a href="http://pjreddie.com/media/files/darknet53.conv.74">http://pjreddie.com/media/files/darknet53.conv.74</a></p>
-<p>并执行训练命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector train cfg/voc.data cfg/yolov2-voc.cfg darknet53.conv.74</span><br></pre></td></tr></table></figure>
-<p>之后便开始了对神经网络的训练，在1000次训练之内，每100次就在backup文件夹中生成一次权重模型，在1000次训练以上，每10000次生成一次权重模型。本项目的最终训练次数达到了50000次。</p>
-<p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/training3.png" alt="训练过程截图"></p>
-<p>上图为训练到500次左右时的结果截图</p>
-<p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/training4.png" alt="训练过程截图"></p>
-<p>训练生成的模型文件</p>
-<h2 id="批量测试、评估以及需要对darknet进行的相应修改"><a href="#批量测试、评估以及需要对darknet进行的相应修改" class="headerlink" title="批量测试、评估以及需要对darknet进行的相应修改"></a>批量测试、评估以及需要对darknet进行的相应修改</h2><p>本人<a href="https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet">之前的笔记</a>中曾经提到了使用单张图片测试，以及连接计算机摄像头、网络视频推流进行实时识别的命令，命令内容大致如下：</p>
-<p>单张图片：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detect cfg/yolo.cfg yolo.weight data/horses.jpg</span><br></pre></td></tr></table></figure></p>
-<p>电脑摄像头：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector demo cfg/voc.data cfg/tiny-yolo-voc.cfg weights/tiny-yolo-voc.weights</span><br></pre></td></tr></table></figure></p>
-<p>手机摄像头（通过网络视频实时推流，使用工具为IP摄像头APP）：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector demo data/coco.data yolo.cfg yolo.weights http://192.168.191.2:8080/video</span><br></pre></td></tr></table></figure>
-<p>得到的效果大致如下：</p>
-<p>实地场景：</p>
-<p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/testing7.png" alt="测试过程截图"></p>
-<p>网络图片：</p>
-<p><img src="/2018/11/28/Training-Configuration-for-Yolo-darknet/testing1.png" alt="测试过程截图"></p>
-<p>但是，可以看出这样手动输入命令进行逐个测试的方法，在测试上文中提到的从标记数据集中拆分出来的有一定数量图片的验证集时十分地不友好。而且必须手工收集每次测试中得到的准确度信息、手工进行统计计算。</p>
-<p>所以这里参考了CSDN上的另一篇文章<a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">《YOLOv3批量测试图片并保存在自定义文件夹下》</a>以及简书上的一篇文章<a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">《Darknet 评估训练好的网络的性能》</a>对darknet中的example文件夹下的detector.c文件中的代码进行更改，以便于进行批量测试、统计、评估模型在验证集上的准确度，并输出结果：</p>
-<ol>
-<li>修改validate_detector_recall函数定义和调用为：</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">validate_detector_recall</span><span class="params">(<span class="type">char</span> *datacfg, <span class="type">char</span> *cfgfile, <span class="type">char</span> *weightfile)</span></span></span><br><span class="line"><span class="function"><span class="title">validate_detector_recall</span><span class="params">(datacfg, cfg, weights)</span></span>;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>修改validate_detector_recall的初始化代码</li>
-</ol>
-<p>修改前：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">list *plist = <span class="built_in">get_paths</span>(<span class="string">&quot;data/voc.2007.test&quot;</span>);</span><br><span class="line"><span class="type">char</span> **paths = (<span class="type">char</span> **)<span class="built_in">list_to_array</span>(plist);</span><br></pre></td></tr></table></figure></p>
-<p>修改后：<br><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">list *options = <span class="built_in">read_data_cfg</span>(datacfg);</span><br><span class="line"><span class="type">char</span> *valid_images = <span class="built_in">option_find_str</span>(options, <span class="string">&quot;valid&quot;</span>, <span class="string">&quot;/home/blean/VOC/validateImagePath.txt&quot;</span>);</span><br><span class="line">list *plist = <span class="built_in">get_paths</span>(valid_images);</span><br><span class="line"><span class="type">char</span> **paths = (<span class="type">char</span> **)<span class="built_in">list_to_array</span>(plist);</span><br></pre></td></tr></table></figure></p>
-<ol start="3">
-<li>修改结束后需要重新编译darknet主程序，命令如下</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make -j8</span><br></pre></td></tr></table></figure>
-<p>在完成上述修改后即可使用darknet的recall命令进行评估测试并输出结果</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector recall cfg/voc.data cfg/yolov2-voc.cfg backup/yolov2-voc_50000.weights -out drowning_recall.txt</span><br></pre></td></tr></table></figure>
-<p>输出的结果如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"> Number Correct Total 	Rps/Img 	IOU 		Recall </span><br><span class="line"> 0     1     1	RPs/Img: 23.00	IOU: 71.42%	Recall:100.00%</span><br><span class="line"> 1     2     2	RPs/Img: 19.00	IOU: 66.04%	Recall:100.00%</span><br><span class="line"> 2     3     3	RPs/Img: 31.00	IOU: 65.52%	Recall:100.00%</span><br><span class="line"> 3     4     4	RPs/Img: 31.75	IOU: 65.22%	Recall:100.00%</span><br><span class="line"> 4     5     5	RPs/Img: 29.40	IOU: 65.55%	Recall:100.00%</span><br><span class="line"> 5     6     6	RPs/Img: 29.67	IOU: 67.34%	Recall:100.00%</span><br><span class="line"> 6     6     7	RPs/Img: 32.00	IOU: 60.25%	Recall:85.71%</span><br><span class="line"> 7     7     8	RPs/Img: 35.12	IOU: 59.75%	Recall:87.50%</span><br><span class="line"> 8     8     9	RPs/Img: 33.11	IOU: 60.55%	Recall:88.89%</span><br><span class="line"> 9     8    10	RPs/Img: 33.20	IOU: 59.48%	Recall:80.00%</span><br><span class="line">10     9    11	RPs/Img: 34.00	IOU: 59.27%	Recall:81.82%</span><br><span class="line">11    10    12	RPs/Img: 33.00	IOU: 59.65%	Recall:83.33%</span><br><span class="line">12    11    13	RPs/Img: 32.00	IOU: 60.33%	Recall:84.62%</span><br><span class="line">13    12    14	RPs/Img: 30.64	IOU: 60.85%	Recall:85.71%</span><br><span class="line">14    12    14	RPs/Img: 29.60	IOU: 60.85%	Recall:85.71%</span><br><span class="line">15    13    15	RPs/Img: 29.62	IOU: 61.41%	Recall:86.67%</span><br></pre></td></tr></table></figure>
-<p>其中各项参数的解释如下：</p>
-<ul>
-<li>Number表示处理到第几张图片。</li>
-<li>Correct表示正确的识别出了多少bbox（即标记目标物体的方框）。这个值算出来的步骤是这样的，丢进网络一张图片，网络会预测出很多bbox，每个bbox都有其置信概率，概率大于threshold的bbox与实际的bbox，也就是labels中txt的内容计算IOU，找出IOU最大的bbox，如果这个最大值大于预设的IOU的threshold，那么correct加1。</li>
-<li>Total表示实际有多少个bbox。</li>
-<li>Rps/img表示平均每个图片会预测出来多少个bbox。</li>
-<li>IOU： 这个是预测出的bbox和实际标注的bbox的交集 除以 他们的并集。显然，这个数值越大，说明预测的结果越好。</li>
-<li>Recall召回率， 意思是检测出物体的个数 除以 标注的所有物体个数。通过代码我们也能看出来就是Correct除以Total的值。</li>
-</ul>
-<p>可以从最后一条代表处理了全部验证集的统计结果看出，经过验证集的检验，训练得出的模型识别目标物体的总正确率大致在86%左右，可以说训练效果较为理想。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
-<li>YOLO-darknet官网<br><a href="https://pjreddie.com/darknet/yolo/">https://pjreddie.com/darknet/yolo/</a></li>
-<li>YOLO训练自己的数据集：<br><a href="https://blog.csdn.net/qq_34484472/article/details/73135354">https://blog.csdn.net/qq_34484472/article/details/73135354</a></li>
-<li>YOLOv3批量测试图片并保存在自定义文件夹下：<br><a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">https://blog.csdn.net/mieleizhi0522/article/details/79989754</a></li>
-<li>Darknet 评估训练好的网络的性能：<br><a href="https://blog.csdn.net/mieleizhi0522/article/details/79989754">https://blog.csdn.net/mieleizhi0522/article/details/79989754</a></li>
-<li>Environment-Configuration-for-Yolo-darknet | NeXT （就是之前的那篇笔记）<br><a href="https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet">https://lmy98129.github.io/2018/02/20/Environment-Configuration-for-Yolo-darknet</a></li>
-</ol>
-<blockquote>
-<p>最后，这是本站的第八篇正式发文，感谢阅读。<br>如有意见和建议，欢迎通过首页的联系方式联系作者，<br>本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。</p>
-</blockquote>
-]]></content>
-      <tags>
-        <tag>experience</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Environment Configuration for Yolo-darknet</title>
-    <url>/2018/02/20/Environment-Configuration-for-Yolo-darknet/</url>
-    <content><![CDATA[<blockquote>
-<p>Just do it.<br>Just do something new and do it yourself.</p>
-</blockquote>
-<p>记录一些关于yolo-darknet环境配置踩过的坑。<br>能力有限，但求指点，欢迎交流。</p>
-<span id="more"></span>
-<h2 id="搭建环境"><a href="#搭建环境" class="headerlink" title="搭建环境"></a>搭建环境</h2><ul>
-<li>OS: Ubuntu 16.04 LTS</li>
-<li>PC: ASUS K550J (EFI enable)</li>
-<li>GPU: GTX950M</li>
-<li>CPU: i5-4200H</li>
-<li>RAM: 4G</li>
-<li>DISK: 1T HDD (no SSD) </li>
-</ul>
-<h2 id="配置过程"><a href="#配置过程" class="headerlink" title="配置过程"></a>配置过程</h2><h3 id="安装Ubuntu"><a href="#安装Ubuntu" class="headerlink" title="安装Ubuntu"></a>安装Ubuntu</h3><ol>
-<li>用UltraISO把iso文件烧到你的U盘，<strong>进BIOS打开EFI引导，并选择EFI模式下的U盘为第一引导项</strong></li>
-<li>安装Ubuntu到一个空白分区（可以通过分区压缩获得，如果是全新电脑就直接开始分区了）：<ul>
-<li><strong>注意根据提示划分那块bios efi的小分区，几十K即可</strong>；</li>
-<li><strong>划分swap交换分区，一般是你内存大小的3倍大，划在主分区后面</strong>；</li>
-<li>剩下的划给主分区；</li>
-<li>选择安装启动器到<strong>Windows使用的那个EFI启动分区</strong>。</li>
-</ul>
-</li>
-<li>进入分区界面前有几个选项要注意：<ul>
-<li>让你顺带安装更新的那个，<strong>不要勾选</strong>，更新的源大多自动匹配到了国外的，网速你懂的；</li>
-<li>让你安装第三方闭源驱动和软件的，<strong>必须勾选</strong>，能解决很多开源驱动带来的问题。</li>
-</ul>
-</li>
-<li>安装，然后回到BIOS里面你会惊奇的发现出现了Ubuntu的EFI模式引导项（准确来说是两个，估计是那次我多搞了一个/boot）选择它为第一个。</li>
-<li>成功进入Ubuntu</li>
-</ol>
-<h3 id="安装OpenCV"><a href="#安装OpenCV" class="headerlink" title="安装OpenCV"></a>安装OpenCV</h3><p>安装OpenCV主要是为了使用外置摄像头进行图像采集。</p>
-<p>GitHub上有自动安装版本</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo su </span><br><span class="line">git <span class="built_in">clone</span> https://github.com/jayrambhia/Install-OpenCV/tree/master/Ubuntu</span><br></pre></td></tr></table></figure>
-<p>进入安装目录下的/2.4，提升*.sh文件的权限并执行</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo su</span><br><span class="line"><span class="built_in">chmod</span> a+x *.sh</span><br><span class="line">./opencv2_4_10.sh</span><br></pre></td></tr></table></figure>
-<p>然后就会开始<strong>极其漫长</strong>的安装过程。</p>
-<blockquote>
-<p>第一次安装到某个阶段的时候卡死，<br>硬盘灯不闪，鼠标键盘没反应，我还以为安装失败强行重启了。<br>然后又开始一遍，又卡死。<br>我绝望了，但是冷静了下来，想了想<br>——怕是自己电脑配置太渣。<br>然后在安装前关闭了所有无关程序，<br>唯独打开了系统监视器（即Windows下的任务管理器）。<br>之后就非常惊奇地看到卡死的时候：<br>内存+CPU，全部占用100%<br>然后过了大概一个多小时，又全部降回去了，<br>没过三分钟，又是内存飙到100%，CPU反倒正常了<br>目测过了三个多小时，还是这个样子，倒是命令行每隔十几分钟跳一次字，<br>系统时钟已经卡到了和实际时间存在了十分钟到半小时不等的时差，<br>只有某几次命令行跳字的时候，内存占用下来了一点，系统时间一秒刷新了十几分钟<br>最后一脸无奈地睡了。<br>第二天打开笔记本盖子一看，<br>装好了，老大一个success。</p>
-</blockquote>
-<h3 id="安装darknet"><a href="#安装darknet" class="headerlink" title="安装darknet"></a>安装darknet</h3><p>打开终端<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo su</span><br><span class="line">git <span class="built_in">clone</span> http://github.com/pjreddie/darknet.git</span><br><span class="line"><span class="built_in">cd</span> darknet</span><br></pre></td></tr></table></figure><br>用gedit修改makefile文件<br><strong>令OPENCV=1</strong><br>然后在终端输入</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make -j8</span><br></pre></td></tr></table></figure>
-<h3 id="安装NVIDIA官方GPU驱动"><a href="#安装NVIDIA官方GPU驱动" class="headerlink" title="安装NVIDIA官方GPU驱动"></a>安装NVIDIA官方GPU驱动</h3><p>首先<strong>禁用开源驱动</strong></p>
-<p>新建一个.conf文件</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo gedit /etc/modprobe.d/blacklist-nouveau.conf</span><br></pre></td></tr></table></figure>
-<p>写入以下内容<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">blacklist nouveau</span><br><span class="line">blacklist lbm-nouveau</span><br><span class="line">options nouveau modeset=0</span><br><span class="line">alias nouveau off</span><br><span class="line">alias lbm-nouveau off</span><br></pre></td></tr></table></figure><br>保存，重启后再打开终端，输入<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">lsmod | grep nouveau</span><br></pre></td></tr></table></figure><br>无输出即禁用成功</p>
-<p>正式开始安装NVIDIA官方驱动了<br>我这里选择的是<strong>直接到系统的“软件和更新”里的“附加驱动”选择安装NVIDIA的专有驱动</strong><br>（不要管他是否显示tested，安装就是了）</p>
-<p>等待安装成功后，重启打开终端，输入<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nvidia-smi</span><br></pre></td></tr></table></figure><br>正确显示你当前GPU的状况就OK了</p>
-<h3 id="安装CUDA"><a href="#安装CUDA" class="headerlink" title="安装CUDA"></a>安装CUDA</h3><p>CUDA下载地址：<a href="https://developer.nvidia.com/cuda-downloads">https://developer.nvidia.com/cuda-downloads</a><br>选项顺序是Linux-x86_64-Ubuntu-16.04-deb(local)<br>1点多G，然后找个下载速度快的地方下了它，推荐<strong>迅雷等下载工具</strong>，<br>虽然并没有加速，但毕竟服务器在境外，<strong>浏览器没法断点续传</strong>，连接一断就得重新下载。</p>
-<p>然后把下载好的文件包拷到“/home/用户名/”目录下，在终端里面输入<br><strong>（注意你的deb文件名不一定是这个，这个是旧版的了）</strong></p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo dpkg -i cuda-repo-ubuntu1404-7-5-local_7.5-18_amd64.deb</span><br><span class="line">sudo apt-get update </span><br><span class="line">sudo apt-get install cuda</span><br></pre></td></tr></table></figure>
-<p>安装完成后输入<br><strong>（注意你的cuda文件夹不一定是这个7.5的，这个是旧版的了）</strong><br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=/usr/local/cuda/lib64:<span class="variable">$LD_LIBRARY_PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=/usr/local/cuda-7.5/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="再次安装darknet"><a href="#再次安装darknet" class="headerlink" title="再次安装darknet"></a>再次安装darknet</h3><p>再次用gedit打开makefile<br><strong>（注意你的cuda文件夹不一定是这个7.5的，这个是旧版的了）</strong><br>令开头GPU=1，同时令NVCC = /usr/local/cuda-7.5/bin/nvcc后保存退出<br>然后在终端输入</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make -j8</span><br></pre></td></tr></table></figure>
-<h2 id="测试darknet"><a href="#测试darknet" class="headerlink" title="测试darknet"></a>测试darknet</h2><h3 id="下载模型-测试模型"><a href="#下载模型-测试模型" class="headerlink" title="下载模型+测试模型"></a>下载模型+测试模型</h3><p>到这儿下载*.weight格式的模型：<a href="http://pjreddie.com/darknet/yolo/">http://pjreddie.com/darknet/yolo/</a></p>
-<p>终端切换到darknet的安装目录下<br>示例命令如下：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detect cfg/yolo.cfg yolo.weight data/horses.jpg</span><br><span class="line">./darknet yolo <span class="built_in">test</span> cfg/yolo-tiny.cfg yolo-tiny.weight</span><br></pre></td></tr></table></figure></p>
-<h3 id="使用电脑-手机摄像头采集图像"><a href="#使用电脑-手机摄像头采集图像" class="headerlink" title="使用电脑/手机摄像头采集图像"></a>使用电脑/手机摄像头采集图像</h3><p>电脑摄像头：<br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector demo cfg/voc.data cfg/tiny-yolo-voc.cfg weights/tiny-yolo-voc.weights</span><br></pre></td></tr></table></figure></p>
-<p>手机摄像头：</p>
-<p>先在手机上安装好<strong>IP摄像头</strong>APP，配置好地址后，先用浏览器访问以确定视频源的路径<br><strong>(因此这里的地址是你配置并确定好视频源的地址)</strong><br><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./darknet detector demo data/coco.data yolo.cfg yolo.weights http://192.168.191.2:8080/video</span><br></pre></td></tr></table></figure></p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
-<li><a href="http://blog.csdn.net/samylee/article/details/51684856">http://blog.csdn.net/samylee/article/details/51684856</a></li>
-<li><a href="http://blog.csdn.net/wjbwjbwjbwjb/article/details/52125475">http://blog.csdn.net/wjbwjbwjbwjb/article/details/52125475</a></li>
-<li><a href="http://blog.csdn.net/u014696921/article/details/65626751">http://blog.csdn.net/u014696921/article/details/65626751</a></li>
-<li><a href="http://blog.csdn.net/wuzuyu365/article/details/52469131">http://blog.csdn.net/wuzuyu365/article/details/52469131</a></li>
-<li><a href="http://blog.csdn.net/zafir_410/article/details/73188228">http://blog.csdn.net/zafir_410/article/details/73188228</a></li>
-<li><a href="http://blog.csdn.net/u013832707/article/details/53438574">http://blog.csdn.net/u013832707/article/details/53438574</a></li>
-<li><a href="https://www.cnblogs.com/jackchen-Net/p/7954138.html">https://www.cnblogs.com/jackchen-Net/p/7954138.html</a></li>
-</ol>
-<blockquote>
-<p>最后，这是本站的第六篇正式发文，感谢阅读。<br>如有意见和建议，欢迎通过首页的联系方式联系作者，<br>本文参考资料均来源于网络，作者保留相关权利，转载请注明出处。</p>
-</blockquote>
 ]]></content>
       <tags>
         <tag>experience</tag>
