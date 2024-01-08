@@ -113,13 +113,13 @@
 <meta property="og:locale">
 <meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/eulerdiagram.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/euler-method.png">
-<meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/resblock.png">
+<meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/ResBlock.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/resnet-vs-neuralode.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/adjoint-method.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/reverse-mode.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/state-estimation.png">
 <meta property="article:published_time" content="2024-01-07T09:15:51.000Z">
-<meta property="article:modified_time" content="2024-01-08T11:14:25.826Z">
+<meta property="article:modified_time" content="2024-01-08T14:19:52.922Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -336,7 +336,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-01-08T19:14:25+08:00">2024-01-08</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-01-08T22:19:52+08:00">2024-01-08</time>
             
           </span>
 
@@ -391,7 +391,7 @@
 <p>但是，随着步长$h$的逐渐减小，欧拉方法计算过程的轨迹也会和真实函数越来越近，可以参见维基百科<sup class="refplus-num"><a href="#ref-Wikipedia">[2]</a></sup>给出的示例。值得注意的是，<strong>这一计算过程不仅能够得到$y_\mathrm{T}$本身，也能将过程中若干个中间结果$y_t$连起来，可视化$y$的变化过程</strong>。</p>
 <h2 id="神经常微分方程-Neural-ODE"><a href="#神经常微分方程-Neural-ODE" class="headerlink" title="神经常微分方程 Neural ODE"></a>神经常微分方程 Neural ODE</h2><p>回顾上一节，常微分方程求解器的前提条件是，已知变化关系函数$f(y,t)$的具体形式，且$f(y,t)$的积分难求解析解。但在实际应用中，还有更多只知道若干个$(t, y_t)^\top$的数据点（可能均匀采样，也可能不均采样），不知道$f(y,t)$具体形式的情况。那么，如何通过学习的方式，拟合出$f(y,t)$后，再使用$\mathrm{ODESolver}$求解$y_\mathrm{T}$呢？</p>
 <p>在讲2018年理论三大会NeurIPS的Best Paper、陈天琦团队发表的Neural ODE<sup class="refplus-num"><a href="#ref-Neural-ODE">[3]</a></sup>之前，我们需要回顾一个更加熟悉的工作，也就是已经成为CV界著名的基础设施、大佬何凯明团队在CV三大会CVPR 2016上发表的ResNet<sup class="refplus-num"><a href="#ref-ResNet">[4]</a></sup>。</p>
-<p><img src="/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/resblock.png" alt="resblock"></p>
+<p><img src="/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/ResBlock.png" alt="ResBlock"></p>
 <center>ResNet中的一个Residual Block，图中的隐式特征为$x$。</center>
 
 <p><br></p>
