@@ -119,7 +119,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/reverse-mode.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/state-estimation.png">
 <meta property="article:published_time" content="2024-01-07T09:15:51.000Z">
-<meta property="article:modified_time" content="2024-01-08T06:41:43.678Z">
+<meta property="article:modified_time" content="2024-01-08T11:14:25.826Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -336,7 +336,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-01-08T14:41:43+08:00">2024-01-08</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-01-08T19:14:25+08:00">2024-01-08</time>
             
           </span>
 
@@ -441,7 +441,7 @@
 <p><img src="/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/reverse-mode.png" alt="reverse-mode"></p>
 <center>Neural ODE使用伴随状态进行反向传播的方式。<br>上图：先计算损失$\mathcal{L}$，得到真实的$\frac{\partial \mathcal{L}}{\partial z(t)}$。下图：红线是$\mathrm{ODESolver}$计算出来的伴随状态，蓝色虚线是基于真实的$\frac{\partial \mathcal{L}}{\partial z(t)}$来重新开始计算$a(t)$，从而使得误差累积更小。图片来自Neural ODE论文原文<sup class="refplus-num"><a href="#ref-Neural-ODE">[3]</a></sup></center>
 
-<h2 id="在状态估计中的应用-Application-in-State-Estimation"><a href="#在状态估计中的应用-Application-in-State-Estimation" class="headerlink" title="在状态估计中的应用 Application in State Estimation"></a>在状态估计中的应用 Application in State Estimation</h2><p>从前文可以看到，Neural ODE的隐式特征（也可以称为隐式状态，Hidden State）实际上和ResNet、RNN一样，是黑盒化的特征向量或张量，实际上无法反应与客观世界对应的、结构化的内在状态，同时也很难直观地可视化。为了能够在一定程度上将这些隐式状态可视化，Kevin Course和Prasanth B. Nair在2023年2月的Nature正刊上发表了“State estimation of a physical system with unknown governing equations”<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup>。</p>
+<h2 id="在状态估计中的应用-Application-in-State-Estimation"><a href="#在状态估计中的应用-Application-in-State-Estimation" class="headerlink" title="在状态估计中的应用 Application in State Estimation"></a>在状态估计中的应用 Application in State Estimation</h2><p>从前文可以看到，Neural ODE的隐式特征（也可以称为隐式状态，Hidden State）实际上和ResNet、RNN一样，是黑盒化的特征向量或张量，实际上无法反应与客观世界对应的、结构化的内在状态，同时也很难直观地可视化。为了能够在一定程度上将这些隐式状态可视化，Kevin Course和Prasanth B. Nair在2023年10月的Nature正刊上发表了“State estimation of a physical system with unknown governing equations”<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup>。</p>
 <p><img src="/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2/state-estimation.png" alt="state-estimation"></p>
 <center>基于Neural SDE的状态估计结果。左图为学习到的隐式状态$x(t)$，右图为对应流体仿真结果的真实值、预测值和标准差（蓝色，用于衡量预测值与真实值的偏差程度）。图片来自Nature论文原文<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup></center>
 
