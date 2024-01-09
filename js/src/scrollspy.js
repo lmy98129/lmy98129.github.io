@@ -63,7 +63,7 @@
       .find(this.selector)
       .map(function () {
         var $el   = $(this)
-        var href  = $el.data('target') || $el.attr('href')
+        var href  = $el.data('target') || decodeURI($el.attr('href'))
         var $href = /^#./.test(href) && $(NexT.utils.escapeSelector(href)) // Need to escape selector.
 
         return ($href
@@ -117,8 +117,8 @@
     this.clear()
 
     var selector = this.selector +
-      '[data-target="' + target + '"],' +
-      this.selector + '[href="' + target + '"]'
+      '[data-target="' + encodeURI(target) + '"],' +
+      this.selector + '[href="' + encodeURI(target) + '"]'
 
     var active = $(selector)
       .parents('li')
