@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://github.com/rtqichen/torchdiffeq/blob/master/assets/ode_demo.gif?raw=true">
 <meta property="og:image" content="https://www.wolfram.com/mathematica/new-in-9/time-series-and-stochastic-differential-equations/HTMLImages.en/stochastic-differential-equation-for-exponential-d/O_49.png">
 <meta property="article:published_time" content="2024-01-10T05:37:07.000Z">
-<meta property="article:modified_time" content="2024-01-11T13:50:53.843Z">
+<meta property="article:modified_time" content="2024-01-11T13:55:19.212Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -331,7 +331,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-01-11T21:50:53+08:00">2024-01-11</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-01-11T21:55:19+08:00">2024-01-11</time>
             
           </span>
 
@@ -414,7 +414,7 @@
 <p>具体过程参见教材<sup class="refplus-num"><a href="#ref-Applied-SDE">[5]</a></sup>的第12.8章节。总而言之，通过假定（其实就是近似）SDE中的未知漂移函数$f(\cdot)$为线性、同时根据线性SDE的解$x(t)$是高斯过程的性质，得到其边际分布$q(x(t))$均值方差的约束式子（10）和（11），联立边际分布和真实分布的KL散度以及这些约束式子，用拉格朗日乘子法计算出$A(t)$和$b(t)$，代入式子（9）得到近似真实SDE的线性SDE。</p>
 <h2 id="在状态估计中的应用-Application-in-State-Estimation"><a href="#在状态估计中的应用-Application-in-State-Estimation" class="headerlink" title="在状态估计中的应用 Application in State Estimation"></a>在状态估计中的应用 Application in State Estimation</h2><p>这里以Kevin Course和Prasanth B. Nair的2023年Nature论文<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup>为例。首先，他们分别定义了观测值$y(t)$和隐式状态$x(t)$的映射函数、以及先验和后验两个SDE：</p>
 <p>$$<br>\begin{align}<br>&amp; y(t) = h(x(t)) + r(t) \\<br>&amp; dx(t) = f_\theta(x(t), t)dt + \Sigma_\theta(t)d\beta(t) \\<br>&amp; dx(t) =  [-A_\phi(t)x(t)+b_\phi(t)]dt + \Sigma_\theta(t)d\beta(t) \\<br>\end{align}<br>$$</p>
-<p>其中，式子（13）是先验SDE，也就是我们待求的SDE；式子（14）是后验SDE，就是通过上一章节的高斯过程近似方法，得到的具体$A_\phi(t)$和$b_\phi(t)$。可以认为，后验SDE是一个用线性SDE近似得来的额外参考，相比直接让一个黑盒的Neural SDE用参数$\theta$去拟合数据，更加地符合SDE的基本规律（<span style="text-decoration: underline;"><strong>也就是说，至少不能比线性SDE的结果还差</strong></span>）。</p>
+<p>其中，式子（13）是先验SDE，也就是我们待求的SDE；式子（14）是后验SDE，就是通过上一章节的高斯过程近似方法，得到的具体$A_\phi(t)$和$b_\phi(t)$。可以认为，后验SDE是一个用线性SDE近似得来的额外参考，相比直接让一个黑盒的Neural SDE<sup class="refplus-num"><a href="#ref-Neural-SDE">[4]</a></sup>用参数$\theta$去拟合数据，更加地符合SDE的基本规律（<span style="text-decoration: underline;"><strong>也就是说，至少不能比线性SDE的结果还差</strong></span>）。</p>
 <p>由此，文章提出的学习目标ELBO（证据下界，Evidence Lower Bound）是：</p>
 <p>$$<br>\begin{equation}<br>\begin{split}<br>    &amp; \log p(\mathcal{D}) \\<br>    &amp; = \log \mathbb{E}_{p(\theta)}\left[\mathbb{E}_{\tilde{P}|\theta}\left[\prod_{i=1}^\mathrm{N} p(y(t_i) | x(t_i))\right]\right] \\<br>    &amp;\geq \sum_{i=1}^{N} \mathbb{E}_{p_\phi(x(t_i))}[\log p(y(t_i) | x(t_i))] \\<br>    &amp;-\frac{1}{2}\int_{t_1^{(j)}}^{t_1^{(j+1)}} \mathbb{E}_{q_\phi(x(t))q_\phi(\theta)}{\lvert\lvert{r(x(t), \theta,\phi)}\rvert\rvert_{\Sigma_\theta Q\Sigma^\top_\theta}^2}<br>    \,dt \\<br>    &amp; - D_{KL}(q_\phi(\theta) \mid \mid p(\theta)) = \mathrm{ELBO}(\phi)<br>\end{split}<br>\end{equation}<br>$$</p>
 <p>其中，$\mathbb{E}_{\tilde{P}|\theta}$是待求的先验SDE式子（13）对应的期望，$\mathbb{E}_{p(\theta)}$是参数$\theta$所在空间的概率分布对应的期望（实际上这个期望可以拿掉，因为无法对参数空间采样，或者说近似为当前学到的参数$\theta$，毕竟当前参数既然出现了，概率肯定最大）。 $r(x(t)\theta,\phi) = -A_\phi(t)x(t) + b_\phi(t) - f_\theta(x(t), t)$，也就是近似后验SDE约束待求先验SDE，而且只有漂移函数项约束。同时也用到了后面的扩散函数项$\Sigma_\theta$，也就是$\lvert\lvert{v}\rvert\rvert_{\Sigma_\theta Q\Sigma^\top_\theta}^2=v^\top(\Sigma_\theta Q\Sigma^\top_\theta)^{-1}v$。最后一项是对参数分布的约束，$p(\phi)$为给定的先验约束（一般是高斯分布），$q_\phi(\theta)$为真实的参数分布。</p>
@@ -423,7 +423,7 @@
 <h2 id="重参数技巧和均摊分析-Reparameterization-and-Amortization"><a href="#重参数技巧和均摊分析-Reparameterization-and-Amortization" class="headerlink" title="重参数技巧和均摊分析 Reparameterization and Amortization"></a>重参数技巧和均摊分析 Reparameterization and Amortization</h2><p>与之前的<a href="https://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/#%E9%87%8D%E5%8F%82%E6%95%B0%E5%8C%96%E6%8A%80%E5%B7%A7-Reparameterization">变分推断笔记</a>类似，也是为了避免多次前向，那边是给中间的隐式特征分布从$\mathcal{N}(\mu, \sigma)$转为$\mathcal{N}(0, I)$，这里是对隐式特征分布$q_\phi(x(t))$。因为，这是近似后验SDE（参数为$\phi$）输出的当前时刻$t$的隐式状态$x(t)$概率分布，这个概率分布是很难精确找到的，毕竟SDE是带随机性的。当然，也可以通过反复前向多次、采多个$x(t)$的方式来近似它。</p>
 <p>但是，可以回想第3章节“高斯过程近似”里面，为了求这个线性SDE的式子（10）和（11），我们已经推导出了$x(t)$的边际分布，也就是$q(x(t))=\mathcal{N}(x(t)|m(t), P(t))$，所以，我们可以直接用这个高斯分布，代替多次前向采样得到的$q_\phi(x(t))$。但是，就算不采样$x(t)$了，式子（15）对应的$r(\cdot)$函数里，每个时刻对应的$A_\phi(t)$和$b_\phi(t)$还是照样得算的。</p>
 <p>此时，可以看到式子（10）和（11），刚好就是$A(t)$和$b(t)$构成的，由此可以重新整理成$A_\phi(t)$和$b_\phi(t)$的表达式，然后代入$r(\cdot)$函数。其中，$\oplus$是克罗内克加法（Kronecker Addition）。具体细节可以参见Nature原文<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup>：</p>
-<p>$$<br>\begin{align}<br>&amp; r(x(t), t, \theta, \phi) \nonumber \\<br>&amp; = \mathrm{vec}^{-1}((P_\phi(t) \oplus P_\phi(t) )^{-1} \nonumber \\<br>&amp; \mathrm{vec}(\Sigma_\theta Q \Sigma_\theta^\top - \frac{dP_\phi(t)}{dt}))(m_\phi(t) - x(t)) \nonumber \\<br>&amp; + \frac{dm_\phi}{dt} - f_\theta(x(t), t) \\<br>\end{align}<br>$$</p>
+<p>$$<br>\begin{align}<br>&amp; r(x(t), t, \theta, \phi) \nonumber \\<br>&amp; = \mathrm{vec}^{-1}((P_\phi(t) \oplus P_\phi(t) )^{-1}\mathrm{vec}(\Sigma_\theta Q \Sigma_\theta^\top \nonumber \\<br>&amp; - \frac{dP_\phi(t)}{dt}))(m_\phi(t) - x(t)) + \frac{dm_\phi}{dt} - f_\theta(x(t), t) \\<br>\end{align}<br>$$</p>
 <p>另外，<a href="https://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/#%E7%A4%BA%E4%BE%8B-Example">之前的笔记</a>里面有简要地提到均摊分析（Amortized Analysis）的概念，当时是为了强调参数量不应当与数据规模挂钩，否则数据量无限大则参数无限大，无法实际应用。Kevin Course和Prasanth B. Nair在NeurIPS 2023上发表的论文“Amortized Reparametrization: Efficient and Scalable Variational Inference for Latent SDEs”<sup class="refplus-num"><a href="#ref-NeurIPS-State">[7]</a></sup>，在标题里面就同时提到了重参数技巧和均摊分析。在这篇文章里，重参数技巧和Nature版本论文一致，均摊分析指的是，尝试将整段长度为N的时间序列数据，切分为M份，每份长度为N/M，从而更好地实现并行化的训练和预测。</p>
 <h2 id="结语-Conclusions"><a href="#结语-Conclusions" class="headerlink" title="结语 Conclusions"></a>结语 Conclusions</h2><p>至此，已经写好了三篇笔记，基本搞懂了Neural ODE、SDE以及状态估计。但是，还有很多的细节没有搞懂，例如这篇里面省略的若干推导过程，以及状态估计的两篇论文<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup><sup class="refplus-num"><a href="#ref-NeurIPS-State">[7]</a></sup>的更多应用场景、数据和建模方式，尤其是NeurIPS论文的附加材料<sup class="refplus-num"><a href="#ref-NeurIPS-State">[7]</a></sup>给出了针对不同任务的网络结构设计。此外，现在的笔记内容全是个人理解，难免错漏，之后肯定要修改。</p>
 <p>令人意外的是，三篇笔记前后穿插了很多知识点，ODE和SDE的微分和积分形式、变分推断中的ELBO、重参数技巧、均摊分析。回想我在<a href="https://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/#more">第一篇笔记</a>里吐槽的“各种统计学、数据科学、机器学习的视频都在强调”，就体现了统计机器学习领域各理论分支的共通之处。希望这次的笔记能够成为一个新的契机，让我们继续探索，看懂更多精彩的东西！</p>
