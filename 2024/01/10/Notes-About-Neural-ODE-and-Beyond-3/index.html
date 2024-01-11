@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://github.com/rtqichen/torchdiffeq/blob/master/assets/ode_demo.gif?raw=true">
 <meta property="og:image" content="https://www.wolfram.com/mathematica/new-in-9/time-series-and-stochastic-differential-equations/HTMLImages.en/stochastic-differential-equation-for-exponential-d/O_49.png">
 <meta property="article:published_time" content="2024-01-10T05:37:07.000Z">
-<meta property="article:modified_time" content="2024-01-11T13:55:19.212Z">
+<meta property="article:modified_time" content="2024-01-11T17:45:30.956Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -331,7 +331,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-01-11T21:55:19+08:00">2024-01-11</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-01-12T01:45:30+08:00">2024-01-12</time>
             
           </span>
 
@@ -416,7 +416,7 @@
 <p>$$<br>\begin{align}<br>&amp; y(t) = h(x(t)) + r(t) \\<br>&amp; dx(t) = f_\theta(x(t), t)dt + \Sigma_\theta(t)d\beta(t) \\<br>&amp; dx(t) =  [-A_\phi(t)x(t)+b_\phi(t)]dt + \Sigma_\theta(t)d\beta(t) \\<br>\end{align}<br>$$</p>
 <p>其中，式子（13）是先验SDE，也就是我们待求的SDE；式子（14）是后验SDE，就是通过上一章节的高斯过程近似方法，得到的具体$A_\phi(t)$和$b_\phi(t)$。可以认为，后验SDE是一个用线性SDE近似得来的额外参考，相比直接让一个黑盒的Neural SDE<sup class="refplus-num"><a href="#ref-Neural-SDE">[4]</a></sup>用参数$\theta$去拟合数据，更加地符合SDE的基本规律（<span style="text-decoration: underline;"><strong>也就是说，至少不能比线性SDE的结果还差</strong></span>）。</p>
 <p>由此，文章提出的学习目标ELBO（证据下界，Evidence Lower Bound）是：</p>
-<p>$$<br>\begin{equation}<br>\begin{split}<br>    &amp; \log p(\mathcal{D}) \\<br>    &amp; = \log \mathbb{E}_{p(\theta)}\left[\mathbb{E}_{\tilde{P}|\theta}\left[\prod_{i=1}^\mathrm{N} p(y(t_i) | x(t_i))\right]\right] \\<br>    &amp;\geq \sum_{i=1}^{N} \mathbb{E}_{p_\phi(x(t_i))}[\log p(y(t_i) | x(t_i))] \\<br>    &amp;-\frac{1}{2}\int_{t_1^{(j)}}^{t_1^{(j+1)}} \mathbb{E}_{q_\phi(x(t))q_\phi(\theta)}{\lvert\lvert{r(x(t), \theta,\phi)}\rvert\rvert_{\Sigma_\theta Q\Sigma^\top_\theta}^2}<br>    \,dt \\<br>    &amp; - D_{KL}(q_\phi(\theta) \mid \mid p(\theta)) = \mathrm{ELBO}(\phi)<br>\end{split}<br>\end{equation}<br>$$</p>
+<p>$$<br>\begin{equation}<br>\begin{split}<br>    &amp; \log p(\mathcal{D}) \\<br>    &amp; = \log \mathbb{E}_{p(\theta)}\left[\mathbb{E}_{\tilde{P}|\theta}\left[\prod_{i=1}^\mathrm{N} p(y(t_i) | x(t_i))\right]\right] \\<br>    &amp;\geq \sum_{i=1}^{N} \mathbb{E}_{p_\phi(x(t_i))}[\log p(y(t_i) | x(t_i))] \\<br>    &amp;-\frac{1}{2}\int_{0}^{T} \mathbb{E}_{q_\phi(x(t))q_\phi(\theta)}{\lvert\lvert{r(x(t), \theta,\phi)}\rvert\rvert_{\Sigma_\theta Q\Sigma^\top_\theta}^2}<br>    \,dt \\<br>    &amp; - D_{KL}(q_\phi(\theta) \mid \mid p(\theta)) = \mathrm{ELBO}(\phi)<br>\end{split}<br>\end{equation}<br>$$</p>
 <p>其中，$\mathbb{E}_{\tilde{P}|\theta}$是待求的先验SDE式子（13）对应的期望，$\mathbb{E}_{p(\theta)}$是参数$\theta$所在空间的概率分布对应的期望（实际上这个期望可以拿掉，因为无法对参数空间采样，或者说近似为当前学到的参数$\theta$，毕竟当前参数既然出现了，概率肯定最大）。 $r(x(t)\theta,\phi) = -A_\phi(t)x(t) + b_\phi(t) - f_\theta(x(t), t)$，也就是近似后验SDE约束待求先验SDE，而且只有漂移函数项约束。同时也用到了后面的扩散函数项$\Sigma_\theta$，也就是$\lvert\lvert{v}\rvert\rvert_{\Sigma_\theta Q\Sigma^\top_\theta}^2=v^\top(\Sigma_\theta Q\Sigma^\top_\theta)^{-1}v$。最后一项是对参数分布的约束，$p(\phi)$为给定的先验约束（一般是高斯分布），$q_\phi(\theta)$为真实的参数分布。</p>
 <p>实际上，在式子（15）的不等式中，只有不等号右边的第一、二项是真的下界，用到了琴生不等式（Jensen’s Inequation），$\mathbb{E}[-\log(p)] \geq -\log\mathbb{E}(p)$，应该是参考了陈天琦团队的2020年AISTATS会议论文“Scalable gradients for stochastic differential equations”<sup class="refplus-num"><a href="#ref-AISTATS-grad">[8]</a></sup>，他们也定义了先验、近似后验两个SDE，然后对ELBO式子做了分解，得到了一个重构真实值项和一个近似后验SDE约束先验SDE的积分项，也就是第一、二项。</p>
 <p>所以，在式子（15）中，KL散度是后来加上的，所以和之前的<a href="https://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/#%E5%9C%A8VAE%E4%B8%AD%E7%9A%84%E5%8F%98%E4%BD%93-Variant-in-VAE">变分推断笔记</a>有一定的区别，那边的KL散度是推导出来的，用来约束隐式特征，但是这边的KL散度是约束的参数。只是形式类似，都是重构真实值和KL散度约束的组合。</p>
