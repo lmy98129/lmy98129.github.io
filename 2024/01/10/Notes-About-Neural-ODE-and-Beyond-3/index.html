@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://github.com/rtqichen/torchdiffeq/blob/master/assets/ode_demo.gif?raw=true">
 <meta property="og:image" content="https://www.wolfram.com/mathematica/new-in-9/time-series-and-stochastic-differential-equations/HTMLImages.en/stochastic-differential-equation-for-exponential-d/O_49.png">
 <meta property="article:published_time" content="2024-01-10T05:37:07.000Z">
-<meta property="article:modified_time" content="2024-01-11T17:56:29.044Z">
+<meta property="article:modified_time" content="2024-01-12T05:00:56.318Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -331,7 +331,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-01-12T01:56:29+08:00">2024-01-12</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-01-12T13:00:56+08:00">2024-01-12</time>
             
           </span>
 
@@ -422,7 +422,7 @@
 <p>所以，在式子（15）中，KL散度是后来加上的，所以和之前的<a href="https://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/#%E5%9C%A8VAE%E4%B8%AD%E7%9A%84%E5%8F%98%E4%BD%93-Variant-in-VAE">变分推断笔记</a>有一定的区别，那边的KL散度是推导出来的，用来约束隐式特征，但是这边的KL散度是约束的参数。只是形式类似，都是重构真实值和KL散度约束的组合。</p>
 <h2 id="重参数技巧和均摊分析-Reparameterization-and-Amortization"><a href="#重参数技巧和均摊分析-Reparameterization-and-Amortization" class="headerlink" title="重参数技巧和均摊分析 Reparameterization and Amortization"></a>重参数技巧和均摊分析 Reparameterization and Amortization</h2><p>与之前的<a href="https://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/#%E9%87%8D%E5%8F%82%E6%95%B0%E5%8C%96%E6%8A%80%E5%B7%A7-Reparameterization">变分推断笔记</a>类似，也是为了避免多次前向，那边是给中间的隐式特征分布从$\mathcal{N}(\mu, \sigma)$转为$\mathcal{N}(0, I)$，这里是对隐式特征分布$q_\phi(x(t))$。因为，这是近似后验SDE（参数为$\phi$）输出的当前时刻$t$的隐式状态$x(t)$概率分布，这个概率分布是很难精确找到的，毕竟SDE是带随机性的。当然，也可以通过反复前向多次、采多个$x(t)$的方式来近似它。</p>
 <p>但是，可以回想第3章节“高斯过程近似”里面，为了求这个线性SDE的式子（10）和（11），我们已经推导出了$x(t)$的边际分布，也就是$q(x(t))=\mathcal{N}(x(t)|m(t), P(t))$，所以，我们可以直接用这个高斯分布，代替多次前向采样得到的$q_\phi(x(t))$。但是，就算不采样$x(t)$了，式子（15）对应的$r(\cdot)$函数里，每个时刻对应的$A_\phi(t)$和$b_\phi(t)$还是照样得算的。</p>
-<p>此时，可以看到式子（10）和（11），刚好就是$A(t)$和$b(t)$构成的，由此可以重新整理成$A_\phi(t)$和$b_\phi(t)$的表达式，然后代入$r(\cdot)$函数。其中，$\oplus$是克罗内克加法（Kronecker Addition）。具体细节可以参见Nature原文<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup>：</p>
+<p>此时，可以看到式子（10）和（11），刚好就是$A_\phi(t)$和$b_\phi(t)$构成的，由此可以重新整理成$A_\phi(t)$和$b_\phi(t)$的表达式，然后代入$r(\cdot)$函数。其中，$\oplus$是克罗内克加法（Kronecker Addition）。具体细节可以参见Nature原文<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup>：</p>
 <p>$$<br>\begin{align}<br>&amp; r(x(t), t, \theta, \phi) \nonumber \\<br>&amp; = \mathrm{vec}^{-1}((P_\phi(t) \oplus P_\phi(t) )^{-1}\mathrm{vec}(\Sigma_\theta Q \Sigma_\theta^\top \nonumber \\<br>&amp; - \frac{dP_\phi(t)}{dt}))(m_\phi(t) - x(t)) + \frac{dm_\phi}{dt} - f_\theta(x(t), t) \\<br>\end{align}<br>$$</p>
 <p>另外，<a href="https://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/#%E7%A4%BA%E4%BE%8B-Example">之前的笔记</a>里面有简要地提到均摊分析（Amortized Analysis）的概念，当时是为了强调参数量不应当与数据规模挂钩，否则数据量无限大则参数无限大，无法实际应用。Kevin Course和Prasanth B. Nair在NeurIPS 2023上发表的论文“Amortized Reparametrization: Efficient and Scalable Variational Inference for Latent SDEs”<sup class="refplus-num"><a href="#ref-NeurIPS-State">[7]</a></sup>，在标题里面就同时提到了重参数技巧和均摊分析。在这篇文章里，重参数技巧和Nature版本论文一致，均摊分析指的是，尝试将整段长度为N的时间序列数据，切分为M份，每份长度为N/M，从而更好地实现并行化的训练和预测。</p>
 <h2 id="结语-Conclusions"><a href="#结语-Conclusions" class="headerlink" title="结语 Conclusions"></a>结语 Conclusions</h2><p>至此，已经写好了三篇笔记，基本搞懂了Neural ODE、SDE以及状态估计。但是，还有很多的细节没有搞懂，例如这篇里面省略的若干推导过程，以及状态估计的两篇论文<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup><sup class="refplus-num"><a href="#ref-NeurIPS-State">[7]</a></sup>的更多应用场景、数据和建模方式，尤其是NeurIPS论文的附加材料<sup class="refplus-num"><a href="#ref-NeurIPS-State">[7]</a></sup>给出了针对不同任务的网络结构设计。此外，现在的笔记内容全是个人理解，难免错漏，之后肯定要修改。</p>
