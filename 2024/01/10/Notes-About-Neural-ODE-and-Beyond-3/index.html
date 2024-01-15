@@ -114,7 +114,7 @@
 <meta property="og:image" content="https://github.com/rtqichen/torchdiffeq/blob/master/assets/ode_demo.gif?raw=true">
 <meta property="og:image" content="https://www.wolfram.com/mathematica/new-in-9/time-series-and-stochastic-differential-equations/HTMLImages.en/stochastic-differential-equation-for-exponential-d/O_49.png">
 <meta property="article:published_time" content="2024-01-10T05:37:07.000Z">
-<meta property="article:modified_time" content="2024-01-12T05:00:56.318Z">
+<meta property="article:modified_time" content="2024-01-15T06:05:26.530Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -331,7 +331,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-01-12T13:00:56+08:00">2024-01-12</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-01-15T14:05:26+08:00">2024-01-15</time>
             
           </span>
 
@@ -374,8 +374,9 @@
 <p>有趣的是，Neural ODE为了和ODE保持一致，像上面的式子一样，能够不断地在同一个微分函数上积分，然后与初值相加，确实是不允许输入和输出的$z$形状不一致的（容易联想到Diffusion扩散模型的基本原理和ODE有联系，这就是另一些故事了，感兴趣可以去搜相应的工作）。也就是说，不允许$z(t_0)$是一个隐式的特征，而剩下的$z(t&gt;t_0)$是显式的预测值。所以，凡是使用了隐式特征的Neural ODE，都需要一个额外的解码器，可以参见<a target="_blank" rel="noopener" href="https://github.com/rtqichen/torchdiffeq/blob/master/examples/latent_ode.py#L263">这个示例代码</a>。</p>
 <p>所以，从某种意义上来说，前面几篇笔记反复提到的“错误”也不全错，对复杂过程的建模，而且需要一个编码器生成初始状态作为条件condition，就是需要在隐式特征的状态上做积分。但是，如果解码器$\phi$是线性的且没有偏置，那么输出仍然服从和隐式状态一样的变化量关系约束。由于对任意$t$都有$y(t)=\phi(z(t))$：</p>
 <p>$$<br>\begin{align}<br>&amp; y(t+\epsilon) = \phi(z(t+\epsilon)) \nonumber \\<br>&amp; = \phi\left(z(t) + \int_{t}^{t+\epsilon} f(z(t’), t’, \theta)dt’\right) \nonumber \\<br>&amp; = \phi(z(t)) + \phi\left(\int_{t}^{t+\epsilon} f(z(t’), t’, \theta)dt’\right) \nonumber \\<br>&amp; = y(t) + \Delta y|_t^{t+\epsilon} \\<br>\end{align}<br>$$</p>
-<p>其中，最后这项$\phi(\cdot)$可以记作$\Delta y|_t^{t+\epsilon}$，也就是$\epsilon$长度时间内$y$的变化量，当然具体它是否真的像式子（1）是个积分，$\Delta y|_t^{t+\epsilon} = \int_t^{t+\epsilon} \frac{dy}{dt} dt$，就看网络拟合的程度了，至少它相对之前是个变化量，有物理意义。为什么非线性的解码器不能做到这点呢？最简单的例子就是指数函数：$e^{(a+b)} = e^a \cdot e^b \neq e^a + e^b$，$a$和$b$相加后再输入的结果，不能等于$a$和$b$分别输入再相加的结果。比较遗憾的是，Neural ODE的默认解码器是<a target="_blank" rel="noopener" href="https://github.com/rtqichen/torchdiffeq/blob/master/examples/latent_ode.py#L157">非线性的</a>，所以甚至不能满足式子（2）的关系。</p>
-<p>当然，可以强行解读为$y(t+\epsilon) - y(t)=\phi(z(t+\epsilon)) - \phi(z(t))$就是$\Delta y|_t^{t+\epsilon}$，是网络学出来的。但是无法像式子（1），由固定的$f = \frac{dy}{dt}$积分得到，相比黑盒$\Delta y$更加可解释一些。以上都是我个人的推导，难免还有错误，仅供参考。</p>
+<p>其中，最后这项$\phi(\cdot)$可以记作$\Delta y|_t^{t+\epsilon}$，也就是$\epsilon$长度时间内$y$的变化量。不妨令$\epsilon \rightarrow 0$，则$\epsilon = dt$，可以推出：</p>
+<p>$$<br>\begin{align}<br>&amp; y(t+\epsilon) - y(t) = \Delta y|_t^{t+\epsilon} \nonumber \\<br>&amp; \Rightarrow \lim_{\epsilon \rightarrow 0} \frac{y(t+\epsilon) - y(t)}{\epsilon} = \lim_{\epsilon \rightarrow 0} \frac{\Delta y|_t^{t+\epsilon}}{\epsilon} \nonumber \\<br>&amp; \Rightarrow \frac{dy}{dt} = \lim_{\epsilon \rightarrow \infty} \frac{\Delta y|_t^{t+\epsilon}}{\epsilon} \nonumber \\<br>&amp; \Rightarrow \int_t^{t+\epsilon} \frac{dy}{dt} dt = \int_t^{t+\epsilon} \lim_{\epsilon \rightarrow 0} \frac{\Delta y|_t^{t+\epsilon}}{\epsilon} dt \nonumber \\<br>&amp; \Rightarrow \int_t^{t+\epsilon} \frac{dy}{dt} dt = \Delta y|_t^{t+\epsilon} \nonumber \\<br>&amp; \Rightarrow y(t+\epsilon) = y(t) + \int_t^{t+\epsilon} \frac{dy}{dt} dt \nonumber \\<br>\end{align}<br>$$</p>
+<p>为什么非线性的解码器不能做到这点呢？最简单的例子就是指数函数：$e^{(a+b)} = e^a \cdot e^b \neq e^a + e^b$，$a$和$b$相加后再输入的结果，不能等于$a$和$b$分别输入再相加的结果。比较遗憾的是，Neural ODE的默认解码器是<a target="_blank" rel="noopener" href="https://github.com/rtqichen/torchdiffeq/blob/master/examples/latent_ode.py#L157">非线性的</a>，所以甚至不能满足式子（2）的关系。所以，将隐式特征线性解码成显式状态（例如上图例子中的$(x, y)^\top$），对应的显式状态仍然满足和式子（1）一样的积分关系。只是$\frac{dy}{dt}$无法用一个函数$f$来表示，而是像上面的第二步推导，是一个极限形式。</p>
 <h2 id="随机微分方程-Stochastic-Differential-Equation"><a href="#随机微分方程-Stochastic-Differential-Equation" class="headerlink" title="随机微分方程 Stochastic Differential Equation"></a>随机微分方程 Stochastic Differential Equation</h2><p>如果有观察过Neural ODE<sup class="refplus-num"><a href="#ref-Neural-ODE">[2]</a></sup>和Latent ODE<sup class="refplus-num"><a href="#ref-Latent-ODE">[3]</a></sup>原文的实验部分，可以发现它们的拟合的时间序列往往是平滑形式的。但是，很多真实的物理过程是存在大量随机的，例如流体运动、热量传递等，底层都是分子原子的布朗运动（Brownian Motion）。只要输入相同，微分方程$f(\cdot)$输出一般没有随机性。当然，其基于VAE的思想确实能够通过对若干次初始状态$z(t_0) \sim \mathcal{N}(\mu, \sigma)$的采样，最后对预测结果算均值来一定程度上缓解这个问题，但是最终的曲线趋势仍然是平滑的。</p>
 <p>以下推导直接参考剑桥大学2019年出版的教材“Applied Stochastic Differential Equations”<sup class="refplus-num"><a href="#ref-Applied-SDE">[5]</a></sup>（Kevin Course和Prasanth B. Nair在2023年发表的Nature正刊<sup class="refplus-num"><a href="#ref-Nature-State">[6]</a></sup>和NeurIPS正会<sup class="refplus-num"><a href="#ref-NeurIPS-State">[7]</a></sup>论文就参考了这个教材）。</p>
 <p>为了描述一个带有噪声过程$w(t)$的隐式状态$x(t)$变化过程，我们将常微分方程$\frac{dx(t)}{dt} = f(x(t), t)$改写为：</p>
