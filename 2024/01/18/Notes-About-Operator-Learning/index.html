@@ -107,26 +107,26 @@
 <meta name="description" content="What I cannot create, I donot understand.by Richard P. Feynman  本文是关于算子学习Operator Learning的个人笔记主要是物理信息神经网络PINN、深度算子网络DeepONet的基础知识，以及逆问题求解方法。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Notes About Operator Learning">
-<meta property="og:url" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning-1/index.html">
+<meta property="og:url" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning/index.html">
 <meta property="og:site_name" content="NeXT">
 <meta property="og:description" content="What I cannot create, I donot understand.by Richard P. Feynman  本文是关于算子学习Operator Learning的个人笔记主要是物理信息神经网络PINN、深度算子网络DeepONet的基础知识，以及逆问题求解方法。">
 <meta property="og:locale">
-<meta property="og:image" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning-1/PINN.pbm">
-<meta property="og:image" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning-1/DeepONet.png">
-<meta property="og:image" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning-1/Results.png">
+<meta property="og:image" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning/PINN.pbm">
+<meta property="og:image" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning/DeepONet.png">
+<meta property="og:image" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning/Results.png">
 <meta property="article:published_time" content="2024-01-18T10:55:24.000Z">
-<meta property="article:modified_time" content="2024-01-19T16:05:29.059Z">
+<meta property="article:modified_time" content="2024-01-20T02:22:21.998Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experiences">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning-1/PINN.pbm">
+<meta name="twitter:image" content="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning/PINN.pbm">
 
 
 
 
 
 
-  <link rel="canonical" href="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning-1/"/>
+  <link rel="canonical" href="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning/"/>
 
 
 
@@ -282,7 +282,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning-1/">
+    <link itemprop="mainEntityOfPage" href="http://lmy98129.github.io/2024/01/18/Notes-About-Operator-Learning/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Mengyin Liu">
@@ -332,7 +332,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-01-20T00:05:29+08:00">2024-01-20</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-01-20T10:22:21+08:00">2024-01-20</time>
             
           </span>
 
@@ -374,7 +374,7 @@
 <h2 id="物理信息神经网络-Physics-Informed-Neural-Network"><a href="#物理信息神经网络-Physics-Informed-Neural-Network" class="headerlink" title="物理信息神经网络 Physics-Informed Neural Network"></a>物理信息神经网络 Physics-Informed Neural Network</h2><p><a href="https://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2">之前的笔记</a>提到过，常微分方程（Ordinary Differential Equation，ODE）是自变量只有一个的微分方程，一般表示的是时间。然而，尤其是在物理领域，自变量往往是多个的（例如一个2D的场随时间的变化，包括$xy$坐标和时间$t$），因此需要引入偏微分方程。例如，描述热传导的傅里叶方程（Fourier’s Equation）的1D、2D形式，其中$u$是一个关于坐标和时间的未知函数，表示的是热量随时间在空间中的传播：</p>
 <p>$$<br>\begin{equation}<br>\frac{\partial u}{\partial t} = \alpha\frac{\partial^2 u}{\partial x^2}, ~~~~<br>\frac{\partial u}{\partial t} = \alpha( \frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2})<br>\end{equation}<br>$$</p>
 <p>上述方程可以理解为，$u$代表的热量随时间$t$的微分变化，是由$u$在空间坐标上的二阶微分、也就是热量在局部相邻位置的变化方向（一阶微分）的变化大小（二阶微分）引起的。对于此类多个自变量的偏微分方程，之前的Neural ODE<sup class="refplus-num"><a href="#ref-Neural-ODE">[1]</a></sup>就无法建模了。而且，对于一些复杂的物理过程，有时候<span style="text-decoration: underline;"><strong>很难写出关于未知函数$u$的具体表达式，只有形如式子（1）的笼统约束</strong></span>。那么，和Neural ODE一样，我们可以将$u$用一个神经网络来表达。</p>
-<p><img src="/2024/01/18/Notes-About-Operator-Learning-1/PINN.pbm" alt="PINN"></p>
+<p><img src="/2024/01/18/Notes-About-Operator-Learning/PINN.pbm" alt="PINN"></p>
 <center>PINN示意图。$u$是一个关于坐标$x$和时间$t$的函数，用神经网络来代替这个函数<br>其中$w$和$b$为神经网络的权重、偏置参数。神经网络的输出$u$就代表了输入$(x, t)^\top$后的函数值</center>
 
 <p><br></p>
@@ -390,12 +390,12 @@
 <p>最终，将上述差值送入均方误差函数（Mean Square Error，MSE）后，相加得到最终的损失函数值，当其小于$\epsilon$时，可以认为神经网络的拟合趋于收敛，停止训练。值得注意的是，Neural ODE是需要拟合对ODE计算积分后的真实值，因此使用的是计算对应积分值的$\mathrm{ODESolver(\cdot)}$，<a href="https://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2">详见之前的笔记</a>；而PINN直接计算输出与$u$真实值的差距，同时也需要拟合如式子（1）的偏微分方程，因此使用的是计算对应偏导值的<code>torch.autograd</code>等自动微分API。</p>
 <p>如果想要把Neural ODE的任务套用进PINN，则将输入改为只有一个自变量$t$，由于$u=\mathrm{NN}(t)= u_0 + \int \frac{du}{dt} dt$，所以无需任何ODE或PDE约束，只需要包括IC和BC等真实值条件进行约束，退化为了一个普通的神经网络。在无对应ODE或PDE约束的前提下，如果真实值过少，则会导致神经网络过拟合到这几个点上。Neural ODE至少有将神经网络的输出进行积分的关系，也就是$\frac{du}{dt} = \mathrm{NN(u, t)}$, 且$u = u_0 + \int \frac{du}{dt} dt=\mathrm{ODESolver}(\mathrm{NN}, u_0, t_0, t_N)$。</p>
 <p>言归正传，在测试阶段，对应的PINN模型输入了$(x, t)^\top$之后，只能输出符合式子（1）等训练时指定的偏微分方程中的函数值$u$。也就是说，一旦训练停止，这个模型就无法适用于新的偏微分方程。例如，改变了初始或边界条件、改变了式子（1）本身，都意味着$u$变了，需要重新训练一个新的PINN模型。</p>
-<h2 id="深度算子网络-Deep-Operator-Network"><a href="#深度算子网络-Deep-Operator-Network" class="headerlink" title="深度算子网络 Deep Operator Network"></a>深度算子网络 Deep Operator Network</h2><p>为了避免重新训练，肯定要想办法在训练时新增额外的输入，使得模型能够泛化到其他偏微分方程上。当然，如果能确定式子（1）本身的大致形式，只是其中的若干系数未知，则可以参见PINN原文第二部分<sup class="refplus-num"><a href="#ref-PINN-PartII">[3]</a></sup>，用神经网络拟合未知函数$u$的同时，求解待定系数。</p>
+<h2 id="深度算子网络-Deep-Operator-Network"><a href="#深度算子网络-Deep-Operator-Network" class="headerlink" title="深度算子网络 Deep Operator Network"></a>深度算子网络 Deep Operator Network</h2><p>为了避免重新训练，肯定要想办法在训练时新增额外的输入，使得模型能够泛化到其他偏微分方程上。当然，如果能确定式子（1）本身的大致形式，只是其中的若干参数未知，则可以参见PINN原文第二部分<sup class="refplus-num"><a href="#ref-PINN-PartII">[3]</a></sup>，用神经网络拟合未知函数$u$的同时，求解待定参数，具体的方式可以见下一章节。</p>
 <p>因此，最重要的是未知函数$u$本身的改变，我们可以将改变这个函数的额外变量输入到网络里。但是，顾名思义，<span style="text-decoration: underline;"><strong>我们无法知道这个函数的具体表达式形式，甚至连大致形式都不知道</strong></span>。因此，对于这个函数的性质，<strong>只能通过与之相关的若干数据间接了解</strong>。那么，在未知函数$u(y)$本身也要接受$y=(x, t)^\top$等输入的情况下，如何建立从这些额外的数据到未知函数$u$的映射关系呢？</p>
 <p><strong>重新定义符号</strong>，将间接数据的观测采样点（如时间、位置点）为$\{x_0, \cdots, x_m\}$，每点的第$n$种观测值为函数$u^{(i)}(x_m)$，所有$u^{(i)} \in u$，$u$代表所有的间接数据。定义从间接数据$u$到未知函数的映射为$G$，也就是当前间接数据$u$所描述的未知函数等于$G(u)$。给定输入$y$，这个未知函数的函数值就是$G(u)(y)$。</p>
 <p>根据上述的符号定义，我们可以发现，$G$实际上是函数到函数的映射，因为$u^{(i)}(x_m)$是关于观测点$x_m$的函数，$G(u)$是关于所有间接数据$u$的函数。这种映射被称为“算子（Operator）”。<strong>一个最直观的例子就是，常微分$\frac{d}{dt}$或偏微分$\frac{\partial}{\partial t}$等算子，可以将给定函数$f$变为另一个函数，也就是$\frac{df}{dt}$或$\frac{\partial f}{\partial t}$</strong>。</p>
 <p>显然，我们不知道这个算子$G$到底是什么形式的，例如是不是若干个$u^{(i)}$的线性组合得到了未知函数。所以，我们也可以用神经网络来表示这个映射。因此，Chen等人<sup class="refplus-num"><a href="#ref-Uni-Approx">[5]</a></sup>在1995年证明了用神经网络作为算子，同样和普通神经网络一样，满足万能逼近定理（可以拟合任意的算子）。在此基础上，Lu等人<sup class="refplus-num"><a href="#ref-DeepONet">[6]</a></sup>在2021年的Nature子刊Nature Machine Intelligence上，发表了深度算子网络DeepONet（Deep Operator Network），提出用更深层的神经网络作为算子。</p>
-<p><img src="/2024/01/18/Notes-About-Operator-Learning-1/DeepONet.png" alt="DeepONet"></p>
+<p><img src="/2024/01/18/Notes-About-Operator-Learning/DeepONet.png" alt="DeepONet"></p>
 <center>DeepONet示意图。图（a）是模型输入输出：定义未知函数的间接数据函数$u$，未知函数的输入$y$，最终输出的函数值$G(u)(y)$<br>图（b）是训练数据的构成，在若干固定采样点$x_m$上的间接数据函数值$u$，对应任意输入$y$上的函数值<br>图（c）和（d）是两种DeepONet设计，每个采样点分别还是共同输入“Branch Net”</center>
 
 <p><br></p>
@@ -409,7 +409,7 @@
 <p>注意，$i$和$j$之间没有任何关系，有$i$个间接数据函数，每个间接数据的函数$u^{(i)}$可以通过$G$映射到一个未知函数$G(u^{(i)})$，这个未知函数上可以有$j$个任意位置的真值点$G(u^{(i)})(y^{(i)}_j)$。输入$u^{(i)}$的格式，是在该函数上采$x_0, \cdots, x_m$个固定点。因此，对于DeepONet，训练或测试数据由以下$|I| \times |J|$个三元组构成：</p>
 <p>$$<br>\begin{split}<br>&amp; \left\{ u(x), y, G(u)(y) \right\} \\<br>&amp; = \left\{ (u^{(i)}(x_0), \cdots, u^{(i)}(x_m))^\top, y^{(i)}_j, G(u^{(i)})(y^{(i)}_j) \right\}_{i \in I, j \in J}<br>\end{split}<br>$$</p>
 <p>由于式子（3）描述的算子十分通用，对任意的输入函数，都应当满足对应的积分关系。因此，为了充分训练DeepONet，论文原文<sup class="refplus-num"><a href="#ref-DeepONet">[6]</a></sup>采用了高斯随机场（Gaussian Random Field，GRF）或切比雪夫多项式（Chebyshev Polynomials），随机生成了若干个函数$u^{(i)}$和对应的真值$s(y^{(i)}_j) = G(u^{(i)})(y^{(i)}_j)$。训练损失函数和PINN是一样的，可以分为两部分，一部分约束输出初值$s(0)$以及其他边界条件，另一部分对输出$s(y^{(i)}_j)$，求$\frac{d}{dt}$用前述真值$G(u^{(i)})(y^{(i)}_j)$约束。</p>
-<p><img src="/2024/01/18/Notes-About-Operator-Learning-1/Results.png" alt="Results"></p>
+<p><img src="/2024/01/18/Notes-About-Operator-Learning/Results.png" alt="Results"></p>
 <center>DeepONet拟合式子（2）后，输入$u(t)$、输出$s(t)$的结果<br>可以看到$s(t)$确实是$u(t)$的积分，反之$u(t)$是$s(t)$的导数，例如$u(t)=0$时，$s(t)$曲线平缓<br>图片来自GitHub仓库<a target="_blank" rel="noopener" href="https://github.com/ShuaiGuo16/PI-DeepONet/blob/main/case_study.ipynb">ShuaiGuo16/PI-DeepONet</a></center>
 
 <p><br></p>
