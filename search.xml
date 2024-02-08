@@ -315,7 +315,7 @@
     <title>Notes About Operator Learning</title>
     <url>/2024/01/18/Notes-About-Operator-Learning/</url>
     <content><![CDATA[<blockquote>
-<p>What I cannot create, I donot understand.<br>by Richard P. Feynman</p>
+<p>What I cannot create, I do not understand.<br>by Richard P. Feynman</p>
 </blockquote>
 <p>本文是关于算子学习Operator Learning的个人笔记<br>主要是物理信息神经网络PINN、深度算子网络DeepONet的基础知识，以及逆问题求解方法。</p>
 <span id="more"></span>
