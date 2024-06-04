@@ -117,7 +117,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/06/03/Notes-About-Neural-CDE-and-Beyond/SINDy.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/06/03/Notes-About-Neural-CDE-and-Beyond/KAN.png">
 <meta property="article:published_time" content="2024-06-03T07:17:12.000Z">
-<meta property="article:modified_time" content="2024-06-04T04:52:14.575Z">
+<meta property="article:modified_time" content="2024-06-04T04:53:25.544Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -334,7 +334,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-06-04T12:52:14+08:00">2024-06-04</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-06-04T12:53:25+08:00">2024-06-04</time>
             
           </span>
 
@@ -400,7 +400,7 @@
 <p>但是，在推理过程中，式子（3）Neural ODE的输入层参数$\{W_1, b_1\} \in \theta$是固定不变的，不随着输入$y_t$的变化而变化，这等价于在Neural CDE中，$f’_\theta(y_t)$输出的$\{W_t, b_t\}$一直是定值$\{W_1, b_1\} $。因此，Neural CDE具有更强大的表达能力。</p>
 <h2 id="反馈控制参数-Feedback-Controlled-Parameters"><a href="#反馈控制参数-Feedback-Controlled-Parameters" class="headerlink" title="反馈控制参数 Feedback-Controlled Parameters"></a>反馈控制参数 Feedback-Controlled Parameters</h2><p>然而，正是这个形象的例子，启发了笔者对Neural CDE的进一步思考：真的只有时间序列数据$\mathrm{X}_t$是“控制变量”吗？</p>
 <p>我们似乎忽略了一个事实：什么能动态改变作用在$\mathrm{X}_t$上的权重$\{W_t, b_t\}$呢？是式子（5）的神经网络$f’_\theta(y_t)$。在式子（3）的Neural ODE中，上一个时刻的积分结果$y_t$单纯只是输入，无法改变作用在输入上的模型参数$\{W_1, b_1\}$。但是在Neural CDE中，$y_t$能够通过$f’_\theta(y_t)$改变神经网络的输出，也正是作用在输入上的参数$\{W_t, b_t\}$。</p>
-<p>而这个$y_t$，正是由再上一个时刻$t-1$的积分结果$y_{t-1}$得到的$\{W_{t-1}, b_{t-1}\}$、以及输入的时间序列数据$X_{t-1}$共同作用得到的。这是一个不断通过历史结果$y_t$的实时反馈，控制、调整下一个时刻作用在输入$X_t$的权重，进行“闭环控制”的过程。这是自动化控制中最基本的理论模型。反过来，Neural ODE虽然也输入$y_t$，但无法控制作用在输入$X_t$的权重。</p>
+<p>而这个$y_t$，正是由再上一个时刻$t-1$的积分结果$y_{t-1}$得到的$\{W_{t-1}, b_{t-1}\}$、以及输入的时间序列数据$X_{t-1}$共同作用得到的。这是一个不断通过历史结果$y_t$的实时反馈，控制、调整下一个时刻作用在输入$\mathrm{X}_t$的权重，进行“闭环控制”的过程。这是自动化控制中最基本的理论模型。反过来，Neural ODE虽然也输入$y_t$，但无法控制作用在输入$\mathrm{X}_t$的权重。</p>
 <p><img src="https://www.elprocus.com/wp-content/uploads/Closed-Loop-Control-System-Block-Diagram.jpg" alt="closeloop"></p>
 <center>闭环控制示意图，将$f’_\theta(y_t)$看做“Feedback Elements”，通过乘号$\otimes$作用在输入“Input”的时间序列数据$\mathrm{X}_t$上<br>图片来自<a target="_blank" rel="noopener" href="https://www.elprocus.com/what-is-a-closed-loop-control-system-its-working/">Elprocus.com</a></center>
 
