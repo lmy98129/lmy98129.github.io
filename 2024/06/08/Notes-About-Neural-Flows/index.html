@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.0.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.0.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.0.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.0.4" color="#222">
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '6.0.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  
+  <meta name="keywords" content="experience," />
+
+
+<meta name="description" content="Finite systems of deterministic ordinary nonlinear differential equationsmay be designed to representforced dissipative hydrodynamic flow.in Deterministic Nonperiodic Flow, Edward Lorenz  本文是关于神经流模型N">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Notes About Neural Flows">
+<meta property="og:url" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/index.html">
+<meta property="og:site_name" content="NeXT">
+<meta property="og:description" content="Finite systems of deterministic ordinary nonlinear differential equationsmay be designed to representforced dissipative hydrodynamic flow.in Deterministic Nonperiodic Flow, Edward Lorenz  本文是关于神经流模型N">
+<meta property="og:locale">
+<meta property="og:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/Neural-Flow.png">
+<meta property="og:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/IRN.png">
+<meta property="og:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/Lip-1.png">
+<meta property="og:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/Lip-2.png">
+<meta property="article:published_time" content="2024-06-08T08:27:49.000Z">
+<meta property="article:modified_time" content="2024-06-11T12:41:14.826Z">
+<meta property="article:author" content="Mengyin Liu">
+<meta property="article:tag" content="experience">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/Neural-Flow.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+  <title>Notes About Neural Flows | NeXT</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"> <div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">NeXT</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-academic">
+          <a href="/academic/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-flask"></i> <br />学术</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+  
+
+
+
+ </div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Mengyin Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="NeXT">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Notes About Neural Flows</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2024-06-08T16:27:49+08:00">2024-06-08</time>
+            
+
+            
+            
+              
+                
+              
+            
+
+            
+              
+              <span class="post-meta-divider">|</span>
+              
+
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">更新于&#58;</span>
+              
+              <time title="更新于" itemprop="dateModified" datetime="2024-06-11T20:41:14+08:00">2024-06-11</time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>Finite systems of deterministic ordinary nonlinear differential equations<br>may be designed to represent<br>forced dissipative hydrodynamic flow.<br>in <em>Deterministic Nonperiodic Flow</em>, Edward Lorenz</p>
+</blockquote>
+<p>本文是关于神经流模型Neural Flows的学习笔记<br>主要是其作为Neural ODE的全新迭代，以及可逆残差网络Invertible Residual Networks和相关补充知识</p>
+<span id="more"></span>
+<h2 id="前言-Introduction"><a href="#前言-Introduction" class="headerlink" title="前言 Introduction"></a>前言 Introduction</h2><p>在发现“蝴蝶效应”的著名论文《确定性的非周期流动》<sup class="refplus-num"><a href="#ref-DeterNF">[1]</a></sup>中，混沌理论之父爱德华·洛伦兹写下了上面这段话：“可以设计由确定性非线性常微分方程构成的有限系统，来表示受外力耗散流体的流动”。</p>
+<p>这个世界终究是物理的。在扩散模型Diffusion被成功引入到图像生成之后，郎之万动力学Langevin Dynamics<sup class="refplus-num"><a href="#ref-NCSN">[2]</a></sup>、可逆过程Reverse Process<sup class="refplus-num"><a href="#ref-DDPM">[3]</a></sup>、归一化流Normalizing Flow<sup class="refplus-num"><a href="#ref-DiffuNF">[4]</a></sup>，各种物理模型被先后引入进来。最终，各个角度被统一成随机微分方程Stochastic Differential Equation<sup class="refplus-num"><a href="#ref-SDE-ODE">[5]</a></sup>，并可以被确定的常微分方程Ordinary Differential Equation表示<sup class="refplus-num"><a href="#ref-DDIM">[6]</a></sup>。</p>
+<p>微分方程不仅是教材上的几个章节，它是解析这个物理世界的工具之一。但也正因为是相对统一的工具，如果用更符合物理规律的理论来建模，就有机会更好地拟合这个世界的底层细节。所以，出现比Neural ODE<sup class="refplus-num"><a href="#ref-Neural-ODE">[7]</a></sup>更加迭代的全新模型是必然的，只是应当选取哪一种物理模型而已。本次笔记要介绍的就是神经流模型Neural Flows<sup class="refplus-num"><a href="#ref-Neural-Flows">[8]</a></sup>。</p>
+<h2 id="常微分方程的可逆性-Invertibility-of-ODE"><a href="#常微分方程的可逆性-Invertibility-of-ODE" class="headerlink" title="常微分方程的可逆性 Invertibility of ODE"></a>常微分方程的可逆性 Invertibility of ODE</h2><p>在物理层面上，流体的流动是基于向量映射关系的，也就是当前时刻$t$的某个位置$x_t$，到下一个时刻$t+\Delta t$应当流动到位置$x_{t+\Delta t}$，可以构成一个向量$\vec{x_t}$；对于所有位置$\mathrm{X}_t$，则有向量场$\vec{\mathrm{X}_t}$。</p>
+<p>显然地，给定一个初始位置$x_0$，通过在$\vec{\mathrm{X}_t}$中无数次的流动过程，到第$\mathrm{T}$个时刻时，有且只有一个最终位置$x_\mathrm{T}$。也就是说，从起点到终点同样需要符合映射关系，否则就会出现同一个起点vs多个终点、或者一个终点vs多个起点的问题。</p>
+<p>为了描述这种性质，我们需要将映射定义为可逆映射，也就是给定终点，同样要能够通过相反方向得到终点。而这种性质，恰好是常微分方程ODE能够满足的：</p>
+<p>$$<br>\begin{equation}<br>x_\mathrm{T} = x_0 + \int_0^\mathrm{T} \frac{dx}{dt} dt<br>\end{equation}<br>$$</p>
+<p>$$<br>\begin{equation}<br>x_0 = x_\mathrm{T} - \int_0^\mathrm{T} \frac{dx}{dt} dt = x_\mathrm{T} + \int_\mathrm{T}^0 \frac{dx}{dt} dt<br>\end{equation}<br>$$</p>
+<p>在式子（1）中，可以看到正向积分$\int_0^\mathrm{T} \frac{dx}{dt} dt$；而式子（2）中，可以看到反向积分$\int_\mathrm{T}^0 \frac{dx}{dt} dt$。也就是说，常微分方程$\frac{dx}{dt}=f(x)$可以处理前一个积分结果$x_t$，或者后一个积分结果$x_{t+\Delta t}$，输出变化量$f(x)$：</p>
+<p>$$<br>\begin{align}<br>&amp; x_{t+\Delta t} = x_t + f(x_t) \Delta t \\<br>&amp; x_{t} = x_{t+\Delta t} - f(x_{t+\Delta t}) \Delta t \\<br>\end{align}<br>$$</p>
+<h2 id="神经流模型-Neural-Flows"><a href="#神经流模型-Neural-Flows" class="headerlink" title="神经流模型 Neural Flows"></a>神经流模型 Neural Flows</h2><p>然而，回顾<a href="https://lmy98129.github.io/2024/01/07/Notes-About-Neural-ODE-and-Beyond-2">之前的笔记</a>，计算常微分方程的积分是有代价的，那便是数值求解器$\mathrm{ODESolver}$。从$0$到$\mathrm{T}$的过程越长，计算$x_\mathrm{T}$花费的时间和存储就越高，即使是各种新的数值求解器也避免不了这个问题，只能尽量用可变步长等方式缓解。</p>
+<p><img src="/2024/06/08/Notes-About-Neural-Flows/Neural-Flow.png" width="75%"></p>
+<center>Neural ODE与Neural Flows模型对比，可以发现Neural Flows既不需要求解器，也不需要关注瞬时变化<br>只关心起始点$x_0$和时间$\mathrm{T}$。图片来自论文原文<sup class="refplus-num"><a href="#ref-Neural-Flows">[8]</a></sup></center>
+
+<p><br></p>
+<p>那么，是否能够在去掉$\mathrm{ODESolver}$的前提下，保留一个能够满足式子（1）和（2）的$x_0$与$x_\mathrm{T}$双向、可逆映射的神经网络呢？这个神经网络只需要输入初值是$x_0$、终点时间是$\mathrm{T}$，就能直接输出$x_\mathrm{T}$，也就是：</p>
+<p>$$<br>\begin{equation}<br>\forall x_0, \mathrm{T},~~~ x_\mathrm{T} = F(\mathrm{T}, x_0)<br>\end{equation}<br>$$</p>
+<p>从物理的角度看，这个条件就是流体的流动过程，所以为了和Neural ODE区分，称为神经流模型Neural Flow。但是，普通的神经网络可以满足这个性质吗？反例是，一个神经网络可能会对不同的$(x_0, \mathrm{T})$，输出同样的$x_\mathrm{T}$（联想一下，分类问题是不是就是这样，需要把不同数据输出为同一个类），这就与式子（1）和（2）矛盾了。</p>
+<h2 id="可逆残差网络-Invertible-Residual-Networks"><a href="#可逆残差网络-Invertible-Residual-Networks" class="headerlink" title="可逆残差网络 Invertible Residual Networks"></a>可逆残差网络 Invertible Residual Networks</h2><p>Neural Flow用到了可逆残差网络，是Neural ODE作者陈天琦等人在ICML 2019上发表的工作<sup class="refplus-num"><a href="#ref-IRN">[9]</a></sup>，与之前的可逆神经网络<sup class="refplus-num"><a href="#ref-INN">[10]</a></sup>完全不同的是，这篇文章提出了一个极其简洁的约束方式，使得神经网络能够满足双向、可逆的性质。</p>
+<p><img src="/2024/06/08/Notes-About-Neural-Flows/IRN.png" alt="IRN"></p>
+<center>与普通ResNet比较，可逆残差网络的双向映射性质的体现。从底部的不同Input出发<br>不断普通ResNet的过程中存在若干交叉，上2个交叉甚至是整体的坍塌，导致无法从Output逆向<br>图片来自论文原文<sup class="refplus-num"><a href="#ref-IRN">[9]</a></sup></center>
+
+<p><br></p>
+<p>首先，将一个普通的残差模块描述为式子（6）。同时，可以通过定义步长$h \rightarrow 0$，将其重组为一个常微分方程ODE：</p>
+<p>$$<br>\begin{align}<br>&amp; x_{t+1} = x_t + g_{\theta_t}(x_t) \\<br>\Rightarrow &amp; x_{t+1} - x_t = g_{\theta_t}(x_t)\nonumber \\<br>\Rightarrow &amp; x_{t+h} - x_t = hf_{\theta_t}(x_t) \\<br>\Rightarrow &amp; \lim_{h\rightarrow 0} \frac{x_{t+h} - x_t}{h} = f_{\theta_t}(x_t)\nonumber \\<br>\Rightarrow &amp; \frac{dx_t}{dt} = f_{\theta_t}(x_t) \\<br>\end{align}<br>$$</p>
+<p>那么，对于式子（7），同样可以认为有逆向过程：</p>
+<p>$$<br>\begin{equation}<br>x_t = x_{t+h} - hf_{\theta_t}(x_t)<br>\end{equation}<br>$$</p>
+<p>但是，仔细比较残差模块的式子（7）和常微分方程的式子（4）可以发现，既然$h = \Delta t \rightarrow 0$，那么唯一的区别就是$f(x)$的输入不一样，式子（4）是$x_{t+\Delta t}$，而式子（7）是$x_{t}$。也就是说，残差模块$f_{\theta_t}(x)$无法将$x_{t+h}$作为输入进行逆向计算，并不是一个真正的ODE。从另一个角度看，这也是一个经典的“先有鸡、先有蛋”悖论，既然都要求解$x_t$，是个未知量，还得通过$x_t$才能得到$f_{\theta_t}(x_t)$。很显然，这是自相矛盾的，也不符合ODE的可逆性质。</p>
+<h2 id="利普希茨连续性-Lipschitz-Continuity"><a href="#利普希茨连续性-Lipschitz-Continuity" class="headerlink" title="利普希茨连续性 Lipschitz Continuity"></a>利普希茨连续性 Lipschitz Continuity</h2><p>按照ODE的结构，重写残差模块的逆向过程：对于$h\rightarrow 0$，给定已知的$x_{t+h}$，$f_{\theta_t}$需要支持输入$x_{t+h}$，得到前一个$x_t$：</p>
+<p>$$<br>\begin{equation}<br>x_t = x_{t+h} - hf_{\theta_{t+h}}(x_{t+h}) \nonumber<br>\end{equation}<br>$$</p>
+<p>但是，宏观上ResNet的残差模块只支持离散的步长$h = 1, f_{\theta_{t+h}}=f_{\theta_{t}}=g_{\theta_{t}}$的情况，所以ODE的结构无法直接照搬。为了在离散步长$h=1$条件下，使得固定残差模块$f_{\theta_{t}}$满足连续步长的性质，将式子（10）改写为一个反复迭代的过程：</p>
+<p>$$<br>\begin{equation}<br>\forall n \in \mathbb{N}, x_t^0=x_{t+1} \Rightarrow x_t^{n+1} = x_{t+1} - g_{\theta_t}(x_t^n)<br>\end{equation}<br>$$</p>
+<p>显然，我们希望这个逆向的过程能够收敛到唯一的$x_t$上，所以需要满足$\Vert x_t^{n+1} - x_t^{n}\Vert \rightarrow 0$：</p>
+<p>$$<br>\begin{equation}<br>\lim_{n \rightarrow \infty} x_t^n = x_t \Rightarrow \forall n\rightarrow \infty,~ \Vert x_t^{n+1} - x_t^n\Vert \rightarrow 0<br>\end{equation}<br>$$</p>
+<p>这里主要参考苏剑林的推导过程<sup class="refplus-num"><a href="#ref-Kexue-IRN">[11]</a></sup>，此处省略$t$和$\theta_t$，因为除了上标$n$以外，所有的下标都不变。可以代入式子（10），改写为函数$g(x)$的绝对差值：</p>
+<p>$$<br>\begin{equation}<br>\Vert x_{n+1} - x_n \Vert = \Vert g(x_n) - g(x_{n-1})\Vert<br>\end{equation}<br>$$</p>
+<p>那么两个函数的绝对差值是否有一个$\leq 0$的上界呢？这里就可以用到函数的利普希茨常数（Lipschitz Constant）：函数任意两点斜率绝对值的上确界（最大值），记作$\mathrm{Lip}(g)$：</p>
+<p>$$<br>\begin{align}<br>&amp; \mathrm{Lip(g)} = \sup_{x_1 \neq x_2} \frac{\Vert g(x_1) - g(x_2)\Vert}{\Vert x_1 - x_2 \Vert} \nonumber \\<br>&amp; \Rightarrow \frac{\Vert g(x_1) - g(x_2)\Vert}{\Vert x_1 - x_2 \Vert} \leq \mathrm{Lip(g)} \nonumber \\<br>&amp; \Rightarrow \Vert g(x_1) - g(x_2)\Vert \leq \mathrm{Lip(g)} \Vert x_1 - x_2 \Vert<br>\end{align}<br>$$</p>
+<p>例如，ReLU函数的$\mathrm{Lip}(g)=1$；抛物线函数$x^2$的一阶导为$2x \in (-\infty, +\infty)$，则$\mathrm{Lip}(g) = \infty$。像ReLU这样，存在一个常数$\mathrm{k}_0$，使得函数$g$的利普希茨常数$\mathrm{Lip}(g) \leq \mathrm{k}_0$，那么称这个函数满足利普希茨连续性 （Lipschitz Continuity）：</p>
+<p>$$<br>\begin{equation}<br>\mathrm{Lip(g)} \leq \mathrm{k}_0 \Rightarrow \Vert g(x_1) - g(x_2)\Vert \leq \mathrm{k}_0 \Vert x_1 - x_2 \Vert<br>\end{equation}<br>$$</p>
+<p><img src="/2024/06/08/Notes-About-Neural-Flows/Lip-1.png" alt="Lip-1"></p>
+<center>通过任意两点之间的斜率，可以直观地判断出ReLU函数的利普希茨常数$\mathrm{Lip}(g)=1$。<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1B64y157DC?t=374.8">视频截图</a>来自B站<sup class="refplus-num"><a href="#ref-Bilibili-Lip">[12]</a></sup></center>
+
+<p><br></p>
+<p><img src="/2024/06/08/Notes-About-Neural-Flows/Lip-2.png" alt="Lip-2"></p>
+<center>通过求一阶导数（梯度nabla算子$\nabla$），可以判断出抛物线函数的$\mathrm{Lip}(g) = \infty$<br>还能进一步推导出，利普希茨常数有界的意义：在任意两点之间，函数值变化不会过于剧烈。<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1B64y157DC?t=850.1">视频截图</a>来自B站<sup class="refplus-num"><a href="#ref-Bilibili-Lip">[12]</a></sup></center>
+
+<p><br></p>
+<p>如上图所示，利普希茨连续性直观地保证了任意两点之间，函数的变化是有上下界的，从而使得两个函数的绝对差值是有上界的。因此，将式子（13）代入式子（12），我们可以得到推导过程：</p>
+<p>$$<br>\begin{split}<br>\Vert x_{n+1} - x_n \Vert &amp; = \Vert g(x_n) - g(x_{n-1})\Vert \\<br>&amp; \leq \mathrm{Lip(g)} \Vert x_n - x_{n-1} \Vert \\<br>&amp; = \mathrm{Lip(g)} \Vert g(x_{n-1}) - g(x_{n-2})\Vert \\<br>&amp; \leq \mathrm{Lip(g)}^2 \Vert x_{n-1} - x_{n-2} \Vert \\<br>&amp; \cdots \\<br>&amp; \leq \mathrm{Lip(g)}^n \Vert x_1 - x_0 \Vert<br>\end{split}<br>$$</p>
+<p>显然，当满足式子（11）的$\Vert x_{n+1} - x_{n}\Vert \rightarrow 0$时，$\mathrm{Lip(g)} &lt; 1$，否则将趋近于1或者$\infty$。这个条件正是要求函数$g$、也即残差模块神经网络，满足式子（14）的利普希茨连续性。直观上看，这就是要求在式子（10）这种逆向过程中，函数的输出不能剧烈跳变，要逐步迭代收敛到逆向的目标$x_t$上。</p>
+<p>但是，相邻两点$\Vert x_{n+1} - x_{n}\Vert \rightarrow 0$无法保证绝对收敛，一个反例就是自然对数函数$\ln(x)$，虽然相邻两点变化幅度不大，但它在$n\rightarrow \infty$时是发散的。因此，需要保证任意两点间的$\Vert x_{n+m} - x_{n}\Vert \rightarrow 0$：</p>
+<p>$$<br>\begin{split}<br>\Vert x_{n+m} - x_{n}\Vert &amp; \leq\Vert x_{n+m} - x_{n+m-1}\Vert+\cdots \\<br>&amp; +\Vert x_{n+2} - x_{n+1}\Vert+\Vert x_{n+1} - x_{n}\Vert\\<br>&amp;\leq \left(\mathrm{Lip}(g)^{n+m-1}+\cdots+\mathrm{Lip}(g)^{n}\right)\Vert x_{1} - x_{0}\Vert\\<br>&amp; = \frac{1 - \mathrm{Lip}(g)^m}{1 - \mathrm{Lip}(g)}\cdot\mathrm{Lip}(g)^{n}\Vert x_{1} - x_{0}\Vert\\<br>&amp; \leq \frac{\mathrm{Lip}(g)^n}{1 - \mathrm{Lip}(g)}\Vert x_{1} - x_{0}\Vert<br>\end{split}<br>$$</p>
+<p>同样地，为了$\Vert x_{n+m} - x_{n}\Vert \rightarrow 0$，应当有$\mathrm{Lip(g)} &lt; 1$，否则无解（$\mathrm{Lip(g)} = 1$）或趋近于$\infty$。当$m \rightarrow \infty$时：</p>
+<p>$$<br>\Vert x_\infty - x_{n}\Vert \leq \frac{\mathrm{Lip}(g)^n}{1 - \mathrm{Lip}(g)}\Vert x_{1} - x_{0}\Vert<br>$$</p>
+<p>这个不等式就是著名的巴拿赫不动点定理（Banach Fixed Point Theorem），又名压缩映射定理。其中，不动点指的是$x_\infty$，压缩指的是函数$g$，映射指的是距离度量方式$\Vert \cdot \Vert$。把之前省略的下标再放回来，$x_\infty$就是逆向的目标$x_t^\infty=x_t$。</p>
+<h2 id="谱范数-Spectral-Norm"><a href="#谱范数-Spectral-Norm" class="headerlink" title="谱范数 Spectral Norm"></a>谱范数 Spectral Norm</h2><p>那么，既然知道了需要满足所有残差模块$g$的利普希茨常数$\mathrm{Lip}(g) &lt; 1$，如何实现这个约束呢？首先，我们知道ReLU、Sigmoid等常用的激活函数已经满足了这个约束。那么，实际上就是要给神经网络的权重$W$的利普希茨常数$\mathrm{Lip}(W)$进行约束，可以将式子（13）改写为：</p>
+<p>$$<br>\Vert W(x_1 - x_2) \Vert \leq \mathrm{Lip}(W)\Vert x_1 - x_2 \Vert<br>$$</p>
+<p>我们可以尝试把$W$从范数中提取出来。神经网络的权重通常是一个矩阵$W \in \mathbb{R}^{D\times D’}$，而求矩阵的范数一般采用谱范数（Spectral Norm）$\Vert W \Vert_2$：</p>
+<p>$$<br>\begin{split}<br>&amp; \Vert W(x_1 - x_2) \Vert \leq \Vert W \Vert_2 \cdot \Vert x_1 - x_2 \Vert, \mathrm{Lip}(W) &lt; 1 \\<br>&amp; \Rightarrow \Vert W \Vert_2 \leq 1<br>\end{split}<br>$$</p>
+<p>参考苏剑林的推导过程<sup class="refplus-num"><a href="#ref-Kexue-SN">[13]</a></sup>，谱范数$\Vert W \Vert_2$的定义是$W^\top W$的最大特征根的平方根，其中$x$为单位向量：</p>
+<p>$$<br>\Vert W\Vert_2^2 = \max_{x\neq 0}\frac{x^{\top}W^{\top} Wx}{x^{\top} x} = \max_{\Vert x\Vert=1}x^{\top}W^{\top} Wx<br>$$</p>
+<p>将$W^\top W$对角化为$\text{diag}(\lambda_1,\dots,\lambda_n)$，也即$W^{\top} W=U^{\top}\text{diag}(\lambda_1,\dots,\lambda_n)U$，$U$是正交矩阵，任意$\lambda$非负：</p>
+<p>$$<br>\begin{aligned}<br>\Vert W\Vert_2^2 =&amp; \max_{\Vert x\Vert=1}x^{\top}\text{diag}(\lambda_1,\dots,\lambda_n) x \\<br>=&amp; \max_{\Vert x\Vert=1} \lambda_1 x_1^2 + \dots + \lambda_n x_n^2\\<br>\leq &amp; \max\{\lambda_1,\dots,\lambda_n\} (x_1^2 + \dots + x_n^2) \\<br>=&amp;\max\{\lambda_1,\dots,\lambda_n\}<br>\end{aligned}<br>$$</p>
+<p>在求得谱范数$\Vert W\Vert_2$后，只需要对所有的残差模块权重用$\Vert W\Vert_2$归一化，然后再乘上$c \in (0, 1)$即可：</p>
+<p>$$<br>\begin{equation}<br>W^* = c \cdot \frac{W}{\Vert W\Vert_2}<br>\end{equation}<br>$$</p>
+<h2 id="利普希茨角度的可逆性-Invertibility-by-Lipschitz"><a href="#利普希茨角度的可逆性-Invertibility-by-Lipschitz" class="headerlink" title="利普希茨角度的可逆性 Invertibility by Lipschitz"></a>利普希茨角度的可逆性 Invertibility by Lipschitz</h2><p>对于Neural ODE，由于常微分方程$\frac{dx}{dt}=f_\theta(x_t)$本身就是神经网络，而神经网络的权重、输入数据一般是实数域$\mathbb{R}$的，所以输出$\frac{dx}{dt} &lt; \infty$，从而能够保证对于一个Neural ODE，存在一个$\mathrm{k_0}$使得利普希茨常数$\mathrm{Lip(NODE)}&lt;\mathrm{k_0}$：</p>
+<p>$$<br>\mathrm{Lip(NODE)} = \sup \frac{dx}{dt} = \sup_{x_t} f_\theta(x_t) &lt; \mathrm{k_0}<br>$$</p>
+<p>对于ResNet，虽然同样有神经网络输出$g_\theta(x) &lt; \infty$，但转化为ODE形式后却无法保证$\frac{dx}{dt}$符合上述性质，因为其极限形式的分母$h\rightarrow 0$，则$\frac{1}{h} \rightarrow \infty$。虽然令$hf_\theta(x_t) = g_\theta(x_t)$可以满足，但是$f_\theta(x_t)$并不是神经网络，无法保证$f_\theta(x) &lt; \infty$：</p>
+<p>$$<br>\begin{split}<br>\frac{dx}{dt} &amp; = \lim_{h\rightarrow 0} \frac{x_{t+h}-x_t}{h} \\<br>&amp; = \lim_{h\rightarrow 0} \frac{g_\theta(x_t)}{h} = f_\theta(x_t)<br>\end{split}<br>$$</p>
+<h2 id="神经流模型的多种形式-Variants-of-Neural-Flows"><a href="#神经流模型的多种形式-Variants-of-Neural-Flows" class="headerlink" title="神经流模型的多种形式 Variants of Neural Flows"></a>神经流模型的多种形式 Variants of Neural Flows</h2><p>最终，普通的神经网络只需满足如下两个条件，即可认为是神经流模型。其中，对于神经网络的利普希茨连续性约束，可以用式子（15）对权重的谱范数归一化来实现：</p>
+<p>$$<br>\begin{equation}<br>F(0, x_0) = x_0, ~~~ \mathrm{Lip}(F) &lt; 1<br>\end{equation}<br>$$</p>
+<p>在Neural Flows原文<sup class="refplus-num"><a href="#ref-Neural-Flows">[8]</a></sup>中，提出了三种不同的流模型。首先是ResNet流模型，既然讨论了这么多可逆残差网络的内容，很自然地想到直接用上它。其中，$\phi(t)$是用来满足$F(0, x_0) = x_0$这个条件的，需要$\phi(0) = 0$。而且$\vert \phi(t) \vert &lt; 1$，因为$\phi(t)$作为系数，会影响整体的$\mathrm{Lip}(F)$，如果$\vert \phi(t) \vert &lt; 1\geq 1$，整体的$\mathrm{Lip}(F)$有可能也大于$\geq 1$。$\mathrm{Lip}(g) &lt; 1$：</p>
+<p>$$<br>\begin{equation}<br>F(t, x) = x + \phi(t) \cdot g(t, x)<br>\end{equation}<br>$$</p>
+<p>类似地，为了将带有循环神经网络的GRU-ODE转换为GRU流模型，作者证明了其中的系数需要满足特定取值，才能够使得模型总体的$\mathrm{Lip}(F) &lt; 1$，证明过程较长可以阅读原文。对偶流模型主要是为了得到逆向过程的解析形式，将输入的特征维度划分为了互不相交的两组维度$A\cup B$：</p>
+<p>$$<br>\begin{equation}<br>F(t, x) = x_A\exp\big(u(t, x_B)\phi_u(t)\big) + v(t, x_B)\phi_v(t)<br>\end{equation}<br>$$</p>
+<p>可以看到，实际上是用B组的维度，分别送入了两个由神经网络$u$和$v$组成、式子（17）中的ResNet流模型，作为A组维度特征的动态权重和偏置，同时这个结构本身是可逆的<sup class="refplus-num"><a href="#ref-NVP">[14]</a></sup>。回顾<a href="https://lmy98129.github.io/2024/06/03/Notes-About-Neural-CDE-and-Beyond">之前Neural CDE笔记</a>中的CDE动态权重推导结果，基本上保持一致。当然，这是积分层面的动态权重，而不是微分方程层面的。</p>
+<p>最终，Neural Flows作为Neural ODE的替代品，用式子（16）中2个极其简单的约束，只需关注起点$x_0$和时间$\mathrm{T}$（注意可以随意指定时间，同样能够输出中间结果），无需复杂的数值求解器，即可达到与Neural ODE相同的性质。而这背后，是前述庞大的数学理论体系（利普希茨连续性、巴拿赫不动点定理、谱范数）作为坚实的支撑，同时也打开了一扇解读黑盒模型的全新大门，值得进一步地深入学习和应用。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul id="refplus"><li id="ref-DeterNF" data-num="1">[1]  Lorenz E N. Deterministic nonperiodic flow[J]. Journal of atmospheric sciences, 1963, 20(2): 130-141.</li><li id="ref-NCSN" data-num="2">[2]  Song Y, Ermon S. Generative modeling by estimating gradients of the data distribution[J]. Advances in neural information processing systems, 2019, 32.</li><li id="ref-DDPM" data-num="3">[3]  Ho J, Jain A, Abbeel P. Denoising diffusion probabilistic models[J]. Advances in neural information processing systems, 2020, 33: 6840-6851.</li><li id="ref-DiffuNF" data-num="4">[4]  Zhang Q, Chen Y. Diffusion normalizing flow[J]. Advances in Neural Information Processing Systems, 2021, 34: 16280-16291.</li><li id="ref-SDE-ODE" data-num="5">[5]  Song Y, Sohl-Dickstein J, Kingma D P, et al. Score-based generative modeling through stochastic differential equations[J]. 9th International Conference on Learning Representations, ICLR 2021.</li><li id="ref-DDIM" data-num="6">[6]  Song J, Meng C, Ermon S. Denoising Diffusion Implicit Models [J]. 9th International Conference on Learning Representations, ICLR 2021.</li><li id="ref-Neural-ODE" data-num="7">[7]  Chen R T Q, Rubanova Y, Bettencourt J, et al. Neural ordinary differential equations[J]. Advances in neural information processing systems, 2018, 31.</li><li id="ref-Neural-Flows" data-num="8">[8]  Biloš M, Sommer J, Rangapuram S S, et al. Neural flows: Efficient alternative to neural ODEs[J]. Advances in neural information processing systems, 2021, 34: 21325-21337.</li><li id="ref-IRN" data-num="9">[9]  Behrmann J, Grathwohl W, Chen R T Q, et al. Invertible residual networks[C]//International conference on machine learning. PMLR, 2019: 573-582.</li><li id="ref-INN" data-num="10">[10]  Ardizzone L, Kruse J, Wirkert S, et al. Analyzing inverse problems with invertible neural networks[J]. 7th International Conference on Learning Representations, ICLR 2019.</li><li id="ref-Kexue-IRN" data-num="11">[11]  苏剑林. 细水长flow之可逆ResNet：极致的暴力美学. https://kexue.fm/archives/6482</li><li id="ref-Bilibili-Lip" data-num="12">[12]  ReadPaper论文阅读 (IDEA研究院). Lipschitz连续及其常量的定义讲解【深度学习中的数学ep5】. https://www.bilibili.com/video/BV1B64y157DC</li><li id="ref-Kexue-SN" data-num="13">[13]  苏剑林. 深度学习中的Lipschitz约束：泛化与生成模型. https://kexue.fm/archives/6051</li><li id="ref-NVP" data-num="14">[14]  Dinh L, Sohl-Dickstein J, Bengio S. Density estimation using real nvp[J]. 5th International Conference on Learning Representations, ICLR 2017.</li></ul>
+
+    <style>
+    #refplus, #refplus li{ 
+        padding:0;
+        margin:0;
+        list-style:none;
+    }；
+    </style>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script>
+    document.querySelectorAll(".refplus-num").forEach((ref) => {
+        let refid = ref.firstChild.href.replace(location.origin+location.pathname,'');
+        let refel = document.querySelector(refid);
+        let refnum = refel.dataset.num;
+        let ref_content = refel.innerText.replace(`[${refnum}]`,'');
+        tippy(ref, {
+            content: ref_content,
+        });
+    });
+    </script>
+    
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/experience/" rel="tag"><i class="fa fa-tag"></i> experience</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2024/06/03/Notes-About-Neural-CDE-and-Beyond/" rel="next" title="Notes About Neural CDE and Beyond">
+                <i class="fa fa-chevron-left"></i> Notes About Neural CDE and Beyond
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Mengyin Liu" />
+            
+              <p class="site-author-name" itemprop="name">Mengyin Liu</p>
+              <p class="site-description motion-element" itemprop="description">Stay Hungry, stay foolish</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/lmy98129" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:blean@live.cn" target="_blank" title="Mail"><i class="fa fa-fw fa-envelope"></i>Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://scholar.google.com/citations?user=hN7koAYAAAAJ&hl=zh-CN" target="_blank" title="Scholar"><i class="fa fa-fw fa-google"></i>Scholar</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.zhihu.com/people/liu-meng-yin-68/" target="_blank" title="知乎"><i class="fa fa-fw fa-comment"></i>知乎</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80-Introduction"><span class="nav-number">1.</span> <span class="nav-text">前言 Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B%E7%9A%84%E5%8F%AF%E9%80%86%E6%80%A7-Invertibility-of-ODE"><span class="nav-number">2.</span> <span class="nav-text">常微分方程的可逆性 Invertibility of ODE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E6%B5%81%E6%A8%A1%E5%9E%8B-Neural-Flows"><span class="nav-number">3.</span> <span class="nav-text">神经流模型 Neural Flows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E9%80%86%E6%AE%8B%E5%B7%AE%E7%BD%91%E7%BB%9C-Invertible-Residual-Networks"><span class="nav-number">4.</span> <span class="nav-text">可逆残差网络 Invertible Residual Networks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E6%99%AE%E5%B8%8C%E8%8C%A8%E8%BF%9E%E7%BB%AD%E6%80%A7-Lipschitz-Continuity"><span class="nav-number">5.</span> <span class="nav-text">利普希茨连续性 Lipschitz Continuity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B0%B1%E8%8C%83%E6%95%B0-Spectral-Norm"><span class="nav-number">6.</span> <span class="nav-text">谱范数 Spectral Norm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E6%99%AE%E5%B8%8C%E8%8C%A8%E8%A7%92%E5%BA%A6%E7%9A%84%E5%8F%AF%E9%80%86%E6%80%A7-Invertibility-by-Lipschitz"><span class="nav-number">7.</span> <span class="nav-text">利普希茨角度的可逆性 Invertibility by Lipschitz</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E6%B5%81%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%BD%A2%E5%BC%8F-Variants-of-Neural-Flows"><span class="nav-number">8.</span> <span class="nav-text">神经流模型的多种形式 Variants of Neural Flows</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">9.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mengyin Liu</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+
+
+
+
+
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共82.2k字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      本站访客数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.0.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.0.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.0.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.0.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.0.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.0.4"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script type="text/javascript" src="/js/src/exturl.js?v=6.0.4"></script>
+
+
+  
+
+</body>
+</html>

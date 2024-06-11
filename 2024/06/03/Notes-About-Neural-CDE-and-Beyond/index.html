@@ -117,7 +117,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/06/03/Notes-About-Neural-CDE-and-Beyond/SINDy.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/06/03/Notes-About-Neural-CDE-and-Beyond/KAN.png">
 <meta property="article:published_time" content="2024-06-03T07:17:12.000Z">
-<meta property="article:modified_time" content="2024-06-04T07:54:14.245Z">
+<meta property="article:modified_time" content="2024-06-08T08:27:32.089Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -334,7 +334,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-06-04T15:54:14+08:00">2024-06-04</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-06-08T16:27:32+08:00">2024-06-08</time>
             
           </span>
 
@@ -414,7 +414,7 @@
 
 <p><br></p>
 <p>SINDy需要预先定义一系列候选函数算子$\Theta$，一般包括多次项组合（例如，$x, y, x^2, y^2, xy, x^2y, xy^2 \cdots$）、三角函数、对数函数、自然指数函数等常见函数。将输入数据的各个维度代入这些函数，得到一系列函数值。目标是找到一个稀疏的向量$\Xi$，用尽可能少的函数，正确拟合出对应输入的真值。</p>
-<p>对于非深度学习的原始版本SINDy，拟合是通过多元回归等数值方法进行的，需要约束$\Xi$的稀疏性。对于基于深度学习的SINDy，可以将$\Xi$作为神经网络参数，进行梯度下降优化，例如结合Neural ODE得到Neural SINDy <sup class="refplus-num"><a href="#ref-Neural-SINDy">[6]</a></sup>、多层嵌套的Nested-SINDy等<sup class="refplus-num"><a href="#ref-Nested-SINDy">[7]</a></sup>。学到$\mathbf{\Theta}(\mathbf{X})\Xi$即为多项式相加表达式，无法表示、或者只能表示预设的<sup class="refplus-num"><a href="#ref-Nested-SINDy">[7]</a></sup>函数嵌套高阶关系。</p>
+<p>对于非深度学习的原始版本SINDy，拟合是通过多元回归等数值方法进行的，需要约束$\Xi$的稀疏性。对于基于深度学习的SINDy，可以将$\Xi$作为神经网络参数，进行梯度下降优化，例如结合Neural ODE得到Neural SINDy<sup class="refplus-num"><a href="#ref-Neural-SINDy">[6]</a></sup>、多层嵌套的Nested-SINDy等<sup class="refplus-num"><a href="#ref-Nested-SINDy">[7]</a></sup>。学到$\mathbf{\Theta}(\mathbf{X})\Xi$即为多项式相加表达式，无法表示、或者只能表示预设的<sup class="refplus-num"><a href="#ref-Nested-SINDy">[7]</a></sup>函数嵌套高阶关系。</p>
 <p><img src="/2024/06/03/Notes-About-Neural-CDE-and-Beyond/KAN.png" alt="KAN"></p>
 <center>KAN方法示意图，通过步骤3~6，将学习到的激活函数逐个设定为已知函数，解析出显式、可嵌套的表达式<br>图片来自论文原文<sup class="refplus-num"><a href="#ref-KAN">[5]</a></sup></center>
 
@@ -484,6 +484,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2024/06/08/Notes-About-Neural-Flows/" rel="prev" title="Notes About Neural Flows">
+                Notes About Neural Flows <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -561,7 +565,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-count">13</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -686,7 +690,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共77.7k字</span>
+  <span class="post-count">博客全站共82.2k字</span>
 </div>
 
         
