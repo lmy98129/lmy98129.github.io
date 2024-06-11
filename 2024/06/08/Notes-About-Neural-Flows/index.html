@@ -116,7 +116,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/Lip-1.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/Lip-2.png">
 <meta property="article:published_time" content="2024-06-08T08:27:49.000Z">
-<meta property="article:modified_time" content="2024-06-11T12:50:43.476Z">
+<meta property="article:modified_time" content="2024-06-11T12:54:26.561Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -333,7 +333,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-06-11T20:50:43+08:00">2024-06-11</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-06-11T20:54:26+08:00">2024-06-11</time>
             
           </span>
 
@@ -369,7 +369,7 @@
 <p>本文是关于神经流模型Neural Flows的学习笔记<br>主要是其作为Neural ODE的全新迭代，以及可逆残差网络Invertible Residual Networks和相关补充知识</p>
 <span id="more"></span>
 <h2 id="前言-Introduction"><a href="#前言-Introduction" class="headerlink" title="前言 Introduction"></a>前言 Introduction</h2><p>在发现“蝴蝶效应”的著名论文《确定性的非周期流动》<sup class="refplus-num"><a href="#ref-DeterNF">[1]</a></sup>中，混沌理论之父爱德华·洛伦兹写下了上面这段话：“可以设计由确定性非线性常微分方程构成的有限系统，来表示受外力耗散流体的流动”。</p>
-<p>这个世界终究是物理的。在扩散模型Diffusion被成功引入到图像生成之后，郎之万动力学Langevin Dynamics<sup class="refplus-num"><a href="#ref-NCSN">[2]</a></sup>、可逆过程Reverse Process<sup class="refplus-num"><a href="#ref-DDPM">[3]</a></sup>、归一化流Normalizing Flow<sup class="refplus-num"><a href="#ref-DiffuNF">[4]</a></sup>，各种物理模型被先后引入进来。最终，各个角度被统一成随机微分方程Stochastic Differential Equation<sup class="refplus-num"><a href="#ref-SDE-ODE">[5]</a></sup>，并可以被确定的常微分方程Ordinary Differential Equation表示<sup class="refplus-num"><a href="#ref-DDIM">[6]</a></sup>。</p>
+<p>这个世界终究是物理的。在扩散模型Diffusion被成功引入到图像生成任务后，郎之万动力学Langevin Dynamics<sup class="refplus-num"><a href="#ref-NCSN">[2]</a></sup>、可逆过程Reverse Process<sup class="refplus-num"><a href="#ref-DDPM">[3]</a></sup>、归一化流Normalizing Flow<sup class="refplus-num"><a href="#ref-DiffuNF">[4]</a></sup>，各种物理模型被先后引入进来。最终，各个角度被统一成随机微分方程Stochastic Differential Equation<sup class="refplus-num"><a href="#ref-SDE-ODE">[5]</a></sup>，并可以被确定的常微分方程Ordinary Differential Equation表示<sup class="refplus-num"><a href="#ref-DDIM">[6]</a></sup>。</p>
 <p>微分方程不仅是教材上的几个章节，它是解析这个物理世界的工具之一。但也正因为是相对统一的工具，如果用更符合物理规律的理论来建模，就有机会更好地拟合这个世界的底层细节。所以，出现比Neural ODE<sup class="refplus-num"><a href="#ref-Neural-ODE">[7]</a></sup>更加迭代的全新模型是必然的，只是应当选取哪一种物理模型而已。本次笔记要介绍的就是神经流模型Neural Flows<sup class="refplus-num"><a href="#ref-Neural-Flows">[8]</a></sup>。</p>
 <h2 id="常微分方程的可逆性-Invertibility-of-ODE"><a href="#常微分方程的可逆性-Invertibility-of-ODE" class="headerlink" title="常微分方程的可逆性 Invertibility of ODE"></a>常微分方程的可逆性 Invertibility of ODE</h2><p>在物理层面上，流体的流动是基于向量映射关系的，也就是当前时刻$t$的某个位置$x_t$，到下一个时刻$t+\Delta t$应当流动到位置$x_{t+\Delta t}$，可以构成一个向量$\vec{x_t}$；对于所有位置$\mathrm{X}_t$，则有向量场$\vec{\mathrm{X}_t}$。</p>
 <p>显然地，给定一个初始位置$x_0$，通过在$\vec{\mathrm{X}_t}$中无数次的流动过程，到第$\mathrm{T}$个时刻时，有且只有一个最终位置$x_\mathrm{T}$。也就是说，从起点到终点同样需要符合映射关系，否则就会出现同一个起点vs多个终点、或者一个终点vs多个起点的问题。</p>
@@ -443,7 +443,7 @@
 <p>在Neural Flows原文<sup class="refplus-num"><a href="#ref-Neural-Flows">[8]</a></sup>中，提出了三种不同的流模型。首先是ResNet流模型，既然讨论了这么多可逆残差网络的内容，很自然地想到直接用上它。其中，$\phi(t)$是用来满足$F(0, x_0) = x_0$这个条件的，需要$\phi(0) = 0$。而且$\vert \phi(t) \vert &lt; 1$，因为$\phi(t)$作为系数，会影响整体的$\mathrm{Lip}(F)$，如果$\vert \phi(t) \vert &lt; 1\geq 1$，整体的$\mathrm{Lip}(F)$有可能也大于$\geq 1$。$\mathrm{Lip}(g) &lt; 1$：</p>
 <p>$$<br>\begin{equation}<br>F(t, x) = x + \phi(t) \cdot g(t, x)<br>\end{equation}<br>$$</p>
 <p>类似地，为了将带有循环神经网络的GRU-ODE转换为GRU流模型，作者证明了其中的系数需要满足特定取值，才能够使得模型总体的$\mathrm{Lip}(F) &lt; 1$，证明过程较长可以阅读原文。对偶流模型主要是为了得到逆向过程的解析形式，将输入的特征维度划分为了互不相交的两组维度$A\cup B$：</p>
-<p>$$<br>\begin{equation}<br>F(t, x) = x_A\exp\big(u(t, x_B)\phi_u(t)\big) + v(t, x_B)\phi_v(t)<br>\end{equation}<br>$$</p>
+<p>$$<br>\begin{equation}<br>\begin{split}<br>F(t, x) &amp; = x_A\exp\big(u(t, x_B)\phi_u(t)\big) \\<br>&amp; + v(t, x_B)\phi_v(t) \\<br>\end{split}<br>\end{equation}<br>$$</p>
 <p>可以看到，实际上是用B组的维度，分别送入由神经网络$u$和$v$组成的式子（17）中的ResNet流模型，作为A组特征的动态权重和偏置，同时这个结构本身是可逆的<sup class="refplus-num"><a href="#ref-NVP">[14]</a></sup>。回顾<a href="https://lmy98129.github.io/2024/06/03/Notes-About-Neural-CDE-and-Beyond">之前Neural CDE笔记</a>中的CDE动态权重推导结果，基本上保持一致。当然，这是积分层面的动态权重，而不是微分方程层面的。</p>
 <p>最终，Neural Flows作为Neural ODE的替代品，用式子（16）中2个极其简单的约束，只需关注起点$x_0$和时间$\mathrm{T}$（注意可以随意指定时间，同样能够输出中间结果），无需复杂的数值求解器，即可达到与Neural ODE相同的性质。而这背后，是前述庞大的数学理论体系（利普希茨连续性、巴拿赫不动点定理、谱范数）作为坚实的支撑，同时也打开了一扇解读黑盒模型的全新大门，值得进一步地深入学习和应用。</p>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul id="refplus"><li id="ref-DeterNF" data-num="1">[1]  Lorenz E N. Deterministic nonperiodic flow[J]. Journal of atmospheric sciences, 1963, 20(2): 130-141.</li><li id="ref-NCSN" data-num="2">[2]  Song Y, Ermon S. Generative modeling by estimating gradients of the data distribution[J]. Advances in neural information processing systems, 2019, 32.</li><li id="ref-DDPM" data-num="3">[3]  Ho J, Jain A, Abbeel P. Denoising diffusion probabilistic models[J]. Advances in neural information processing systems, 2020, 33: 6840-6851.</li><li id="ref-DiffuNF" data-num="4">[4]  Zhang Q, Chen Y. Diffusion normalizing flow[J]. Advances in Neural Information Processing Systems, 2021, 34: 16280-16291.</li><li id="ref-SDE-ODE" data-num="5">[5]  Song Y, Sohl-Dickstein J, Kingma D P, et al. Score-based generative modeling through stochastic differential equations[J]. 9th International Conference on Learning Representations, ICLR 2021.</li><li id="ref-DDIM" data-num="6">[6]  Song J, Meng C, Ermon S. Denoising Diffusion Implicit Models [J]. 9th International Conference on Learning Representations, ICLR 2021.</li><li id="ref-Neural-ODE" data-num="7">[7]  Chen R T Q, Rubanova Y, Bettencourt J, et al. Neural ordinary differential equations[J]. Advances in neural information processing systems, 2018, 31.</li><li id="ref-Neural-Flows" data-num="8">[8]  Biloš M, Sommer J, Rangapuram S S, et al. Neural flows: Efficient alternative to neural ODEs[J]. Advances in neural information processing systems, 2021, 34: 21325-21337.</li><li id="ref-IRN" data-num="9">[9]  Behrmann J, Grathwohl W, Chen R T Q, et al. Invertible residual networks[C]//International conference on machine learning. PMLR, 2019: 573-582.</li><li id="ref-INN" data-num="10">[10]  Ardizzone L, Kruse J, Wirkert S, et al. Analyzing inverse problems with invertible neural networks[J]. 7th International Conference on Learning Representations, ICLR 2019.</li><li id="ref-Kexue-IRN" data-num="11">[11]  苏剑林. 细水长flow之可逆ResNet：极致的暴力美学. https://kexue.fm/archives/6482</li><li id="ref-Bilibili-Lip" data-num="12">[12]  ReadPaper论文阅读 (IDEA研究院). Lipschitz连续及其常量的定义讲解【深度学习中的数学ep5】. https://www.bilibili.com/video/BV1B64y157DC</li><li id="ref-Kexue-SN" data-num="13">[13]  苏剑林. 深度学习中的Lipschitz约束：泛化与生成模型. https://kexue.fm/archives/6051</li><li id="ref-NVP" data-num="14">[14]  Dinh L, Sohl-Dickstein J, Bengio S. Density estimation using real nvp[J]. 5th International Conference on Learning Representations, ICLR 2017.</li></ul>
@@ -712,7 +712,7 @@
 
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共82.1k字</span>
+  <span class="post-count">博客全站共82.2k字</span>
 </div>
 
         
