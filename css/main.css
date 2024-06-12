@@ -1972,7 +1972,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #fff;
+  background: #8ef5d0;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2269,6 +2269,13 @@ img:hover {
 .site-pv .busuanzi-value,
 .page-pv .busuanzi-value {
   margin: 0 5px;
+}
+mjx-container[jax="CHTML"][display="true"],
+.has-jax {
+  overflow: auto hidden;
+}
+mjx-container[display="true"] + br {
+  display: none;
 }
 .page-archive .archive-page-counter {
   position: relative;
