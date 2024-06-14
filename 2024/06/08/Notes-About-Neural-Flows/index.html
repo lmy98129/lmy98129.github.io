@@ -116,7 +116,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/Lip-1.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/06/08/Notes-About-Neural-Flows/Lip-2.png">
 <meta property="article:published_time" content="2024-06-08T08:27:49.000Z">
-<meta property="article:modified_time" content="2024-06-13T05:41:02.745Z">
+<meta property="article:modified_time" content="2024-06-14T11:29:32.203Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -333,7 +333,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-06-13T13:41:02+08:00">2024-06-13</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-06-14T19:29:32+08:00">2024-06-14</time>
             
           </span>
 
@@ -404,7 +404,7 @@
 <p>$$<br>\begin{equation}<br>\lim_{n \rightarrow \infty} x_t^n = x_t \Rightarrow \forall n\rightarrow \infty,~ \Vert x_t^{n+1} - x_t^n\Vert \rightarrow 0<br>\end{equation}<br>$$</p>
 <p>这里主要参考苏剑林的推导过程<sup class="refplus-num"><a href="#ref-Kexue-IRN">[11]</a></sup>，此处省略$t$和$\theta_t$，因为除了上标$n$以外，所有的下标都不变。可以代入式子（10），改写为函数$g(x)$的绝对差值：</p>
 <p>$$<br>\begin{equation}<br>\Vert x_{n+1} - x_n \Vert = \Vert g(x_n) - g(x_{n-1})\Vert<br>\end{equation}<br>$$</p>
-<p>那么两个函数的绝对差值是否有一个$\leq 0$的上界呢？这里就可以用到函数的利普希茨常数（Lipschitz Constant）：函数任意两点斜率绝对值的上确界（最大值），记作$\mathrm{Lip}(g)$：</p>
+<p>那么两个函数的绝对差值是否有一个使其趋近于0的上界呢？这里就可以用到函数的利普希茨常数（Lipschitz Constant）：函数任意两点斜率绝对值的上确界（最大值），记作$\mathrm{Lip}(g)$：</p>
 <p>$$<br>\begin{align}<br>&amp; \mathrm{Lip(g)} = \sup_{x_1 \neq x_2} \frac{\Vert g(x_1) - g(x_2)\Vert}{\Vert x_1 - x_2 \Vert} \nonumber \\<br>&amp; \Rightarrow \frac{\Vert g(x_1) - g(x_2)\Vert}{\Vert x_1 - x_2 \Vert} \leq \mathrm{Lip(g)} \nonumber \\<br>&amp; \Rightarrow \Vert g(x_1) - g(x_2)\Vert \leq \mathrm{Lip(g)} \Vert x_1 - x_2 \Vert<br>\end{align}<br>$$</p>
 <p>例如，ReLU函数的$\mathrm{Lip}(g)=1$；抛物线函数$x^2$的一阶导为$2x \in (-\infty, +\infty)$，则$\mathrm{Lip}(g) = \infty$。像ReLU这样，存在一个常数$\mathrm{k}_0$，使得函数$g$的利普希茨常数$\mathrm{Lip}(g) \leq \mathrm{k}_0$，那么称这个函数满足利普希茨连续性 （Lipschitz Continuity）：</p>
 <p>$$<br>\begin{equation}<br>\mathrm{Lip(g)} \leq \mathrm{k}_0 \Rightarrow \Vert g(x_1) - g(x_2)\Vert \leq \mathrm{k}_0 \Vert x_1 - x_2 \Vert<br>\end{equation}<br>$$</p>
