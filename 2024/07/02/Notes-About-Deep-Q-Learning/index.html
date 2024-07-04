@@ -123,7 +123,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/07/02/Notes-About-Deep-Q-Learning/rlhf.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/07/02/Notes-About-Deep-Q-Learning/q-star.png">
 <meta property="article:published_time" content="2024-07-02T11:30:14.000Z">
-<meta property="article:modified_time" content="2024-07-04T09:15:46.376Z">
+<meta property="article:modified_time" content="2024-07-04T09:27:08.977Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -340,7 +340,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-07-04T17:15:46+08:00">2024-07-04</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-07-04T17:27:08+08:00">2024-07-04</time>
             
           </span>
 
@@ -470,7 +470,7 @@
 <p>可以观察到，<strong>时间差分方法不需要采样出一个完整的轨迹$\tau$</strong>，每次只需要用当前的策略$\pi$与环境交互一次，采样出一组$\{ s_t, a_t, r_t, s_{t+1} \}$。如果能采到各种不同状态$s$，就可以找到一个新策略$\pi’$在各种状态下都能满足式子$\eqref{q-function-argmax}$。</p>
 <p><img src="https://datawhalechina.github.io/easy-rl/img/ch6/6.17.png" alt="exp-relay"></p>
 <p><center>经验重放技巧Experience Replay，图片来自<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/easy-rl/#/chapter6/chapter6">EasyRL在线版</a></center><br></p>
-<p>为了训练的稳定性，可以<strong>将$Q_\pi(s_{t+1}, a_{t+1})$设为一个定期更新的“目标网络”</strong>，不直接回传梯度，只有公式左边的Q网络预测值回传梯度。此外，<strong>为了减少当前策略与环境的交互的次数</strong>，可以将历史上的其他策略放入一个先入先出的队列中，不断将当前策略采样的$\{ s_t, a_t, r_t, s_{t+1} \}$放入这个队列，而最旧的策略不断出队，每次训练从这个队列中采样训练样本。何凯明提出的MoCo系列对比学习方法<sup class="refplus-num"><a href="#ref-MoCo">[5]</a></sup>的动量更新模型+负样本队列，就很像“目标网络”+“经验重放”这两个技巧。</p>
+<p>为了训练的稳定性，可以<strong>将$Q_\pi(s_{t+1}, a_{t+1})$设为一个定期更新的“目标网络”</strong>，不直接回传梯度，只有公式左边的Q网络预测值回传梯度。此外，<strong>为了减少当前策略与环境的交互的次数</strong>，将历史上的其他策略放入一个先入先出的队列中，不断将当前策略采样的$\{ s_t, a_t, r_t, s_{t+1} \}$放入这个队列，而最旧的策略不断出队，每次训练从这个队列中采样训练样本。何凯明提出的MoCo系列对比学习方法<sup class="refplus-num"><a href="#ref-MoCo">[5]</a></sup>的动量更新模型+负样本队列，就很像“目标网络”+“经验重放”这两个技巧。</p>
 <h2 id="深度确定性策略梯度-Deep-Deterministic-Policy-Gradient"><a href="#深度确定性策略梯度-Deep-Deterministic-Policy-Gradient" class="headerlink" title="深度确定性策略梯度 Deep Deterministic Policy Gradient"></a>深度确定性策略梯度 Deep Deterministic Policy Gradient</h2><p>对于深度Q网络DQN来说，在输入状态$s$的同时，还需要遍历输出各种可能的行为$a$对应的Q值$Q(s, a)$。如果当前任务的行为空间是离散的，例如有上下左右4种动作，那么相对容易遍历，只需定义Q网络的输出数量为4即可。但如果当前任务的行为空间是连续的，例如某个控制量的取值范围是$(0, 1)$，就没办法遍历所有的数值了。</p>
 <p><img src="https://datawhalechina.github.io/easy-rl/img/ch12/12.5.png" alt="DDPG" width="75%"></p>
 <p><center>深度确定性策略梯度Deep Deterministic Policy Gradient在深度Q网络上的改进，图片来自<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/easy-rl/#/chapter12/chapter12">EasyRL在线版</a></center><br></p>
