@@ -123,7 +123,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/07/02/Notes-About-Deep-Q-Learning/rlhf.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/07/02/Notes-About-Deep-Q-Learning/q-star.png">
 <meta property="article:published_time" content="2024-07-02T11:30:14.000Z">
-<meta property="article:modified_time" content="2024-07-04T09:33:12.471Z">
+<meta property="article:modified_time" content="2024-07-04T09:42:16.706Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -340,7 +340,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-07-04T17:33:12+08:00">2024-07-04</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-07-04T17:42:16+08:00">2024-07-04</time>
             
           </span>
 
@@ -481,7 +481,7 @@
 <p>$$<br>\begin{equation}<br>\begin{split}<br>Q_w(s, a) &amp; = r + \gamma Q_\bar{w}(s’, a’) \\<br>\Rightarrow \mathcal{L}_\mathrm{Q} &amp; = \mathbb{E}_{\{s, a, r, s’\} \sim \mathcal{D}} \left\Vert  Q_w(s, a) - (r + \gamma Q_\bar{w}(s’, a’)) \right\Vert^2_2 \\<br>&amp; = \mathbb{E}_{\{s, a, r, s’\} \sim \mathcal{D}} \left\Vert  Q_w(s, a) - (r + \gamma Q_\bar{w}(s’, \mu_\bar{\theta}(s’))) \right\Vert^2_2 \\<br>&amp; \approx \frac{1}{N_s} \sum_s \left\Vert  Q_w(s, a) - (r + \gamma Q_\bar{w}(s’, \mu_\bar{\theta}(s’))) \right\Vert^2_2<br>\end{split}<br>\end{equation}<br>$$</p>
 <p>由于是在缓冲区$\mathcal{D}$上采样，所以是求期望。同样可以仿照式子$\eqref{pg-approx}$近似成求均值。同时，策略网络的优化目标是最大化“评论家”Q网络的输出价值，加一个负号就是最小化。为了与之前的随机性方法策略梯度区分，可以展开成积分形式：</p>
 <p>$$<br>\begin{equation}<br>\begin{split}<br>\mathcal{L}_\mathrm{\mu} &amp; = \mathbb{E}_{\{s, a, r, s’\} \sim \mathcal{D}} \left[ -Q_w(s, a) \right] \\<br>&amp; = - \int \rho(s)Q_w(s, a) ds = - \int \rho(s)Q_w(s, \mu_\theta(s)) ds<br>\end{split}<br>\end{equation}<br>$$</p>
-<p>可以看到，与策略梯度中的式子$\eqref{reward-expect}$不同，奖励$R(\tau)$变成了Q网络预测的Q值$Q_w(s, a)$，由策略模型预测的各行为概率$p_\theta(a_t|s_t)$构成的概率分布$p_\theta(\tau)$，变成了确定的$a = \mu_\theta(s)$，所以叫确定性策略梯度。期望里的概率值变为了在经验回放缓冲区上的采样$\rho(s)$（正常应该是$\rho(\{(s, a, r, s’)\})$）。和式子$\eqref{gradient-expect}$一样求梯度$\nabla = \frac{\partial}{\partial \theta}$，并和$\eqref{pg-approx}$一样近似求均值：</p>
+<p>可以看到，与策略梯度中的式子$\eqref{reward-expect}$不同，奖励$R(\tau)$变成了Q网络预测的Q值$Q_w(s, a)$，由策略模型预测的各行为概率$p_\theta(a_t|s_t)$构成的概率分布$p_\theta(\tau)$，变成了确定的$a = \mu_\theta(s)$，所以叫确定性策略梯度。期望里的概率值变为了在经验回放缓冲区上的采样$\rho(s)$（正常应该是$\rho(\{s, a, r, s’\})$）。和式子$\eqref{gradient-expect}$一样求梯度$\nabla = \frac{\partial}{\partial \theta}$，并和$\eqref{pg-approx}$一样近似求均值：</p>
 <p>$$<br>\begin{equation}<br>\begin{split}<br>\nabla \mathcal{L}_\mathrm{\mu} &amp; = - \nabla \int \rho(s)Q_w(s, \mu_\theta(s)) ds \\<br>&amp; = - \int \rho(s) \nabla Q_w(s, \mu_\theta(s)) \nabla \mu_\theta(s) ds \\<br>&amp; \approx \frac{1}{N_s} \sum_s \left[\nabla Q_w(s, \mu_\theta(s)) \nabla \mu_\theta(s) \right]\\<br>\end{split}<br>\end{equation}<br>$$</p>
 <p>需要注意$Q_w(s, \mu_\theta(s))$是包含$\theta$的复合函数，复合函数求导$(f(g(x)))’ = f’(g(x)) \cdot g’(x)$。此外，虽然确定性的行为$a = \mu_\theta(s)$样本量需求小，但也导致在环境中的探索范围受限。对输出的行为$a$加入噪声，用$\mathrm{clip}(\cdot)$函数限制上下界：</p>
 <p>$$<br>\begin{equation}<br>a = \mathrm{clip}(\mu_\theta(s) + \epsilon, a_\mathrm{low}, a_\mathrm{high}), \epsilon \sim \mathcal{N}(0, \sigma^2 I)<br>\end{equation}<br>$$</p>
