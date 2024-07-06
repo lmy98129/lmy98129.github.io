@@ -123,7 +123,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/07/02/Notes-About-Deep-Q-Learning/rlhf.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/07/02/Notes-About-Deep-Q-Learning/q-star.png">
 <meta property="article:published_time" content="2024-07-02T11:30:14.000Z">
-<meta property="article:modified_time" content="2024-07-04T09:42:16.706Z">
+<meta property="article:modified_time" content="2024-07-06T05:39:26.825Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -340,7 +340,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-07-04T17:42:16+08:00">2024-07-04</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-07-06T13:39:26+08:00">2024-07-06</time>
             
           </span>
 
@@ -436,7 +436,7 @@
 <p>即便如上这种近似的解法省略了$p_{\theta}(\tau)$，在更新参数$\theta’ = \theta + \eta \nabla R_\theta$之后，智能体预测的各个动作概率$p_\theta(a_t|s_t)$改变，行为轨迹$\tau \sim p_{\theta’}(\tau)$的概率分布$p_{\theta’}(\tau)$随之改变，导致了必须在新参数$\theta’$上重新采样轨迹$\tau$，才能得到正确的奖励$R(\tau)$。</p>
 <h2 id="近端策略优化-Proximal-Policy-Optimization"><a href="#近端策略优化-Proximal-Policy-Optimization" class="headerlink" title="近端策略优化 Proximal Policy Optimization"></a>近端策略优化 Proximal Policy Optimization</h2><p>既然我们不想再从新参数$\theta’$对应的分布$p_{\theta’}(\tau)$上，重新采样轨迹$\tau$，那么最好的办法就是复用一套固定参数$\hat{\theta}$、在对应的固定分布$q_{\hat{\theta}}(\tau)$上采样的固定轨迹。对于式子$\eqref{reward-expect}$的期望，可以改写为积分形式：</p>
 <p>$$<br>\begin{equation}<br>\begin{split}<br>\nabla R_\theta &amp; = \mathbb{E}_{\tau \sim p_\theta(\tau)} [R(\tau) \nabla \log p_\theta(\tau)] \\<br>&amp; = \int [R(\tau) \nabla \log p_\theta(\tau)] p_\theta(\tau) d\tau \\<br>&amp; = \int [R(\tau) \nabla \log p_\theta(\tau)] \frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)} q_{\hat{\theta}}(\tau) d\tau \\<br>&amp; = \mathbb{E}_{\tau \sim q_{\hat{\theta}}(\tau)} \left[ \frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)} R(\tau) \nabla \log p_\theta(\tau) \right]<br>\end{split}<br>\label{importance-sampling}<br>\end{equation}<br>$$</p>
-<p>这样，期望的下标从$\tau \sim p_\theta(\tau)$变成了$\tau \sim q_{\hat{\theta}}(\tau)$，<strong>而$q_{\hat{\theta}}(\tau)$本身是固定的，从而轨迹$\tau$也随之变成固定的了</strong>。无论$\theta$如何变化，使用这一套用$\hat{\theta}$采集的固定轨迹，就不需要智能体$\theta$与环境进行交互，根据改变状态$s$调整行为$a$，<strong>只需“照本宣科”地走过这条轨迹，获得$p_\theta(\tau)$和$R(\tau)$即可</strong>。那么，相比式子$\eqref{reward-expect}$，式子$\eqref{importance-sampling}$多出来的这个$\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)}$有什么实际含义呢？</p>
+<p>这样，期望的下标从$\tau \sim p_\theta(\tau)$变成了$\tau \sim q_{\hat{\theta}}(\tau)$，<strong>而$q_{\hat{\theta}}(\tau)$本身是固定的，从而轨迹$\tau$也随之变成固定的了</strong>。无论$\theta$如何变化，使用这一套用$\hat{\theta}$采集的固定轨迹，就不需要智能体$\theta$与环境进行交互（行为$a$可变，状态$s$固定），奖励$R(\tau)$也一样是固定的了。为了学习参数$\theta$，只需<strong>“照本宣科”地按这条轨迹给出行为概率$p_\theta(a_t|s_t)$，获得对应当前参数$\theta$行为的轨迹条件概率$p_\theta(\tau)$</strong>。那么，相比式子$\eqref{reward-expect}$，式子$\eqref{importance-sampling}$多出来的这个$\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)}$有什么实际含义呢？</p>
 <p><img src="https://datawhalechina.github.io/easy-rl/img/ch5/5.1.png" alt="importance-sampling"></p>
 <p><center>重要性采样Importance Sampling的示意图，其中$x$在这里指的是轨迹$\tau$，$f(\tau)=R(\tau) \nabla \log p_\theta(\tau)$<br>图片来自<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/easy-rl/#/chapter5/chapter5">EasyRL在线版</a></center><br></p>
 <p>乘在$f(\tau)=R(\tau) \nabla \log p_\theta(\tau)$前面的权重$\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)}$叫做重要性权重。如上图所示，假设中间为原点0，$f(\tau)$的数值呈现类似Sigmoid函数的变化，也就是红线。其中，$p(\tau)$是我们想要逼近的样本概率分布，当前是大多数样本在负半轴，那么对应期望$\mathbb{E}_{\tau \sim p}[f(\tau)] &lt; 0$。固定分布$q(\tau)$表示大多数样本在正半轴，那么采样到负半轴的概率更大。</p>
