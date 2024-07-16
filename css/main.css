@@ -1972,7 +1972,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #62a165;
+  background: #75a7ff;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3079,36 +3079,66 @@ ul.breadcrumb li+li:last-child {
     margin: 8px 0 0;
   }
 }
-@media screen and (min-width: 400px) {
+@media screen and (min-width: 500px) {
   .head-img {
     float: right;
     max-height: 220px !important;
-    max-width: 50% !important;
+    max-width: 55% !important;
     margin-left: 20px !important;
-    margin-top: 38px !important;
+    margin-top: 32px !important;
     margin-bottom: 10px !important;
   }
 }
-@media screen and (min-width: 400px) {
-  .full-img {
-    width: 95% !important;
-    margin-bottom: -15px !important;
+@media screen and (max-width: 500px) {
+  .head-img {
+    margin-top: -5px !important;
+    margin-bottom: -17px !important;
   }
 }
-@media screen and (min-width: 400px) {
+@media screen and (min-width: 500px) {
+  .head-img-larger {
+    max-height: 300px !important;
+  }
+}
+@media screen and (max-width: 500px) {
+  .full-img {
+    width: 100% !important;
+  }
+}
+@media screen and (min-width: 500px) {
+  .full-img {
+    margin-bottom: -15px !important;
+    margin-top: -5px !important;
+    width: 97% !important;
+  }
+}
+@media screen and (min-width: 1700px) {
+  .full-img {
+    width: 90% !important;
+  }
+}
+@media screen and (min-width: 500px) {
   .logo-img {
     float: left;
     width: 110px !important;
     margin-right: 30px !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 5px !important;
   }
 }
-.logo-img {
-  width: 60%;
+@media screen and (max-width: 500px) {
+  .logo-img {
+    width: 60%;
+    margin-bottom: 10px;
+  }
 }
-@media screen and (min-width: 400px) {
+@media screen and (min-width: 500px) {
   .logo-long {
     width: 200px !important;
     margin-top: 15px !important;
+  }
+}
+@media screen and (max-width: 500px) {
+  .logo-long {
+    width: 80%;
   }
 }

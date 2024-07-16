@@ -123,7 +123,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2024/07/02/Notes-About-Deep-Q-Learning/rlhf.png">
 <meta property="og:image" content="http://lmy98129.github.io/2024/07/02/Notes-About-Deep-Q-Learning/q-star.png">
 <meta property="article:published_time" content="2024-07-02T11:30:14.000Z">
-<meta property="article:modified_time" content="2024-07-06T05:39:26.825Z">
+<meta property="article:modified_time" content="2024-07-15T08:18:47.077Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -340,7 +340,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2024-07-06T13:39:26+08:00">2024-07-06</time>
+              <time title="更新于" itemprop="dateModified" datetime="2024-07-15T16:18:47+08:00">2024-07-15</time>
             
           </span>
 
@@ -399,8 +399,10 @@
 <p>其中，$R_{t+1}$是此时所有可能的奖励，可以看做所有可能奖励构成的空间，在该空间按概率$g$积分，就是多次采样后的总体奖励。但是，<strong>如果只考虑眼前的奖励$R(s, a)$，容易陷入贪婪方法的局部最优</strong>。因此，即使只采取了当下的行为$a$，也必须长远考虑从$t+1$到$t+\infty$的奖励，从而尽可能逼近全局最优，也就是价值函数Value Function。</p>
 <h3 id="价值函数-Value-Function"><a href="#价值函数-Value-Function" class="headerlink" title="价值函数 Value Function"></a>价值函数 Value Function</h3><p>虽然确实需要考虑从$t+1$到$t+\infty$的奖励，但最好能够用尽可能短的时间，获得尽可能多的奖励。因此，对于时间段$k \in (0, \infty)$，设置一个折扣因子$\gamma^k$（Discount Factor），在更近的时间值更大，反之则更小。</p>
 <p>价值函数也分为两种：V函数和Q函数。V函数就是简单的折扣因子$\gamma^k$乘以未来奖励$r_{t+k+1}$。还是因为随机性策略需要“在概率分布中多次采样”，对于当前状态$s$下的策略$\pi$（所以有一个下标，并不是对$\pi$求期望），需要计算条件期望：</p>
-<p>$$<br>\begin{equation}<br>V_\pi(s) = \mathbb{E}_\pi[G_t | s_t = s] = \mathbb{E}_\pi\left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k+1} | s_t = s\right]<br>\label{v-function}<br>\end{equation}<br>$$<br>Q函数额外引入了动作变量$a$，从而能够在后续的深度Q学习中，通过Q函数得到进入某个状态需要采取的最优动作。</p>
-<p>$$<br>\begin{equation}<br>Q_\pi(s, a) = \mathbb{E}_\pi[G_t | s_t = s, a_t = a] = \mathbb{E}_\pi\left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k+1} | s_t = s, a_t = a\right]<br>\label{q-function}<br>\end{equation}<br>$$<br>那么，为什么要用价值函数Q函数得到最优动作$a^*$，而不是直接像式子$\eqref{sto-policy}$和$\eqref{det-policy}$，通过策略$\pi(\cdot)$得到呢？这就涉及到强化学习中对于智能体类型的划分问题：“基于价值的智能体”和“基于策略的智能体”。</p>
+<p>$$<br>\begin{equation}<br>V_\pi(s) = \mathbb{E}_\pi[G_t | s_t = s] = \mathbb{E}_\pi\left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k+1} | s_t = s\right]<br>\label{v-function}<br>\end{equation}<br>$$</p>
+<p>Q函数额外引入了动作变量$a$，从而能够在后续的深度Q学习中，通过Q函数得到进入某个状态需要采取的最优动作。</p>
+<p>$$<br>\begin{equation}<br>Q_\pi(s, a) = \mathbb{E}_\pi[G_t | s_t = s, a_t = a] = \mathbb{E}_\pi\left[ \sum_{k=0}^{\infty} \gamma^k r_{t+k+1} | s_t = s, a_t = a\right]<br>\label{q-function}<br>\end{equation}<br>$$</p>
+<p>那么，为什么要用价值函数Q函数得到最优动作$a^*$，而不是直接像式子$\eqref{sto-policy}$和$\eqref{det-policy}$，通过策略$\pi(\cdot)$得到呢？这就涉及到强化学习中对于智能体类型的划分问题：“基于价值的智能体”和“基于策略的智能体”。</p>
 <h3 id="智能体的类型-Variants-of-Agents"><a href="#智能体的类型-Variants-of-Agents" class="headerlink" title="智能体的类型 Variants of Agents"></a>智能体的类型 Variants of Agents</h3><p>在EasyRL“蘑菇书”中，已经详细介绍了“基于价值的智能体”和“基于策略的智能体”，这里简要地概括一下：</p>
 <ul>
 <li><strong>基于价值的智能体</strong>：显式地学习价值函数，隐式地学习策略，策略是从价值函数中推算出来的（价值表格查表、价值函数建模）。例如，深度Q学习Deep Q-Leanring需要显式学习一个Q模型作为黑盒的价值函数。</li>
@@ -409,8 +411,10 @@
 </ul>
 <p>同时，另一种常见的分类“有模型强化学习智能体”和“无模型强化学习智能体”，也可以总结如下：</p>
 <ul>
-<li><strong>有模型强化学习智能体</strong>：在智能体内部，需要对与之交互的真实环境进行显式的建模，构建一个包括状态转移函数$p(s_{t+1}|s_t, a_t)$以及奖励函数$R(s_t, a_t)$的虚拟环境，从而在执行动作$a_t$前，对下一步对的状态和奖励进行预测。</li>
-<li><strong>无模型强化学习智能体</strong>：无需对交互的环境进行建模，取而代之的是需要大量的采样来估计状态、动作和奖励函数，比有模型方法需要更多的数据。相比带有偏差的、容易过拟合的虚拟环境，无模型方法的泛化能力更强。</li>
+<li><p><strong>有模型强化学习智能体</strong>：在智能体内部，需要对与之交互的真实环境进行显式的建模，构建一个包括状态转移函数$p(s_{t+1}|s_t, a_t)$以及奖励函数$R(s_t, a_t)$的虚拟环境，从而在执行动作$a_t$前，对下一步对的状态和奖励进行预测。</p>
+</li>
+<li><p><strong>无模型强化学习智能体</strong>：无需对交互的环境进行建模，取而代之的是需要大量的采样来估计状态、动作和奖励函数，比有模型方法需要更多的数据。相比带有偏差的、容易过拟合的虚拟环境，无模型方法的泛化能力更强。</p>
+</li>
 </ul>
 <p><img src="https://imgur-backup.hackmd.io/K6cRnki.png" alt="on-off-policy"></p>
 <p><center>李宏毅老师教程视频截图，图片来自shaoeChen的<a target="_blank" rel="noopener" href="https://hackmd.io/@shaoeChen/Syez2AmFr">笔记</a></center><br></p>
@@ -426,20 +430,20 @@
 <p>注意这里期望的下标表示的是轨迹$\tau$服从了概率分布$p_\theta(\tau)$，也就是有$p$这么大的概率能采样得到$\tau$。如果参数$\theta$更新了，这个分布就改变了。那么这个分布是如何计算出来的呢？一条轨迹，包括了环境的状态改变$s$和智能体的动作$a$：</p>
 <p>$$<br>\begin{equation}<br>\tau = \{ s_1, a_1, s_2, a_2, s_3, \cdots , a_{t-1}, s_t \}<br>\end{equation}<br>$$</p>
 <p>除了初始状态$s_1$外，其他$a$和$s$相互关联（例如$a_1$导致了$s_2$，$s_2$又导致了$a_2$），可以得到$p_\theta(\tau)$的条件概率的连乘形式：</p>
-<p>$$<br>\begin{equation}<br>\begin{split}<br>p_\theta(\tau) &amp; = p(s_1) p_\theta(a_1|s_1) p_\theta(s_2|a_1) \cdots p(a_{t-1} | s_{t-1}) p(s_t | a_{t-1}) \\<br>&amp; = p(s_1) \prod_{t} p_\theta(a_{t-1}|s_{t-1}) p_\theta(s_t|a_{t-1})<br>\end{split}<br>\end{equation}<br>$$</p>
+<p>$$<br>\begin{equation}<br>\begin{split}<br>p_\theta(\tau) &amp; = p(s_1) p_\theta(a_1|s_1) p(s_2|a_1) \cdots p(a_{t-1} | s_{t-1}) p(s_t | a_{t-1}) \\<br>&amp; = p(s_1) \prod_{t} p_\theta(a_{t-1}|s_{t-1}) p(s_t|a_{t-1})<br>\end{split}<br>\end{equation}<br>$$</p>
 <p>对于式子$\eqref{reward-expect}$表示的总奖励，我们希望它尽可能的大。不同于普通的损失函数通过梯度下降，优化到尽可能小，该式子应当通过梯度上升Gradient Ascent，优化到尽可能大。所以不能采用负梯度方向$-\nabla$，而是正梯度方向：</p>
 <p>$$<br>\begin{equation}<br>\nabla R_\theta = \sum_\tau R(\tau) \nabla p_\theta(\tau) = \sum_\tau R(\tau) \nabla \left[p(s_1) \prod_{t} p_\theta(a_{t-1}|s_{t-1}) p(s_t|a_{t-1})\right]<br>\label{prod-p}<br>\end{equation}<br>$$</p>
 <p>其中，总奖励$R(\tau)$是一个标量，所以不用求梯度，<strong>且允许相应的奖励函数不可微</strong>。但问题是，对乘法求导/求梯度是很难算的（$(f \cdot g)’ = f’ \cdot g + f \cdot g’$），尤其是式子$\eqref{prod-p}$还有一个连乘$\prod$，需要<strong>将乘法转换为加法</strong>。注意到$\nabla \log p = \frac{\nabla p}{p}$：</p>
 <p>$$<br>\begin{equation}<br>\begin{split}<br>\nabla R_\theta &amp; = \sum_\tau R(\tau) \nabla p_\theta(\tau) \\<br>&amp; = \sum_\tau R(\tau) p_\theta(\tau) \nabla \log p_\theta(\tau) \\<br>&amp; = \mathbb{E}_{\tau \sim p_\theta(\tau)} [R(\tau) \nabla \log p_\theta(\tau)] \\<br>&amp; = \mathbb{E}_{\tau \sim p_\theta(\tau)} \left[R(\tau) \nabla \left( \log p(s_1) + \sum_{t} \log p_\theta(a_{t-1}|s_{t-1}) + \sum_{t} \log p(s_t|a_{t-1}) \right) \right] \\<br>&amp; = \mathbb{E}_{\tau \sim p_\theta(\tau)} \left[R(\tau) \nabla \sum_{t} \log p_\theta(a_{t-1}|s_{t-1})\right] \\<br>&amp; = \mathbb{E}_{\tau \sim p_\theta(\tau)} \left[\sum_{t} R(\tau) \nabla \log p_\theta(a_{t-1}|s_{t-1})\right]<br>\end{split}<br>\label{gradient-expect}<br>\end{equation}<br>$$</p>
 <p>其中，梯度实际上是对参数求偏导$\nabla = \frac{\partial}{\partial \theta}$，由于$p(s_1)$和$p(s_t|a_{t-1})$都是环境自身的状态变化，与智能体$\theta$无关，因此对应梯度项均为0。在实际应用中，很难通过巨量的采样得到一个准确的分布$p_\theta(\tau)$，从而准确计算式子$\eqref{gradient-expect}$的期望$\mathbb{E}_{\tau \sim p_\theta(\tau)}$。因此，假设各个轨迹的出现概率相同均为$\frac{1}{N_\tau}$，通过求均值来近似计算期望（方便起见将$t-1$改写回$t$）：</p>
 <p>$$<br>\begin{equation}<br>\nabla R_\theta \approx \frac{1}{N_\tau} \sum_\tau \left[\sum_t R(\tau) \nabla \log p_\theta(a_{t}|s_{t})\right]<br>\label{pg-approx}<br>\end{equation}<br>$$</p>
-<p>即便如上这种近似的解法省略了$p_{\theta}(\tau)$，在更新参数$\theta’ = \theta + \eta \nabla R_\theta$之后，智能体预测的各个动作概率$p_\theta(a_t|s_t)$改变，行为轨迹$\tau \sim p_{\theta’}(\tau)$的概率分布$p_{\theta’}(\tau)$随之改变，导致了必须在新参数$\theta’$上重新采样轨迹$\tau$，才能得到正确的奖励$R(\tau)$。</p>
-<h2 id="近端策略优化-Proximal-Policy-Optimization"><a href="#近端策略优化-Proximal-Policy-Optimization" class="headerlink" title="近端策略优化 Proximal Policy Optimization"></a>近端策略优化 Proximal Policy Optimization</h2><p>既然我们不想再从新参数$\theta’$对应的分布$p_{\theta’}(\tau)$上，重新采样轨迹$\tau$，那么最好的办法就是复用一套固定参数$\hat{\theta}$、在对应的固定分布$q_{\hat{\theta}}(\tau)$上采样的固定轨迹。对于式子$\eqref{reward-expect}$的期望，可以改写为积分形式：</p>
+<p>即便如上这种近似的解法省略了$p_{\theta}(\tau)$，在更新参数$\theta’ = \theta + \eta \nabla R_\theta$之后，智能体预测的各个动作概率$p_\theta(a_t|s_t)$改变，行为轨迹$\tau \sim p_{\theta’}(\tau)$的概率分布$p_{\theta’}(\tau)$随之改变，导致了必须在新参数$\theta’$上重新采样轨迹$\tau’$，才能得到正确的奖励$R(\tau’)$。</p>
+<h2 id="近端策略优化-Proximal-Policy-Optimization"><a href="#近端策略优化-Proximal-Policy-Optimization" class="headerlink" title="近端策略优化 Proximal Policy Optimization"></a>近端策略优化 Proximal Policy Optimization</h2><p>既然我们不想再从新参数$\theta’$对应的分布$p_{\theta’}(\tau)$上，重新采样轨迹$\tau’$，那么最好的办法就是复用一套固定参数$\hat{\theta}$、在对应的固定分布$q_{\hat{\theta}}(\tau)$上采样的固定轨迹。对于式子$\eqref{reward-expect}$的期望，可以改写为积分形式：</p>
 <p>$$<br>\begin{equation}<br>\begin{split}<br>\nabla R_\theta &amp; = \mathbb{E}_{\tau \sim p_\theta(\tau)} [R(\tau) \nabla \log p_\theta(\tau)] \\<br>&amp; = \int [R(\tau) \nabla \log p_\theta(\tau)] p_\theta(\tau) d\tau \\<br>&amp; = \int [R(\tau) \nabla \log p_\theta(\tau)] \frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)} q_{\hat{\theta}}(\tau) d\tau \\<br>&amp; = \mathbb{E}_{\tau \sim q_{\hat{\theta}}(\tau)} \left[ \frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)} R(\tau) \nabla \log p_\theta(\tau) \right]<br>\end{split}<br>\label{importance-sampling}<br>\end{equation}<br>$$</p>
 <p>这样，期望的下标从$\tau \sim p_\theta(\tau)$变成了$\tau \sim q_{\hat{\theta}}(\tau)$，<strong>而$q_{\hat{\theta}}(\tau)$本身是固定的，从而轨迹$\tau$也随之变成固定的了</strong>。无论$\theta$如何变化，使用这一套用$\hat{\theta}$采集的固定轨迹，就不需要智能体$\theta$与环境进行交互（行为$a$可变，状态$s$固定），奖励$R(\tau)$也一样是固定的了。为了学习参数$\theta$，只需<strong>“照本宣科”地按这条轨迹给出行为概率$p_\theta(a_t|s_t)$，获得对应当前参数$\theta$行为的轨迹条件概率$p_\theta(\tau)$</strong>。那么，相比式子$\eqref{reward-expect}$，式子$\eqref{importance-sampling}$多出来的这个$\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)}$有什么实际含义呢？</p>
 <p><img src="https://datawhalechina.github.io/easy-rl/img/ch5/5.1.png" alt="importance-sampling"></p>
 <p><center>重要性采样Importance Sampling的示意图，其中$x$在这里指的是轨迹$\tau$，$f(\tau)=R(\tau) \nabla \log p_\theta(\tau)$<br>图片来自<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/easy-rl/#/chapter5/chapter5">EasyRL在线版</a></center><br></p>
-<p>乘在$f(\tau)=R(\tau) \nabla \log p_\theta(\tau)$前面的权重$\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)}$叫做重要性权重。如上图所示，假设中间为原点0，$f(\tau)$的数值呈现类似Sigmoid函数的变化，也就是红线。其中，$p(\tau)$是我们想要逼近的样本概率分布，当前是大多数样本在负半轴，那么对应期望$\mathbb{E}_{\tau \sim p}[f(\tau)] &lt; 0$。固定分布$q(\tau)$表示大多数样本在正半轴，那么采样到负半轴的概率更大。</p>
+<p>令$f(\tau)=R(\tau) \nabla \log p_\theta(\tau)$，前面的权重$\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)}$叫做重要性权重。如上图所示，假设中间为原点0，$f(\tau)$的数值呈现类似Sigmoid函数的变化，也就是红线。其中，$p(\tau)$是我们想要逼近的样本概率分布，当前是大多数样本在负半轴，那么对应期望$\mathbb{E}_{\tau \sim p}[f(\tau)] &lt; 0$。固定分布$q(\tau)$表示大多数样本在正半轴，那么采样到负半轴的概率更大。</p>
 <p>在$q(\tau)$上，一旦采样到一个负半轴的样本，对应概率$q(\tau) \rightarrow 0$，则权重$\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)} \rightarrow \infty$，给对应样本的$f(\tau)$赋予了一个极大的权重，说明这个样本很接近分布$p(\tau)$，<strong>重要性很高</strong>，且此时$f(\tau) &lt; 0$。最终，期望$\mathbb{E}_{\tau \sim q}\left[\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)} f(\tau)\right] &lt; 0$，$\mathbb{E}_{\tau \sim q}\left[\frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)} f(\tau)\right] \approx \mathbb{E}_{\tau \sim p}[f(\tau)]$。这个过程被称为重要性采样Importance Sampling。</p>
 <p>在此基础上，近端策略优化Proximal Policy Optimization额外考虑了两个分布相差过大的情况，也就是上图中的$p_\theta(\tau)$和$q_{\hat{\theta}}(\tau)$两个峰离得非常远，很难碰巧在后者上采样到前者中的高频样本。因此，需要限制两个智能体参数$\theta$和$\hat{\theta}$的距离，可以通过KL散度的方式进行约束。定义最大化优化目标$\max J(\theta)$：</p>
 <p>$$<br>\begin{equation}<br>\begin{split}<br>J(\theta) &amp; = R_\theta - \beta \mathrm{KL}_\mathrm{PPO} \\<br>&amp; = \mathbb{E}_{\tau \sim q_\hat{\theta}}\left[ \frac{p_\theta(\tau)}{q_{\hat{\theta}}(\tau)} R(\tau) \log p_\theta(\tau) \right] - \beta \mathrm{KL}(\theta, \hat{\theta})<br>\end{split}<br>\label{ppo}<br>\end{equation}<br>$$</p>
@@ -485,9 +489,9 @@
 <p>$$<br>\begin{equation}<br>\begin{split}<br>\nabla \mathcal{L}_\mathrm{\mu} &amp; = - \nabla \int \rho(s)Q_w(s, \mu_\theta(s)) ds \\<br>&amp; = - \int \rho(s) \nabla Q_w(s, \mu_\theta(s)) \nabla \mu_\theta(s) ds \\<br>&amp; \approx \frac{1}{N_s} \sum_s \left[\nabla Q_w(s, \mu_\theta(s)) \nabla \mu_\theta(s) \right]\\<br>\end{split}<br>\end{equation}<br>$$</p>
 <p>需要注意$Q_w(s, \mu_\theta(s))$是包含$\theta$的复合函数，复合函数求导$(f(g(x)))’ = f’(g(x)) \cdot g’(x)$。此外，虽然确定性的行为$a = \mu_\theta(s)$样本量需求小，但也导致在环境中的探索范围受限。对输出的行为$a$加入噪声，用$\mathrm{clip}(\cdot)$函数限制上下界：</p>
 <p>$$<br>\begin{equation}<br>a = \mathrm{clip}(\mu_\theta(s) + \epsilon, a_\mathrm{low}, a_\mathrm{high}), \epsilon \sim \mathcal{N}(0, \sigma^2 I)<br>\end{equation}<br>$$</p>
-<p>总结一下，从策略梯度PG到近端策略优化PPO、深度确定性策略梯度DDPG，<strong>强化学习与环境交互的成本在不断压缩</strong>：</p>
+<p>综上，从策略梯度PG到近端策略优化PPO、深度确定性策略梯度DDPG，<strong>强化学习与环境交互的成本在不断压缩</strong>：</p>
 <ul>
-<li><p>一方面，PPO将策略梯度中需要反复采样的轨迹$\tau \sim p_\theta(\tau)$改为固定的$\tau \sim q_\hat{\theta}(\tau)$，通过重要性采样方法来赋予$p_\theta(\tau)$和$q_\hat{\theta}(\tau)$两个分布的权重。但仍然需要环境给出固定轨迹的总体奖励$R(\tau)$。</p>
+<li><p>一方面，PPO将策略梯度中需要反复采样的轨迹$\tau \sim p_\theta(\tau)$改为固定的$\tau \sim q_\hat{\theta}(\tau)$，从而使得对应轨迹的奖励$R(\tau)$固定，只需通过在固定轨迹上得到当前的$p_\theta(\tau)$，用重要性采样方法来赋予$p_\theta(\tau)$和$q_\hat{\theta}(\tau)$两个分布的权重。</p>
 </li>
 <li><p>另一方面，基于价值的方法DQN、DDPG直接不需要轨迹$\tau$，而是采用了时序差分方法，直接计算相邻两个状态$s_t$和$s_{t+1}$的价值Q函数之差$r_t$。目标模型技巧稳定了时序差分方法的训练过程，而经验重放技巧引入了历史交互的缓冲区队列$\{s, a, r, s’\} \sim \mathcal{D}$，进一步减少了当前策略下与环境的交互过程。</p>
 </li>
