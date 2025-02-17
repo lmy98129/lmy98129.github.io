@@ -1972,7 +1972,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #c621a7;
+  background: #fff7b8;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -3103,6 +3103,11 @@ ul.breadcrumb li+li:last-child {
 @media screen and (min-width: 500px) {
   .head-img-larger2 {
     max-height: 340px !important;
+  }
+}
+@media screen and (min-width: 500px) {
+  .head-img-larger3 {
+    max-height: 500px !important;
   }
 }
 @media screen and (max-width: 500px) {
