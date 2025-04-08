@@ -124,7 +124,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2025/04/07/Notes-About-Functional-Data-Analysis/FBNN-Vis.png">
 <meta property="og:image" content="http://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/latent-ode.png">
 <meta property="article:published_time" content="2025-04-07T04:49:49.000Z">
-<meta property="article:modified_time" content="2025-04-08T15:50:03.936Z">
+<meta property="article:modified_time" content="2025-04-08T16:09:04.368Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -341,7 +341,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2025-04-08T23:50:03+08:00">2025-04-08</time>
+              <time title="更新于" itemprop="dateModified" datetime="2025-04-09T00:09:04+08:00">2025-04-09</time>
             
           </span>
 
@@ -474,7 +474,7 @@
 <p>总之，从FBNN到FuncConv，原生支持函数输入、特征提取、函数输出的FNN通过显式地建模每层输入与输出之间的贡献关系映射$W(s, t)$，保证了与FDA类似的可解释性，同时通过基函数展开方法、基函数等间隔采样技巧，实现了与现有深度学习框架的无缝兼容。上图为FBNN原文<sup class="refplus-num"><a href="#ref-RAO2">[13]</a></sup>中可视化的关系映射$W(s, t)$，其中R代表了对权重平滑度的正则化方法，在不影响精度的情况下，正则化后能够更显著地表达贡献程度。</p>
 <h2 id="与Neural-CDE的联系-Association-with-Neural-CDE"><a href="#与Neural-CDE的联系-Association-with-Neural-CDE" class="headerlink" title="与Neural CDE的联系 Association with Neural CDE"></a>与Neural CDE的联系 Association with Neural CDE</h2><p>在<a href="https://lmy98129.github.io/2024/06/03/Notes-About-Neural-CDE-and-Beyond/">之前的笔记</a>中，神经受控微分方程Nerual CDE的设计能够避免Nerual ODE的“初值问题”，也就是为了输入时间序列$\mathrm{X_T}$中新增的一小段$\rm X_{T+\Delta T}$，需要输入完整的当前数据$\rm X=\{X_1, \cdots, X_T, \cdots, X_{T+\Delta T}\}$跑完整个编码器构成的模型，编码得到解码器所需的初始特征$z_0$，然后再从$z_0$开始积分，模型的效率十分感人。</p>
 <p><img src="/2025/04/07/Notes-About-Functional-Data-Analysis/../../../../2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/latent-ode.png" alt="latent-ode"></p>
-<p>而Neural CDE将输入数据$X$与网络输出特征$f_\theta(z_t)$以系数相乘的形式组合，从而对于$\rm X_{T+\Delta T}$，只需从$z_\mathrm{T}$开始，用新增数据$\rm X’=\{X_T+1, \cdots, X_{T+\Delta T}\}$继续积分得到$z’ = \{z_\mathrm{T+1}, \cdots, z_\mathrm{T+\Delta T}\}$即可: </p>
+<p>而Neural CDE将输入数据$X$与网络输出特征$f_\theta(z_t)$以系数相乘的形式组合，从而对于$\rm X_{T+\Delta T}$，只需从$z_\mathrm{T}$开始，用新增数据$\rm X’=\{X_{T+1}, \cdots, X_{T+\Delta T}\}$继续积分得到$z’ = \{z_\mathrm{T+1}, \cdots, z_\mathrm{T+\Delta T}\}$即可: </p>
 <p>$$<br>\begin{split}<br>&amp; z_\mathrm{T} = z_0 + \int_0^\mathrm{T} f_\theta(z_t) \frac{d \mathrm{X}_t}{dt} dt = z_0 + \int_0^\mathrm{T} f_\theta(z_t) d \mathrm{X}_t\\<br>&amp; \Rightarrow z_\mathrm{T+\Delta T} = z_\mathrm{T} + \int_\mathrm{T}^\mathrm{T+\Delta T} f_\theta(z_t) d \mathrm{X}_t<br>\end{split}<br>$$</p>
 <p>可以看到，Neural CDE也建立了一个从任意输入函数$\mathrm{X}’$，到输出函数$z’$的“函数到函数”映射关系，而且中间的过程是具有时序因果依赖的，也就是当前时刻$z_\tau$依赖的输入数据应当是$t &lt; \tau$的，不会出现依赖于未来数据的情况。这是经典FDA、FNN所未考虑到的（当然，最简单的方法就是给$w(s, t)$加上一个类似于因果注意力掩码的下三角矩阵）。</p>
 <p>但是，这种依赖关系也是非常复杂的，因为当前时刻的$z_\tau$依赖了几乎所有过去的输入函数数据，如果过去有一个$z_{\tau’}$重度依赖了某一个$\mathrm{X}_o$，则后续的$z_\tau$仍需继承这个依赖。反而在FDA、FNN中，输出函数的每一个点的依赖都是相互之间独立的，映射矩阵是输入输出函数的无限维取值点的全连接，也即$W \in L^2\left(\mathcal{U}(c, d) \times \mathcal{U}(a, b)\right)$。那么，同样建模了“函数到函数”的映射关系，这两者之间的优缺点如何合理地互补，这便是一个值得探索的有趣话题。虽然相对当下主流的MLP、RNN、CNN、Transformer、Mamba等神经网络而言更加抽象，但同样可以相信，它们总有一天也会应用在这实际世界上。</p>
