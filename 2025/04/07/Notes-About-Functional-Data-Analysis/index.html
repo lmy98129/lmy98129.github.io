@@ -125,7 +125,7 @@
 <meta property="og:image" content="http://lmy98129.github.io/2025/04/07/Notes-About-Functional-Data-Analysis/FBNN-Vis.png">
 <meta property="og:image" content="http://lmy98129.github.io/2023/12/30/Notes-About-Neural-ODE-and-Beyond-1/latent-ode.png">
 <meta property="article:published_time" content="2025-04-07T04:49:49.000Z">
-<meta property="article:modified_time" content="2025-04-10T14:15:33.082Z">
+<meta property="article:modified_time" content="2025-04-10T14:49:12.267Z">
 <meta property="article:author" content="Mengyin Liu">
 <meta property="article:tag" content="experience">
 <meta name="twitter:card" content="summary">
@@ -342,7 +342,7 @@
               
                 <span class="post-meta-item-text">更新于&#58;</span>
               
-              <time title="更新于" itemprop="dateModified" datetime="2025-04-10T22:15:33+08:00">2025-04-10</time>
+              <time title="更新于" itemprop="dateModified" datetime="2025-04-10T22:49:12+08:00">2025-04-10</time>
             
           </span>
 
@@ -452,7 +452,7 @@
 <p>与AdaFNN类似，IJCNN2002论文FDAMLP<sup class="refplus-num"><a href="#ref-FDAMLP">[11]</a></sup>同样观察到了式子$\eqref{fnn-overall}$中函数空间中的元素难以在计算机上表示的问题，提出采用一个基于有限维参数的回归模型（Parametric Regressor，可以是经典神经网络）$F$替代无限维权重，给定K个有限维参数$w = \{w_1, \cdots, w_k\}$，回归模型$F_i(w_i, \cdot)$接受参数$w_i\in \mathbb{R}^j$和当前时刻多维输入$x \in \mathbb{R}^n$，输出标量$\mathbb{R}$，也即$F_i :  \mathbb{R}^j \times \mathbb{R}^n \rightarrow \mathbb{R}$。</p>
 <p>实际上，这也是将式子$\eqref{fnn-overall}$的无限维权重$W$降级成了类似基函数的$F$，其中$w_i$相当于基函数的参数，$x$给定了当前时刻多维输入信息，相乘求积分（函数内积$\langle F, g \rangle = \int F \cdot g d\mu$）后得到的是一个标量，后续再叠加多层网络也只能是经典神经网络，因此论文只构建了一个简单的单层MLP网络：</p>
 <p>$$<br>\begin{split}<br>    h(g, w) = \sum_{i=1}^k a_i \tau\left( b_i + \int F_i(w_i, x) g(x) d\mu(x) \right)<br>\end{split}<br>$$</p>
-<p>其中，$\mu(x)$写作在$\mathbb{R}^n$上的有限Borel测度，实际上就是在求当前时刻多维输入信息对应的时间戳，可以省略时间戳下标$x = X_l, l\in \mathbb{N}$。另外$F: W \times \mathbb{R}^n \rightarrow \mathbb{R}$中，$W$为$\mathbb{R}^j$上的紧集，意思是有限维参数集合$w$并不能覆盖整个$\mathbb{R}^j$空间内的所有元素，只能覆盖有限的K个。这些都是测度论的相关概念，但总归能翻译为白话。</p>
+<p>其中，$\mu(x)$写作在$\mathbb{R}^n$上的有限Borel测度，实际上就是在求当前时刻多维输入信息对应的时间戳，可以省略时间戳下标$x = X_l$，$l\in \mathbb{N}$。另外$F: W \times \mathbb{R}^n \rightarrow \mathbb{R}$中，$W$为$\mathbb{R}^j$上的紧集，意思是有限维参数集合$w$并不能覆盖整个$\mathbb{R}^j$空间内的所有元素，只能覆盖有限的K个。这些都是测度论的相关概念，但总归能翻译为白话。</p>
 <p>总之，上述方法只是在输入阶段采用了纯白盒FDA<sup class="refplus-num"><a href="#ref-JCG">[9]</a></sup>、结合了神经网络的灰盒FDA<sup class="refplus-num"><a href="#ref-AdaFNN">[10]</a></sup><sup class="refplus-num"><a href="#ref-FDAMLP">[11]</a></sup>，后续仍然采用黑盒的经典神经网络，所以并没有实现真正的FDA的可解释性，显式建模输入函数对输出结果的贡献。此外这些方法也无法实现“函数到函数”的映射，因为后续输出依赖于经典神经网络，只能是有限维度，不能是无限维度的函数。</p>
 <h3 id="基于基函数展开的方法-Basis-Function-Expansion-based-FNNs"><a href="#基于基函数展开的方法-Basis-Function-Expansion-based-FNNs" class="headerlink" title="基于基函数展开的方法 Basis-Function Expansion-based FNNs"></a>基于基函数展开的方法 Basis-Function Expansion-based FNNs</h3><p><img src="/2025/04/07/Notes-About-Functional-Data-Analysis/FNNs.png" alt="FNNs"><br><img src="/2025/04/07/Notes-About-Functional-Data-Analysis/FDNN.png" alt="FDNN"></p>
 <p><center>基于基函数内积方法与基函数展开方法的区别，前者在第一层就通过函数内积的形式得到了有限维特征向量，后者始终采用有限维特征向量表示无限维函数<br>图片来自论文原文<sup class="refplus-num"><a href="#ref-RAO1">[12]</a></sup><sup class="refplus-num"><a href="#ref-RAO2">[13]</a></sup></center><br><br></p>
